@@ -1,9 +1,13 @@
 /**
  * PeriodicTableNode.ts
  *
- * The 4 × 18 periodic table (H to Kr), each cell coloured by the chosen property. Click selects an
- * element; dragging from an element across a row or down a column selects a period or group run;
- * the period and group numbers select a whole row or column.
+ * The periodic table, as far as the chosen TableExtent (Kr, Xe or Rn), each cell coloured by the
+ * chosen property. Click selects an element; dragging from an element across a row or down a
+ * column selects a period or group run; the period and group numbers select a whole row or column.
+ * Through radon, La–Lu sit in a detached row; the "57–71" slot in group 3 selects them all.
+ *
+ * Every element's cell is built once; cells beyond the extent are hidden, and the screen view
+ * scales the table to fit (see `naturalHeight`).
  *
  * Keyboard: the table is one focusable grid. Arrows move a cursor (skipping empty slots), Enter or
  * Space selects, Shift+arrows extends a run from where the extension started, and P / G select
@@ -24,7 +28,15 @@ import {
   Text,
 } from "scenerystack/scenery";
 import { PhetFont } from "scenerystack/scenery-phet";
-import { ELEMENTS, elementAt, GROUP_COUNT, getElement, PERIOD_COUNT } from "../../common/model/ElementData.js";
+import {
+  ELEMENTS,
+  FIRST_LANTHANIDE,
+  GROUP_COUNT,
+  getElement,
+  LANTHANIDE_ROW,
+  LAST_LANTHANIDE,
+} from "../../common/model/ElementData.js";
+import { LANTHANIDE_PLACEHOLDER, type TableExtent } from "../../common/model/TableExtent.js";
 import {
   type GridCell,
   groupSelection,
@@ -52,12 +64,16 @@ import type { TrendsModel } from "../model/TrendsModel.js";
 /** Width of the period-number column and height of the group-number row. */
 const HEADER_SIZE = 16;
 
+/** Extra space above the detached lanthanide row. */
+const LANTHANIDE_GAP = 8;
+
 /** Inset of each cell's rectangle inside its slot. */
 const CELL_GAP = 1;
 
 const SELECTED_LINE_WIDTH = 3;
 
 type CellNodes = {
+  readonly node: Node;
   readonly background: Rectangle;
   readonly number: Text;
   readonly symbol: Text;
@@ -96,8 +112,8 @@ export class PeriodicTableNode extends Node {
 
     const anchor = getElement(model.selectionProperty.value.anchorZ);
     this.cursorProperty = new Property<GridCell>(
-      { period: anchor.period, group: anchor.group },
-      { valueComparisonStrategy: (a, b) => a.period === b.period && a.group === b.group },
+      { row: anchor.row, column: anchor.column },
+      { valueComparisonStrategy: (a, b) => a.row === b.row && a.column === b.column },
     );
 
     // ── Headers ─────────────────────────────────────────────────────────────────
@@ -111,10 +127,13 @@ export class PeriodicTableNode extends Node {
         cursor: "pointer",
       });
       header.mouseArea = header.localBounds.dilatedXY(CELL_WIDTH / 2 - header.width / 2, 4);
-      header.addInputListener(new FireListener({ fire: () => model.select(groupSelection(group)) }));
+      header.addInputListener(
+        new FireListener({ fire: () => model.select(groupSelection(model.tableExtentProperty.value, group)) }),
+      );
       this.addChild(header);
     }
-    for (let period = 1; period <= PERIOD_COUNT; period++) {
+    const periodHeaders: Text[] = [];
+    for (let period = 1; period <= 6; period++) {
       const header = new Text(String(period), {
         font: headerFont,
         fill: PeriodicTrendsColors.mutedTextColorProperty,
@@ -123,15 +142,18 @@ export class PeriodicTableNode extends Node {
         cursor: "pointer",
       });
       header.mouseArea = header.localBounds.dilatedXY(4, CELL_HEIGHT / 2 - header.height / 2);
-      header.addInputListener(new FireListener({ fire: () => model.select(periodSelection(period)) }));
+      header.addInputListener(
+        new FireListener({ fire: () => model.select(periodSelection(model.tableExtentProperty.value, period)) }),
+      );
       this.addChild(header);
+      periodHeaders.push(header);
     }
 
     // ── Cells ───────────────────────────────────────────────────────────────────
     const cellLayer = new Node({ cursor: "pointer" });
     this.addChild(cellLayer);
     const cells: CellNodes[] = ELEMENTS.map((element) => {
-      const bounds = PeriodicTableNode.cellBounds(element.period, element.group);
+      const bounds = PeriodicTableNode.cellBounds(element.row, element.column);
       const background = new Rectangle(bounds.eroded(CELL_GAP), {
         cornerRadius: 3,
         stroke: PeriodicTrendsColors.cellStrokeColorProperty,
@@ -147,17 +169,67 @@ export class PeriodicTableNode extends Node {
         centerY: bounds.centerY - 1,
       });
       const value = new Text("", { font: new PhetFont(8), maxWidth: CELL_WIDTH - 4 });
-      cellLayer.addChild(new Node({ children: [background, number, symbol, value] }));
-      return { background, number, symbol, value };
+      const node = new Node({ children: [background, number, symbol, value] });
+      cellLayer.addChild(node);
+      return { node, background, number, symbol, value };
+    });
+
+    // The period-6 slot of group 3 stands for La–Lu; clicking it selects them all.
+    const placeholderBounds = PeriodicTableNode.cellBounds(LANTHANIDE_PLACEHOLDER.row, LANTHANIDE_PLACEHOLDER.column);
+    const placeholder = new Node({
+      cursor: "pointer",
+      children: [
+        new Rectangle(placeholderBounds.eroded(CELL_GAP), {
+          cornerRadius: 3,
+          stroke: PeriodicTrendsColors.cellStrokeColorProperty,
+          lineDash: [3, 2],
+        }),
+        new Text(`${FIRST_LANTHANIDE}–${LAST_LANTHANIDE}`, {
+          font: new PhetFont(9),
+          fill: PeriodicTrendsColors.mutedTextColorProperty,
+          center: placeholderBounds.center,
+          maxWidth: CELL_WIDTH - 4,
+        }),
+      ],
+    });
+    placeholder.addInputListener(
+      new FireListener({
+        fire: () => {
+          const zs = model.tableExtentProperty.value.elementsInRow(LANTHANIDE_ROW).map((element) => element.z);
+          this.commit({ kind: "period", zs, anchorZ: zs[0] ?? FIRST_LANTHANIDE });
+        },
+      }),
+    );
+    this.addChild(placeholder);
+
+    // Only the elements, period numbers and placeholder of the chosen extent are shown.
+    model.tableExtentProperty.link((table) => {
+      ELEMENTS.forEach((element, i) => {
+        const cell = cells[i];
+        if (cell) {
+          cell.node.visible = table.includes(element.z);
+        }
+      });
+      periodHeaders.forEach((header, i) => {
+        header.visible = i < table.periodCount;
+      });
+      placeholder.visible = table.hasLanthanides;
+      this.moveCursorTo(model.selectionProperty.value.anchorZ);
     });
 
     // Fill, text and value of every cell follow the property, units, locale and colour profile.
     Multilink.multilinkAny(
-      [model.periodicPropertyProperty, electronVoltsProperty, localeProperty, ...HEAT_COLOR_PROPERTIES],
+      [
+        model.periodicPropertyProperty,
+        electronVoltsProperty,
+        localeProperty,
+        model.tableExtentProperty,
+        ...HEAT_COLOR_PROPERTIES,
+      ],
       () => {
         const property = model.periodicPropertyProperty.value;
         const electronVolts = electronVoltsProperty.value;
-        const range = property.getRange();
+        const range = property.getRange(model.tableExtentProperty.value);
         const lo = toDisplayUnits(property, range.min, electronVolts);
         const hi = toDisplayUnits(property, range.max, electronVolts);
         ELEMENTS.forEach((element, i) => {
@@ -173,7 +245,7 @@ export class PeriodicTableNode extends Node {
           cell.symbol.fill = textFill;
           cell.value.fill = textFill;
           cell.value.string = cellText(property, element, electronVolts);
-          const bounds = PeriodicTableNode.cellBounds(element.period, element.group);
+          const bounds = PeriodicTableNode.cellBounds(element.row, element.column);
           cell.value.centerX = bounds.centerX;
           cell.value.bottom = bounds.maxY - 2;
         });
@@ -206,7 +278,7 @@ export class PeriodicTableNode extends Node {
     });
     this.addChild(cursorRectangle);
     this.cursorProperty.link((cell) => {
-      cursorRectangle.center = PeriodicTableNode.cellBounds(cell.period, cell.group).center;
+      cursorRectangle.center = PeriodicTableNode.cellBounds(cell.row, cell.column).center;
     });
     this.addInputListener({
       focus: () => {
@@ -223,24 +295,26 @@ export class PeriodicTableNode extends Node {
     let dragAnchor: GridCell | null = null;
     const cellAt = (event: PressListenerEvent): GridCell => {
       const point = this.globalToLocalPoint(event.pointer.point);
-      return {
-        period: Math.floor((point.y - HEADER_SIZE) / CELL_HEIGHT) + 1,
-        group: Math.floor((point.x - HEADER_SIZE) / CELL_WIDTH) + 1,
-      };
+      const lanthanideTop = PeriodicTableNode.cellBounds(LANTHANIDE_ROW, 1).minY;
+      const row =
+        point.y >= lanthanideTop - LANTHANIDE_GAP / 2 && model.tableExtentProperty.value.hasLanthanides
+          ? LANTHANIDE_ROW
+          : Math.min(Math.floor((point.y - HEADER_SIZE) / CELL_HEIGHT) + 1, LANTHANIDE_ROW - 1);
+      return { row, column: Math.floor((point.x - HEADER_SIZE) / CELL_WIDTH) + 1 };
     };
     cellLayer.addInputListener(
       new DragListener({
         start: (event) => {
           const cell = cellAt(event);
-          dragAnchor = elementAt(cell.period, cell.group) ? cell : null;
+          dragAnchor = model.tableExtentProperty.value.elementAt(cell.row, cell.column) ? cell : null;
           if (dragAnchor) {
             this.cursorProperty.value = dragAnchor;
-            model.select(selectionFromDrag(dragAnchor, cell));
+            model.select(selectionFromDrag(model.tableExtentProperty.value, dragAnchor, cell));
           }
         },
         drag: (event) => {
           if (dragAnchor) {
-            model.select(selectionFromDrag(dragAnchor, cellAt(event)));
+            model.select(selectionFromDrag(model.tableExtentProperty.value, dragAnchor, cellAt(event)));
           }
         },
         end: () => {
@@ -268,8 +342,10 @@ export class PeriodicTableNode extends Node {
   }
 
   private handleKey(keys: string, electronVolts: boolean): void {
+    const table = this.model.tableExtentProperty.value;
     const cursor = this.cursorProperty.value;
-    const z = elementAt(cursor.period, cursor.group)?.z ?? 1;
+    const element = table.elementAt(cursor.row, cursor.column) ?? getElement(1);
+    const z = element.z;
     const direction = keys.replace("shift+", "");
     const delta: Record<string, [number, number]> = {
       arrowLeft: [0, -1],
@@ -281,21 +357,21 @@ export class PeriodicTableNode extends Node {
 
     if (step && keys.startsWith("shift+")) {
       this.extensionAnchor ??= cursor;
-      this.cursorProperty.value = stepCell(cursor, step[0], step[1]);
-      this.commit(selectionFromDrag(this.extensionAnchor, this.cursorProperty.value));
+      this.cursorProperty.value = stepCell(table, cursor, step[0], step[1]);
+      this.commit(selectionFromDrag(table, this.extensionAnchor, this.cursorProperty.value));
     } else if (step) {
       this.extensionAnchor = null;
-      this.cursorProperty.value = stepCell(cursor, step[0], step[1]);
+      this.cursorProperty.value = stepCell(table, cursor, step[0], step[1]);
       this.addAccessibleResponse(this.describeCursor(electronVolts));
     } else if (keys === "enter" || keys === "space") {
       this.extensionAnchor = null;
       this.commit(singleSelection(z));
     } else if (keys === "p") {
       this.extensionAnchor = null;
-      this.commit(periodSelection(cursor.period, z));
-    } else if (keys === "g") {
+      this.commit(periodSelection(table, element.period, z));
+    } else if (keys === "g" && element.group !== null) {
       this.extensionAnchor = null;
-      this.commit(groupSelection(cursor.group, z));
+      this.commit(groupSelection(table, element.group, z));
     }
   }
 
@@ -307,12 +383,14 @@ export class PeriodicTableNode extends Node {
   /** Spoken description of the element under the cursor. */
   private describeCursor(electronVolts: boolean): string {
     const cell = this.cursorProperty.value;
-    const element = elementAt(cell.period, cell.group);
+    const element = this.model.tableExtentProperty.value.elementAt(cell.row, cell.column);
     if (!element) {
       return "";
     }
     const property = this.model.periodicPropertyProperty.value;
-    return StringUtils.fillIn(StringManager.getInstance().getTrendsA11yStrings().focusedElementStringProperty.value, {
+    const a11y = StringManager.getInstance().getTrendsA11yStrings();
+    const pattern = element.group === null ? a11y.focusedLanthanideStringProperty : a11y.focusedElementStringProperty;
+    return StringUtils.fillIn(pattern.value, {
       name: elementName(element),
       symbol: element.symbol,
       z: element.z,
@@ -326,19 +404,24 @@ export class PeriodicTableNode extends Node {
   /** Moves the keyboard cursor to an element (used when the selection changes elsewhere). */
   public moveCursorTo(z: number): void {
     const element = getElement(z);
-    this.cursorProperty.value = { period: element.period, group: element.group };
+    this.cursorProperty.value = { row: element.row, column: element.column };
   }
 
-  /** Local bounds of the slot at (period, group). */
-  public static cellBounds(period: number, group: number): Bounds2 {
-    const x = HEADER_SIZE + (group - 1) * CELL_WIDTH;
-    const y = HEADER_SIZE + (period - 1) * CELL_HEIGHT;
+  /** Local bounds of the slot at (row, column); the lanthanide row sits a little lower. */
+  public static cellBounds(row: number, column: number): Bounds2 {
+    const x = HEADER_SIZE + (column - 1) * CELL_WIDTH;
+    const y = HEADER_SIZE + (row - 1) * CELL_HEIGHT + (row === LANTHANIDE_ROW ? LANTHANIDE_GAP : 0);
     return new Bounds2(x, y, x + CELL_WIDTH, y + CELL_HEIGHT);
   }
 
-  /** Bounds spanning slots (period1, group1) to (period2, group2), e.g. the empty d-block gap. */
-  public static spanBounds(period1: number, group1: number, period2: number, group2: number): Bounds2 {
-    return PeriodicTableNode.cellBounds(period1, group1).union(PeriodicTableNode.cellBounds(period2, group2));
+  /** Bounds spanning slots (row1, column1) to (row2, column2), e.g. the empty d-block gap. */
+  public static spanBounds(row1: number, column1: number, row2: number, column2: number): Bounds2 {
+    return PeriodicTableNode.cellBounds(row1, column1).union(PeriodicTableNode.cellBounds(row2, column2));
+  }
+
+  /** Unscaled height of the table showing `table` (headers included). */
+  public static naturalHeight(table: TableExtent): number {
+    return PeriodicTableNode.cellBounds(table.rowCount, 1).maxY;
   }
 
   public reset(): void {

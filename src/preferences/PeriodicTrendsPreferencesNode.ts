@@ -6,10 +6,12 @@
  * periodicTrendsQueryParameters).
  */
 
-import { Text, VBox } from "scenerystack/scenery";
+import type { TReadOnlyProperty } from "scenerystack/axon";
+import { Node, Text, VBox } from "scenerystack/scenery";
 import { PhetFont } from "scenerystack/scenery-phet";
-import { Checkbox } from "scenerystack/sun";
+import { AquaRadioButtonGroup, Checkbox } from "scenerystack/sun";
 import type { Tandem } from "scenerystack/tandem";
+import { TableExtent } from "../common/model/TableExtent.js";
 import { StringManager } from "../i18n/StringManager.js";
 import PeriodicTrendsColors from "../PeriodicTrendsColors.js";
 import PeriodicTrendsNamespace from "../PeriodicTrendsNamespace.js";
@@ -41,10 +43,39 @@ export class PeriodicTrendsPreferencesNode extends VBox {
       },
     );
 
+    const optionText = (text: TReadOnlyProperty<string>): Text =>
+      new Text(text, { font: new PhetFont(14), fill: PeriodicTrendsColors.controlSurfaceTextColorProperty });
+    const extentRadio = new AquaRadioButtonGroup(
+      preferencesModel.tableExtentProperty,
+      [
+        { value: TableExtent.KRYPTON, label: prefStrings.throughKryptonStringProperty },
+        { value: TableExtent.XENON, label: prefStrings.throughXenonStringProperty },
+        { value: TableExtent.RADON, label: prefStrings.throughRadonStringProperty },
+      ].map(({ value, label }) => ({
+        value,
+        createNode: () => optionText(label),
+        options: { accessibleName: label },
+      })),
+      {
+        spacing: 6,
+        radioButtonOptions: { radius: 7, selectedColor: PeriodicTrendsColors.controlSurfaceTextColorProperty },
+        accessibleName: prefStrings.tableExtentStringProperty,
+        ...(tandem && { tandem: tandem.createTandem("tableExtentRadioButtonGroup") }),
+      },
+    );
+
     super({
       align: "left",
       spacing: 12,
-      children: [header, electronVoltsCheckbox],
+      children: [
+        header,
+        electronVoltsCheckbox,
+        new VBox({
+          align: "left",
+          spacing: 6,
+          children: [optionText(prefStrings.tableExtentStringProperty), new Node({ children: [extentRadio], x: 10 })],
+        }),
+      ],
     });
   }
 }

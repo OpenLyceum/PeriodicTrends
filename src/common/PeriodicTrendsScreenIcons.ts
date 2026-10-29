@@ -9,7 +9,7 @@ import { Shape } from "scenerystack/kite";
 import { Circle, Color, Node, Path, Rectangle } from "scenerystack/scenery";
 import { ScreenIcon } from "scenerystack/sim";
 import PeriodicTrendsColors from "../PeriodicTrendsColors.js";
-import { elementsInPeriod } from "./model/ElementData.js";
+import { TableExtent } from "./model/TableExtent.js";
 
 const W = 548;
 const H = 373;
@@ -27,7 +27,7 @@ function iconFrom(content: Node): ScreenIcon {
 }
 
 export function createTrendsIcon(): ScreenIcon {
-  const period = elementsInPeriod(3);
+  const period = TableExtent.KRYPTON.elementsInPeriod(3);
   const cellWidth = (W - 80) / period.length;
   const minIE = Math.min(...period.map((e) => e.ionizationEnergy));
   const maxIE = Math.max(...period.map((e) => e.ionizationEnergy));

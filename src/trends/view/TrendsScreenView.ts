@@ -38,9 +38,14 @@ export type TrendsScreenViewOptions = SelfOptions & ScreenViewOptions;
 
 /** Graph geometry; the left margin leaves room for the tick labels and the y-axis title. */
 const CHART_LEFT = 70;
-const CHART_TOP = 236;
 const CHART_WIDTH = 560;
-const CHART_HEIGHT = 300;
+const CHART_BOTTOM = 536;
+
+/** Space between the bottom of the table and the top of the plotting area (graph title, legend). */
+const CHART_GAP = 50;
+
+/** The table is scaled down to this height when a larger extent would make it taller. */
+const MAX_TABLE_HEIGHT = 250;
 
 /** Panel content width in the right column (panel margins are 12 px each side). */
 const SIDE_CONTENT_WIDTH = SIDE_COLUMN_WIDTH - 24;
@@ -65,11 +70,9 @@ export class TrendsScreenView extends ScreenView {
     this.table = new PeriodicTableNode(model, electronVoltsProperty, (selection) =>
       speakSelection(selection, model.periodicPropertyProperty.value, electronVoltsProperty.value),
     );
-    this.table.left = SCREEN_VIEW_MARGIN;
-    this.table.top = SCREEN_VIEW_MARGIN / 2;
-    this.addChild(this.table);
 
-    const gap = PeriodicTableNode.spanBounds(1, 3, 3, 12).shifted(this.table.translation);
+    // The card and colour key live in table coordinates so they scale with the table.
+    const gap = PeriodicTableNode.spanBounds(1, 3, 3, 12);
     const card = new ElementCardNode(model, electronVoltsProperty, gap.width - 16);
     card.boundsProperty.link(() => {
       card.left = gap.minX + 10;
@@ -78,14 +81,23 @@ export class TrendsScreenView extends ScreenView {
     const legend = new HeatLegendNode(model, electronVoltsProperty, gap.width - 20);
     legend.left = gap.minX + 10;
     legend.bottom = gap.maxY - 4;
-    this.addChild(card);
-    this.addChild(legend);
+    const tableArea = new Node({ children: [this.table, card, legend] });
+    this.addChild(tableArea);
 
     // ── Graph ───────────────────────────────────────────────────────────────────
-    const chart = new TrendChartNode(model, electronVoltsProperty, CHART_WIDTH, CHART_HEIGHT);
+    const chart = new TrendChartNode(model, electronVoltsProperty, CHART_WIDTH, CHART_BOTTOM - 236);
     chart.x = CHART_LEFT;
-    chart.y = CHART_TOP;
     this.addChild(chart);
+
+    // A larger table is scaled to fit, and the graph takes the space left under it.
+    model.tableExtentProperty.link((table) => {
+      tableArea.setScaleMagnitude(Math.min(1, MAX_TABLE_HEIGHT / PeriodicTableNode.naturalHeight(table)));
+      tableArea.left = SCREEN_VIEW_MARGIN;
+      tableArea.top = SCREEN_VIEW_MARGIN / 2;
+      const tableBottom = tableArea.top + PeriodicTableNode.naturalHeight(table) * tableArea.getScaleVector().y;
+      chart.y = tableBottom + CHART_GAP;
+      chart.setChartHeight(CHART_BOTTOM - chart.y);
+    });
 
     // ── Controls ────────────────────────────────────────────────────────────────
     const propertyRadio = radioGroup(

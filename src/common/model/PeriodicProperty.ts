@@ -8,6 +8,7 @@
 import { Enumeration, EnumerationValue } from "scenerystack/phet-core";
 import { ELEMENTS, type ElementData, UNBOUND } from "./ElementData.js";
 import { shielding } from "./Slater.js";
+import type { TableExtent } from "./TableExtent.js";
 
 /** A value to plot or colour: a number, UNBOUND (electron affinity only), or null (undefined). */
 export type PropertyValue = number | typeof UNBOUND | null;
@@ -66,11 +67,11 @@ export class PeriodicProperty extends EnumerationValue {
     return value === UNBOUND ? 0 : value;
   }
 
-  /** Smallest and largest numeric value over Z = 1–36, for a fixed colour scale and chart axis. */
-  public getRange(): { min: number; max: number } {
-    const values = ELEMENTS.map((element) => this.getNumericValue(element)).filter(
-      (value): value is number => value !== null,
-    );
+  /** Smallest and largest numeric value over the elements on the table, for its colour scale and chart axis. */
+  public getRange(table: TableExtent): { min: number; max: number } {
+    const values = table.elements
+      .map((element) => this.getNumericValue(element))
+      .filter((value): value is number => value !== null);
     return { min: Math.min(...values), max: Math.max(...values) };
   }
 }

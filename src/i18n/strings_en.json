@@ -40,7 +40,57 @@
     "As": "Arsenic",
     "Se": "Selenium",
     "Br": "Bromine",
-    "Kr": "Krypton"
+    "Kr": "Krypton",
+    "Rb": "Rubidium",
+    "Sr": "Strontium",
+    "Y": "Yttrium",
+    "Zr": "Zirconium",
+    "Nb": "Niobium",
+    "Mo": "Molybdenum",
+    "Tc": "Technetium",
+    "Ru": "Ruthenium",
+    "Rh": "Rhodium",
+    "Pd": "Palladium",
+    "Ag": "Silver",
+    "Cd": "Cadmium",
+    "In": "Indium",
+    "Sn": "Tin",
+    "Sb": "Antimony",
+    "Te": "Tellurium",
+    "I": "Iodine",
+    "Xe": "Xenon",
+    "Cs": "Cesium",
+    "Ba": "Barium",
+    "La": "Lanthanum",
+    "Ce": "Cerium",
+    "Pr": "Praseodymium",
+    "Nd": "Neodymium",
+    "Pm": "Promethium",
+    "Sm": "Samarium",
+    "Eu": "Europium",
+    "Gd": "Gadolinium",
+    "Tb": "Terbium",
+    "Dy": "Dysprosium",
+    "Ho": "Holmium",
+    "Er": "Erbium",
+    "Tm": "Thulium",
+    "Yb": "Ytterbium",
+    "Lu": "Lutetium",
+    "Hf": "Hafnium",
+    "Ta": "Tantalum",
+    "W": "Tungsten",
+    "Re": "Rhenium",
+    "Os": "Osmium",
+    "Ir": "Iridium",
+    "Pt": "Platinum",
+    "Au": "Gold",
+    "Hg": "Mercury",
+    "Tl": "Thallium",
+    "Pb": "Lead",
+    "Bi": "Bismuth",
+    "Po": "Polonium",
+    "At": "Astatine",
+    "Rn": "Radon"
   },
   "common": {
     "properties": {
@@ -70,7 +120,8 @@
     "zEffValue": "Z<sub>eff</sub> = {{value}}",
     "elementTitle": "{{name}} ({{symbol}})",
     "elementDetails": "Z = {{z}} · period {{period}} · group {{group}}",
-    "configuration": "Configuration: {{configuration}}"
+    "configuration": "Configuration: {{configuration}}",
+    "elementDetailsLanthanide": "Z = {{z}} · period {{period}} · lanthanide"
   },
   "trends": {
     "property": "Property",
@@ -112,11 +163,17 @@
       "pairing": "{{from}} → {{to}}: {{to}} has the first paired p electron. Repulsion inside the shared orbital makes it easier to remove.",
       "nobleGasRadius": "{{from}} → {{to}}: noble gases form almost no bonds, so their covalent radii are estimates and not strictly comparable.",
       "dContraction": "{{from}} → {{to}}: ten 3d electrons sit between them and shield poorly, so {{to}}'s outer electrons feel a higher Z<sub>eff</sub> than expected (the d-block contraction).",
-      "dBlockFlat": "{{from}}–{{to}}: the added electrons go into the inner 3d and shield the 4s electrons well (0.85 each), so Z<sub>eff</sub> and the properties change only a little, and irregularly.",
+      "dBlockFlat": "{{from}}–{{to}}: the added electrons go into the inner d subshell and shield the outer s electrons well (0.85 each), so Z<sub>eff</sub> and the properties change only a little, and irregularly.",
       "unboundAnion": "{{from}} → {{to}}: {{to}}'s s subshell is full. An added electron would go into a higher p orbital, so the anion is not stable.",
       "halfFilledP": "{{from}} → {{to}}: {{to}}'s p subshell is half filled. An added electron must pair up, so less energy is released.",
       "fluorineCrowded": "{{from}} → {{to}}: {{from}} is so small that an added electron is crowded by the others in the n = 2 shell, so {{to}} releases more energy.",
-      "newShell": "{{from}} → {{to}}: {{to}}'s outer shell is full. An added electron would start a new shell, screened by everything inside it, so the anion is not stable."
+      "newShell": "{{from}} → {{to}}: {{to}}'s outer shell is full. An added electron would start a new shell, screened by everything inside it, so the anion is not stable.",
+      "filledS": "{{from}} → {{to}}: {{to}}'s s subshell is full. An added electron must go into a higher subshell, so the anion is barely stable and little energy is released.",
+      "relativistic": "{{from}} → {{to}}: in period 6 the inner electrons move so fast that relativity pulls the 6s and the first two 6p electrons closer in. {{from}}'s two 6p electrons fill that lower pair, so {{to}}'s third 6p electron sits higher and is easier to remove.",
+      "estimatedRadius": "{{from}} → {{to}}: {{to}} is so radioactive that very few of its compounds have been measured, so its covalent radius is only an estimate.",
+      "irregularEN": "{{from}} → {{to}}: Pauling electronegativities of the heavy p-block are uncertain and depend on the oxidation state used (lead's 2.33 is for lead(IV)), so this small reversal is not meaningful.",
+      "lanthanideContraction": "{{from}} → {{to}}: fourteen 4f electrons sit between them and shield poorly, so {{to}}'s outer electrons feel a higher Z<sub>eff</sub> than expected, and the usual change down the group stalls or reverses (the lanthanide contraction).",
+      "lanthanideSeries": "{{from}}–{{to}}: the added electrons go into the deep 4f subshell, which barely affects the outer 6s electrons, so the properties change little; the radius shrinks slowly across the series (the lanthanide contraction)."
     }
   },
   "shielding": {
@@ -170,7 +227,8 @@
       "propertyRadio": "Property shown",
       "showZEff": "Show effective nuclear charge on graph",
       "explainButton": "Explain the selected element on the Shielding screen",
-      "zEffSpoken": "effective nuclear charge"
+      "zEffSpoken": "effective nuclear charge",
+      "focusedLanthanide": "{{name}}, {{symbol}}, atomic number {{z}}, period {{period}}, lanthanide. {{property}}: {{value}}."
     },
     "shielding": {
       "screenSummary": {
@@ -190,6 +248,10 @@
   },
   "preferences": {
     "title": "Simulation",
-    "electronVolts": "Show energies in eV instead of kJ/mol"
+    "electronVolts": "Show energies in eV instead of kJ/mol",
+    "tableExtent": "Periodic table shown",
+    "throughKrypton": "Through krypton (Z = 1–36)",
+    "throughXenon": "Through xenon (Z = 1–54)",
+    "throughRadon": "Through radon (Z = 1–86, with the lanthanides)"
   }
 }

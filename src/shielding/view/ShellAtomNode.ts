@@ -14,13 +14,19 @@ import { Multilink } from "scenerystack/axon";
 import { Circle, FireListener, Node, Rectangle, Text } from "scenerystack/scenery";
 import { PhetFont } from "scenerystack/scenery-phet";
 import type { ElementData } from "../../common/model/ElementData.js";
-import { groupCounts, groupLabel, type ShieldingResult, type SlaterGroupId } from "../../common/model/Slater.js";
+import {
+  groupCounts,
+  groupLabel,
+  isInnerSubshellGroup,
+  type ShieldingResult,
+  type SlaterGroupId,
+} from "../../common/model/Slater.js";
 import PeriodicTrendsColors from "../../PeriodicTrendsColors.js";
 import { FONT_SIZE } from "../../PeriodicTrendsConstants.js";
 import { colorForKind } from "./shieldingColors.js";
 
-/** Ring radius of each Slater group, in view units. */
-const RING_RADIUS: Record<SlaterGroupId, number> = {
+/** Ring radius of each Slater group up to (4s, 4p), in view units. */
+const RING_RADIUS: Partial<Record<SlaterGroupId, number>> = {
   "1s": 32,
   "2sp": 66,
   "3sp": 100,
@@ -28,14 +34,34 @@ const RING_RADIUS: Record<SlaterGroupId, number> = {
   "4sp": 162,
 };
 
+/** Innermost and outermost ring radii when the rings are spread evenly (beyond krypton). */
+const FIRST_RING = 30;
+const LAST_RING = 168;
+
+/** Electrons on a ring keep at least this gap between centres. */
+const MIN_ELECTRON_SPACING = 3;
+
+/**
+ * Ring radius of each occupied group. Up to krypton the rings sit at fixed radii; beyond, with
+ * up to ten rings, they are spread evenly between FIRST_RING and LAST_RING.
+ */
+function ringRadii(groups: readonly SlaterGroupId[]): Map<SlaterGroupId, number> {
+  const fixed = groups.every((group) => RING_RADIUS[group] !== undefined);
+  const step = groups.length > 1 ? (LAST_RING - FIRST_RING) / (groups.length - 1) : 0;
+  return new Map(groups.map((group, i) => [group, fixed ? (RING_RADIUS[group] ?? 0) : FIRST_RING + i * step]));
+}
+
 const NUCLEUS_RADIUS = 18;
 const ELECTRON_RADIUS = 5;
 const TARGET_RADIUS = 8;
 
-/** Angle of a ring's label, measured from +x towards +y (lower left). */
-const LABEL_ANGLE = (3 * Math.PI) / 4;
+/** Angles of the ring labels, measured from +x towards +y; alternate rings alternate sides. */
+const LABEL_ANGLES = [(3 * Math.PI) / 4, Math.PI / 4];
 
 export class ShellAtomNode extends Node {
+  /** Largest extent from the centre in local units: the outermost ring and its target electron. */
+  public static readonly MAX_RADIUS = LAST_RING + TARGET_RADIUS + 4;
+
   private readonly content = new Node();
 
   public constructor(
@@ -56,15 +82,16 @@ export class ShellAtomNode extends Node {
     }
     const counts = groupCounts(element.configuration);
     const nodes: Node[] = [];
+    const radii = ringRadii(result.contributions.map((contribution) => contribution.group));
 
-    for (const contribution of result.contributions) {
+    result.contributions.forEach((contribution, ringIndex) => {
       const group = contribution.group;
-      const radius = RING_RADIUS[group];
+      const radius = radii.get(group) ?? FIRST_RING;
       const isTarget = group === result.target;
       const ring = new Circle(radius, {
         stroke: isTarget ? PeriodicTrendsColors.targetElectronColorProperty : PeriodicTrendsColors.shellColorProperty,
         lineWidth: isTarget ? 2 : 1.5,
-        lineDash: group === "3d" ? [6, 4] : [],
+        lineDash: isInnerSubshellGroup(group) ? [6, 4] : [],
         cursor: "pointer",
       });
       // A ring is a thin target; widen its hit area to a band around it.
@@ -80,6 +107,8 @@ export class ShellAtomNode extends Node {
       nodes.push(ring);
 
       const count = counts[group];
+      // A crowded ring (4f¹⁴ on a small radius) draws smaller electrons.
+      const electronRadius = Math.min(ELECTRON_RADIUS, (Math.PI * radius) / count - MIN_ELECTRON_SPACING / 2);
       for (let k = 0; k < count; k++) {
         const angle = -Math.PI / 2 + (2 * Math.PI * k) / count;
         const center = { x: radius * Math.cos(angle), y: radius * Math.sin(angle) };
@@ -101,7 +130,7 @@ export class ShellAtomNode extends Node {
           );
         } else {
           nodes.push(
-            new Circle(ELECTRON_RADIUS, {
+            new Circle(Math.max(electronRadius, 1.5), {
               x: center.x,
               y: center.y,
               fill: colorForKind(contribution.kind),
@@ -116,14 +145,15 @@ export class ShellAtomNode extends Node {
         fill: PeriodicTrendsColors.mutedTextColorProperty,
         pickable: false,
       });
-      label.center = label.center.setXY(radius * Math.cos(LABEL_ANGLE), radius * Math.sin(LABEL_ANGLE));
+      const labelAngle = LABEL_ANGLES[ringIndex % LABEL_ANGLES.length] ?? 0;
+      label.center = label.center.setXY(radius * Math.cos(labelAngle), radius * Math.sin(labelAngle));
       const labelBackground = Rectangle.bounds(label.bounds.dilated(2), {
         fill: PeriodicTrendsColors.backgroundColorProperty,
         cornerRadius: 3,
         pickable: false,
       });
       nodes.push(labelBackground, label);
-    }
+    });
 
     const nucleus = new Circle(NUCLEUS_RADIUS, { fill: PeriodicTrendsColors.nucleusColorProperty });
     const charge = new Text(`+${element.z}`, {

@@ -10,7 +10,7 @@ import { localeProperty } from "scenerystack/joist";
 import { StringUtils } from "scenerystack/phetcommon";
 import { HBox, RichText, Text, VBox } from "scenerystack/scenery";
 import { PhetFont } from "scenerystack/scenery-phet";
-import { configurationText, getElement } from "../../common/model/ElementData.js";
+import { getElement, shortConfigurationText } from "../../common/model/ElementData.js";
 import { valenceZEff } from "../../common/model/PeriodicProperty.js";
 import { elementName, formatCharge, propertyName, readout } from "../../common/view/formatValues.js";
 import { StringManager } from "../../i18n/StringManager.js";
@@ -66,13 +66,15 @@ export class ElementCardNode extends HBox {
         const element = getElement(selection.anchorZ);
         symbol.string = element.symbol;
         name.string = elementName(element);
-        details.string = StringUtils.fillIn(common.elementDetailsStringProperty.value, {
+        const detailsPattern =
+          element.group === null ? common.elementDetailsLanthanideStringProperty : common.elementDetailsStringProperty;
+        details.string = StringUtils.fillIn(detailsPattern.value, {
           z: element.z,
           period: element.period,
           group: element.group,
         });
         configuration.string = StringUtils.fillIn(common.configurationStringProperty.value, {
-          configuration: configurationText(element.configuration),
+          configuration: shortConfigurationText(element),
         });
         value.string =
           property.key === "zEff" ? "" : `${propertyName(property)}: ${readout(property, element, electronVolts)}`;

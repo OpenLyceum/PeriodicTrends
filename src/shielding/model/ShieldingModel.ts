@@ -38,7 +38,7 @@ export class ShieldingModel implements TModel {
     );
   }
 
-  /** Steps the shared element by `delta` in Z, staying within 1–36. */
+  /** Steps the shared element by `delta` in Z, staying on the table. */
   public stepElement(delta: number): void {
     const zProperty = this.selectedElement.zProperty;
     const range = zProperty.range;

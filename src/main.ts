@@ -36,7 +36,7 @@ onReadyToLaunch(() => {
   const simPreferences = new PeriodicTrendsPreferencesModel(Tandem.ROOT.createTandem("preferences"));
 
   // One element shared by both screens: what Trends selects, Shielding explains.
-  const selectedElement = new SelectedElementModel();
+  const selectedElement = new SelectedElementModel(simPreferences.tableExtentProperty);
 
   const shieldingScreen = new ShieldingScreen({
     selectedElement,

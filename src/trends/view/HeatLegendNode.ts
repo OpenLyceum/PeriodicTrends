@@ -32,10 +32,11 @@ export class HeatLegendNode extends Node {
         localeProperty,
         PeriodicTrendsColors.heatLowColorProperty,
         PeriodicTrendsColors.heatHighColorProperty,
+        model.tableExtentProperty,
       ],
-      (property, electronVolts, _locale, lowColor, highColor) => {
+      (property, electronVolts, _locale, lowColor, highColor, table) => {
         bar.fill = new LinearGradient(0, 0, width, 0).addColorStop(0, lowColor).addColorStop(1, highColor);
-        const range = property.getRange();
+        const range = property.getRange(table);
         const unit = unitOf(property, electronVolts);
         const format = (v: number) => {
           const text = formatNumber(property, toDisplayUnits(property, v, electronVolts), electronVolts);

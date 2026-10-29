@@ -18,8 +18,9 @@ import { localeProperty } from "scenerystack/joist";
 import { Orientation } from "scenerystack/phet-core";
 import { Circle, Node, RichText, Text } from "scenerystack/scenery";
 import { PhetFont } from "scenerystack/scenery-phet";
-import { ELEMENTS, getElement, UNBOUND } from "../../common/model/ElementData.js";
+import { GROUP_COUNT, getElement, UNBOUND } from "../../common/model/ElementData.js";
 import { type PeriodicProperty, valenceZEff } from "../../common/model/PeriodicProperty.js";
+import type { TableExtent } from "../../common/model/TableExtent.js";
 import { anomalyPosition } from "../../common/model/TrendAnomalies.js";
 import type { TrendSelection } from "../../common/model/TrendSelection.js";
 import { displayValue, propertyName, toDisplayUnits, unitOf } from "../../common/view/formatValues.js";
@@ -32,6 +33,9 @@ import { describeSelection, selectionTitle } from "./describeSelection.js";
 
 const POINT_RADIUS = 4;
 const HIGHLIGHT_RADIUS = 8;
+
+/** More points than this along the x axis and only some are labelled. */
+const MAX_LABELLED_POINTS = 40;
 const Z_EFF_TICK = 3;
 
 /** A "nice" tick spacing (1, 2, 2.5 or 5 × 10ⁿ) giving about `count` intervals over `span`. */
@@ -51,7 +55,8 @@ function tickText(value: number, step: number): string {
 export class TrendChartNode extends Node {
   private readonly content = new Node();
   private readonly chartWidth: number;
-  private readonly chartHeight: number;
+  private chartHeight: number;
+  private readonly rebuildChart: () => void;
 
   public constructor(
     model: TrendsModel,
@@ -63,16 +68,33 @@ export class TrendChartNode extends Node {
     this.chartWidth = chartWidth;
     this.chartHeight = chartHeight;
     this.addChild(this.content);
-    Multilink.multilink(
+    this.rebuildChart = () =>
+      this.rebuild(
+        model.selectionProperty.value,
+        model.periodicPropertyProperty.value,
+        electronVoltsProperty.value,
+        model.showZEffProperty.value,
+        model.tableExtentProperty.value,
+      );
+    Multilink.multilinkAny(
       [
         model.selectionProperty,
         model.periodicPropertyProperty,
         electronVoltsProperty,
         model.showZEffProperty,
+        model.tableExtentProperty,
         localeProperty,
       ],
-      (selection, property, electronVolts, showZEff) => this.rebuild(selection, property, electronVolts, showZEff),
+      this.rebuildChart,
     );
+  }
+
+  /** Changes the plotting height (the table above grows with the extent). */
+  public setChartHeight(height: number): void {
+    if (height !== this.chartHeight) {
+      this.chartHeight = height;
+      this.rebuildChart();
+    }
   }
 
   private rebuild(
@@ -80,6 +102,7 @@ export class TrendChartNode extends Node {
     property: PeriodicProperty,
     electronVolts: boolean,
     showZEff: boolean,
+    table: TableExtent,
   ): void {
     for (const child of this.content.children) {
       child.dispose();
@@ -90,11 +113,11 @@ export class TrendChartNode extends Node {
     const width = this.chartWidth;
     const height = this.chartHeight;
     const single = selection.kind === "single";
-    const elements = single ? [...ELEMENTS] : selection.zs.map(getElement);
+    const elements = single ? [...table.elements] : selection.zs.map(getElement);
     const count = elements.length;
 
     // ── Scales ──────────────────────────────────────────────────────────────────
-    const range = property.getRange();
+    const range = property.getRange(table);
     const yMax = toDisplayUnits(property, range.max, electronVolts);
     const yStep = niceStep(yMax, 5);
     const yTop = Math.ceil((yMax * 1.08) / yStep) * yStep;
@@ -140,9 +163,14 @@ export class TrendChartNode extends Node {
       );
     }
 
-    // X labels: element symbols.
+    // X labels: element symbols. When every element of a large table is plotted, only the noble
+    // gases (the ends of the periods) and the chosen element are labelled.
+    const sparse = elements.length > MAX_LABELLED_POINTS;
     elements.forEach((element, i) => {
       const ringed = single && element.z === selection.anchorZ;
+      if (sparse && !ringed && element.group !== GROUP_COUNT) {
+        return;
+      }
       nodes.push(
         new Text(element.symbol, {
           font: single ? tickFont : labelFont,
@@ -240,7 +268,7 @@ export class TrendChartNode extends Node {
       hasUnbound ||= unbound;
       const center = chartTransform.modelToViewXY(i, value);
       nodes.push(
-        new Circle(POINT_RADIUS, {
+        new Circle(sparse ? POINT_RADIUS / 2 : POINT_RADIUS, {
           center,
           fill: unbound
             ? PeriodicTrendsColors.chartBackgroundColorProperty
