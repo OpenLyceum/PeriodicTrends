@@ -1,24 +1,38 @@
-# SceneryStack Template
+# Periodic Trends
 
 [![CI](../../actions/workflows/ci.yml/badge.svg)](../../actions/workflows/ci.yml)
 
-A reusable SceneryStack simulation template for one or N screens, built with
-[SceneryStack](https://scenerystack.org/), Vite 8, TypeScript 7, and Biome 2.
+Periodic trends for introductory (General) chemistry, hydrogen to krypton. Click an element, or
+drag across a period or down a group, and watch atomic radius, ionization energy, electron
+affinity and electronegativity change. The trend is explained through effective nuclear charge
+(Z<sub>eff</sub>, Slater's rules) and shielding, not just shown. Built with
+[SceneryStack](https://scenerystack.org/); runs offline as a Progressive Web App.
 
 ## Features
 
-- SceneryStack scaffold with model/view separation (`rename` + `scaffold-screens` for one or N screens)
-- English, Spanish, and French localization via `StringManager`
-- Default and projector color profiles
-- Progressive Web App (installable, offline-capable)
-- Git hooks for Biome pre-commit checks
-- Shared GitHub Actions CI via `OpenLyceum/Baton`
+- **Trends.** A periodic table (Z = 1–36) coloured as a heat map of the chosen property. Click
+  an element to see it against all 36 elements, or drag across a period or down a group (or click
+  a period or group number) to plot the property along that run, with the outer electron's
+  Z<sub>eff</sub> overlaid on a second axis. A "Why?" panel explains the trend: across a period n
+  stays the same while Z<sub>eff</sub> rises; down a group Z<sub>eff</sub> barely changes while
+  n grows. Numbered notes explain the exceptions (Be→B, N→O, the d-block contraction at Ga, the
+  half-filled p subshells, F vs Cl…).
+- **Shielding.** One atom drawn by Slater group, every electron tinted by how much it shields the
+  chosen one (0.35, 0.85 or 1.00). Slater's rules are worked out line by line, ending in
+  Z<sub>eff</sub> = Z − S, and two bars compare the nuclear charge with what the electron
+  actually feels. Pick any element, or any occupied group's electron, including 3d.
+- Real data: Cordero covalent radii, NIST ionization energies, CRC electron affinities (with
+  "no stable anion" where it applies) and Pauling electronegativities.
+- **Accessible:** the table is a keyboard grid (arrows, Enter, Shift+arrows to extend, P / G for
+  a whole period or group), every selection is announced, live screen summaries, keyboard-help
+  dialogs.
+- English, French and Spanish; default and projector colour profiles; installable PWA. A
+  preference (or `?electronVolts`) shows energies in eV instead of kJ/mol.
 
 ## Quick Start
 
 ```bash
 npm install
-npm run icons    # generate PNG icons from public/icons/icon.svg
 npm start        # dev server → http://localhost:5173
 ```
 
@@ -39,8 +53,6 @@ npm start        # dev server → http://localhost:5173
 | `npm run format` | Auto-format all files |
 | `npm run fix` | Lint + auto-fix |
 | `npm run icons` | Regenerate PNG icons from `public/icons/icon.svg` |
-| `npm run rename` | Sim-level fork/rename (`--id`, `--name`) |
-| `npm run scaffold-screens` | Emit N fleet-named screen packages from `sim-screen/` (`--shared-model` optional) |
 | `npm run release` | `check && lint && build && test`, then version patch + push tags |
 | `npm run clean` | Remove `dist/` |
 

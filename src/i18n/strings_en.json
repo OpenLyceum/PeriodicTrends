@@ -1,21 +1,195 @@
 {
-  "title": "SceneryStack Template",
+  "title": "Periodic Trends",
   "screens": {
-    "sim": "Sim"
+    "trends": "Trends",
+    "shielding": "Shielding"
+  },
+  "elements": {
+    "H": "Hydrogen",
+    "He": "Helium",
+    "Li": "Lithium",
+    "Be": "Beryllium",
+    "B": "Boron",
+    "C": "Carbon",
+    "N": "Nitrogen",
+    "O": "Oxygen",
+    "F": "Fluorine",
+    "Ne": "Neon",
+    "Na": "Sodium",
+    "Mg": "Magnesium",
+    "Al": "Aluminum",
+    "Si": "Silicon",
+    "P": "Phosphorus",
+    "S": "Sulfur",
+    "Cl": "Chlorine",
+    "Ar": "Argon",
+    "K": "Potassium",
+    "Ca": "Calcium",
+    "Sc": "Scandium",
+    "Ti": "Titanium",
+    "V": "Vanadium",
+    "Cr": "Chromium",
+    "Mn": "Manganese",
+    "Fe": "Iron",
+    "Co": "Cobalt",
+    "Ni": "Nickel",
+    "Cu": "Copper",
+    "Zn": "Zinc",
+    "Ga": "Gallium",
+    "Ge": "Germanium",
+    "As": "Arsenic",
+    "Se": "Selenium",
+    "Br": "Bromine",
+    "Kr": "Krypton"
+  },
+  "common": {
+    "properties": {
+      "atomicRadius": "Atomic radius",
+      "ionizationEnergy": "Ionization energy",
+      "electronAffinity": "Electron affinity",
+      "electronegativity": "Electronegativity",
+      "zEff": "Effective nuclear charge"
+    },
+    "propertyShort": {
+      "atomicRadius": "radius",
+      "ionizationEnergy": "ionization energy",
+      "electronAffinity": "electron affinity",
+      "electronegativity": "electronegativity",
+      "zEff": "Z<sub>eff</sub>"
+    },
+    "units": {
+      "pm": "pm",
+      "kjPerMol": "kJ/mol",
+      "eV": "eV"
+    },
+    "valueWithUnit": "{{value}} {{unit}}",
+    "unbound": "< 0",
+    "unboundLong": "< 0 (no stable anion)",
+    "noData": "—",
+    "zEff": "Z<sub>eff</sub>",
+    "zEffValue": "Z<sub>eff</sub> = {{value}}",
+    "elementTitle": "{{name}} ({{symbol}})",
+    "elementDetails": "Z = {{z}} · period {{period}} · group {{group}}",
+    "configuration": "Configuration: {{configuration}}"
+  },
+  "trends": {
+    "property": "Property",
+    "showZEff": "Show Z<sub>eff</sub> on graph",
+    "explainButton": "Explain with shielding",
+    "hint": "Click an element, or drag across a period or down a group.",
+    "singleHint": "Drag across a period or down a group to see a trend.",
+    "periodTitle": "Period {{period}}: {{first}} → {{last}}",
+    "groupTitle": "Group {{group}}: {{first}} → {{last}}",
+    "allElementsTitle": "All elements, H → Kr",
+    "xAxisAll": "Atomic number Z →",
+    "xAxisPeriod": "Across the period →",
+    "xAxisGroup": "Down the group →",
+    "unboundLegend": "○ no stable anion (plotted at 0)",
+    "legendTitle": "Low → high",
+    "explanationTitle": "Why?",
+    "single": "Its outermost electron has n = {{n}} and feels Z<sub>eff</sub> = {{zEff}}: the nuclear charge Z = {{z}} minus shielding S = {{s}}.",
+    "singleValue": "{{property}}: {{value}}.",
+    "period": "Across period {{period}}, n stays {{n}} while Z<sub>eff</sub> rises from {{zEffFirst}} to {{zEffLast}}. Each added electron joins the same shell and shields only part of the added proton, so the outer electrons are pulled harder at about the same distance.",
+    "group": "Down group {{group}}, n grows from {{nFirst}} to {{nLast}} while Z<sub>eff</sub> changes from {{zEffFirst}} to {{zEffLast}}. Each new shell is farther from the nucleus and is screened by all the shells inside it, so distance wins.",
+    "consequence": {
+      "period": {
+        "atomicRadius": "So atoms get smaller: {{first}} → {{last}}.",
+        "ionizationEnergy": "So removing an electron gets harder: ionization energy rises, {{first}} → {{last}}.",
+        "electronAffinity": "So atoms generally release more energy when they gain an electron: {{first}} → {{last}}.",
+        "electronegativity": "So atoms pull shared electrons harder: electronegativity rises, {{first}} → {{last}}.",
+        "zEff": "Z<sub>eff</sub> rises by about 0.65 per element in the s and p blocks (+1 proton, +0.35 shielding), but by only 0.15 across the 3d series (+1 proton, +0.85 shielding)."
+      },
+      "group": {
+        "atomicRadius": "So atoms get larger: {{first}} → {{last}}.",
+        "ionizationEnergy": "So the outer electron is easier to remove: ionization energy falls, {{first}} → {{last}}.",
+        "electronAffinity": "So an added electron is held less tightly, and electron affinity generally falls: {{first}} → {{last}}.",
+        "electronegativity": "So atoms pull shared electrons less: electronegativity falls, {{first}} → {{last}}.",
+        "zEff": "Z<sub>eff</sub> changes little down a group; what changes is n, the shell the outer electron is in."
+      }
+    },
+    "anomalies": {
+      "pBelowS": "{{from}} → {{to}}: the new electron goes into a p orbital, which is higher in energy and partly shielded by the filled s pair, so it is easier to remove.",
+      "pairing": "{{from}} → {{to}}: {{to}} has the first paired p electron. Repulsion inside the shared orbital makes it easier to remove.",
+      "nobleGasRadius": "{{from}} → {{to}}: noble gases form almost no bonds, so their covalent radii are estimates and not strictly comparable.",
+      "dContraction": "{{from}} → {{to}}: ten 3d electrons sit between them and shield poorly, so {{to}}'s outer electrons feel a higher Z<sub>eff</sub> than expected (the d-block contraction).",
+      "dBlockFlat": "{{from}}–{{to}}: the added electrons go into the inner 3d and shield the 4s electrons well (0.85 each), so Z<sub>eff</sub> and the properties change only a little, and irregularly.",
+      "unboundAnion": "{{from}} → {{to}}: {{to}}'s s subshell is full. An added electron would go into a higher p orbital, so the anion is not stable.",
+      "halfFilledP": "{{from}} → {{to}}: {{to}}'s p subshell is half filled. An added electron must pair up, so less energy is released.",
+      "fluorineCrowded": "{{from}} → {{to}}: {{from}} is so small that an added electron is crowded by the others in the n = 2 shell, so {{to}} releases more energy.",
+      "newShell": "{{from}} → {{to}}: {{to}}'s outer shell is full. An added electron would start a new shell, screened by everything inside it, so the anion is not stable."
+    }
+  },
+  "shielding": {
+    "target": "Electron to look at",
+    "breakdownTitle": "Slater's rules",
+    "columnGroup": "Group",
+    "columnElectrons": "Electrons",
+    "columnEach": "× each",
+    "columnShielding": "Shielding",
+    "totalS": "Total shielding S",
+    "zEffEquation": "Z<sub>eff</sub> = Z − S = {{z}} − {{s}} = {{zEff}}",
+    "feelsTitle": "What this electron feels",
+    "nuclearCharge": "Nucleus: +{{z}}",
+    "effectiveCharge": "Felt: +{{zEff}}",
+    "shieldedPercent": "{{percent}}% of the nuclear charge is shielded.",
+    "shellLabel": "n = {{n}}",
+    "previous": "◀ Previous",
+    "next": "Next ▶",
+    "picker": "Choose an element",
+    "legend": {
+      "target": "electron we look at",
+      "sameGroup": "same group: 0.35 each (0.30 in 1s)",
+      "nMinusOne": "shell n − 1: 0.85 each",
+      "inner": "deeper: 1.00 each",
+      "outer": "farther out: no shielding"
+    },
+    "dShieldsNote": "For a 3d electron, every electron in an inner group shields 1.00."
+  },
+  "keyboardHelp": {
+    "tableSection": "Periodic table",
+    "moveFocus": "Move between elements",
+    "selectElement": "Select the element",
+    "extendSelection": "Extend across a period or down a group",
+    "selectPeriod": "Select the whole period",
+    "selectGroup": "Select the whole group",
+    "pickerSection": "Element picker",
+    "chooseElement": "Choose an element"
   },
   "a11y": {
-    "screenSummary": {
-      "playArea": "The play area shows the main simulation content.",
-      "controlArea": "The control area has a Reset All button that returns the simulation to its starting state.",
-      "interactionHint": "Explore the simulation by interacting with its controls."
+    "trends": {
+      "screenSummary": {
+        "playArea": "The play area has a periodic table from hydrogen to krypton, coloured by the chosen property, a graph of that property along the selection, and an explanation in terms of effective nuclear charge and shielding.",
+        "controlArea": "The control area chooses the property, shows or hides effective nuclear charge on the graph, opens the Shielding screen for the selected element, and resets the screen.",
+        "interactionHint": "Select an element, or a period or group, in the periodic table and read how the property changes."
+      },
+      "currentDetailsSingle": "{{name}} is selected. {{property}}: {{value}}. Effective nuclear charge {{zEff}}.",
+      "currentDetailsRun": "{{title}} is selected. {{property}} goes from {{first}} to {{last}}; effective nuclear charge from {{zEffFirst}} to {{zEffLast}}.",
+      "table": "Periodic table, hydrogen to krypton",
+      "tableHelp": "Arrow keys move between elements and Enter selects. Shift plus arrows extends the selection across a period or down a group. P selects the whole period, G the whole group.",
+      "focusedElement": "{{name}}, {{symbol}}, atomic number {{z}}, period {{period}}, group {{group}}. {{property}}: {{value}}.",
+      "propertyRadio": "Property shown",
+      "showZEff": "Show effective nuclear charge on graph",
+      "explainButton": "Explain the selected element on the Shielding screen",
+      "zEffSpoken": "effective nuclear charge"
     },
-    "currentDetails": "The simulation is in its initial state.",
-    "controls": {
-      "exampleControl": "Example control"
+    "shielding": {
+      "screenSummary": {
+        "playArea": "The play area shows an atom's electrons by shell, the shielding of one chosen electron by Slater's rules, and the effective nuclear charge it feels.",
+        "controlArea": "The control area picks the element and the electron to look at, and resets the screen.",
+        "interactionHint": "Choose an element and compare how much of the nuclear charge its outer electron feels."
+      },
+      "currentDetails": "{{name}}, {{group}} electron. {{breakdown}} Total shielding {{s}}, so effective nuclear charge {{z}} minus {{s}} equals {{zEff}}.",
+      "breakdownItem": "{{count}} {{group}} electrons shield {{weight}} each.",
+      "picker": "Element picker, hydrogen to krypton",
+      "pickerHelp": "Arrow keys choose an element.",
+      "targetRadio": "Electron to look at",
+      "previous": "Previous element",
+      "next": "Next element",
+      "elementChanged": "{{name}}. Outer electron effective nuclear charge {{zEff}}."
     }
   },
   "preferences": {
     "title": "Simulation",
-    "exampleToggle": "Example Toggle"
+    "electronVolts": "Show energies in eV instead of kJ/mol"
   }
 }

@@ -21,28 +21,50 @@ import "./brand.js";
 
 import { onReadyToLaunch, PreferencesModel, Sim } from "scenerystack/sim";
 import { Tandem } from "scenerystack/tandem";
+import { SelectedElementModel } from "./common/model/SelectedElementModel.js";
 import { StringManager } from "./i18n/StringManager.js";
-import { SimPreferencesModel } from "./preferences/SimPreferencesModel.js";
-import { SimPreferencesNode } from "./preferences/SimPreferencesNode.js";
-import SimColors from "./SimColors.js";
-import { SimScreen } from "./sim-screen/SimScreen.js";
+import PeriodicTrendsColors from "./PeriodicTrendsColors.js";
+import { PeriodicTrendsPreferencesModel } from "./preferences/PeriodicTrendsPreferencesModel.js";
+import { PeriodicTrendsPreferencesNode } from "./preferences/PeriodicTrendsPreferencesNode.js";
+import { ShieldingScreen } from "./shielding/ShieldingScreen.js";
+import { TrendsScreen } from "./trends/TrendsScreen.js";
 
 onReadyToLaunch(() => {
   const stringManager = StringManager.getInstance();
 
-  // Simulation-specific preferences; initial values come from simQueryParameters.
-  const simPreferences = new SimPreferencesModel(Tandem.ROOT.createTandem("preferences"));
+  // Simulation-specific preferences; initial values come from periodicTrendsQueryParameters.
+  const simPreferences = new PeriodicTrendsPreferencesModel(Tandem.ROOT.createTandem("preferences"));
+
+  // One element shared by both screens: what Trends selects, Shielding explains.
+  const selectedElement = new SelectedElementModel();
+
+  const shieldingScreen = new ShieldingScreen({
+    selectedElement,
+    name: stringManager.getScreenNames().shieldingStringProperty,
+    tandem: Tandem.ROOT.createTandem("shieldingScreen"),
+    backgroundColorProperty: PeriodicTrendsColors.backgroundColorProperty,
+  });
+
+  // Assigned below; the Trends "Explain with shielding" button needs the Sim to switch screens.
+  let sim: Sim | null = null;
 
   const screens = [
-    new SimScreen({
-      // The screen name Property updates automatically when the locale changes
-      name: stringManager.getScreenNames().simStringProperty,
-      tandem: Tandem.ROOT.createTandem("simScreen"),
-      backgroundColorProperty: SimColors.backgroundColorProperty,
+    new TrendsScreen({
+      selectedElement,
+      electronVoltsProperty: simPreferences.electronVoltsProperty,
+      showShielding: () => {
+        if (sim) {
+          sim.selectedScreenProperty.value = shieldingScreen;
+        }
+      },
+      name: stringManager.getScreenNames().trendsStringProperty,
+      tandem: Tandem.ROOT.createTandem("trendsScreen"),
+      backgroundColorProperty: PeriodicTrendsColors.backgroundColorProperty,
     }),
+    shieldingScreen,
   ];
 
-  const sim = new Sim(stringManager.getTitleStringProperty(), screens, {
+  sim = new Sim(stringManager.getTitleStringProperty(), screens, {
     preferencesModel: new PreferencesModel({
       visualOptions: {
         // Adds a "Projector Mode" toggle in Preferences → Visual
@@ -53,7 +75,7 @@ onReadyToLaunch(() => {
       simulationOptions: {
         customPreferences: [
           {
-            createContent: (tandem: Tandem) => new SimPreferencesNode(simPreferences, tandem),
+            createContent: (tandem: Tandem) => new PeriodicTrendsPreferencesNode(simPreferences, tandem),
           },
         ],
       },
@@ -63,10 +85,9 @@ onReadyToLaunch(() => {
       },
     }),
 
-    // Optional: fill in credits shown in Help → About
     credits: {
-      leadDesign: "",
-      softwareDevelopment: "",
+      leadDesign: "Martin Veillette",
+      softwareDevelopment: "Martin Veillette",
       team: "",
       qualityAssurance: "",
     },

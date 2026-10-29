@@ -1,21 +1,195 @@
 {
-  "title": "Modèle de Simulation",
+  "title": "Tendances périodiques",
   "screens": {
-    "sim": "Simulation"
+    "trends": "Tendances",
+    "shielding": "Écrantage"
+  },
+  "elements": {
+    "H": "Hydrogène",
+    "He": "Hélium",
+    "Li": "Lithium",
+    "Be": "Béryllium",
+    "B": "Bore",
+    "C": "Carbone",
+    "N": "Azote",
+    "O": "Oxygène",
+    "F": "Fluor",
+    "Ne": "Néon",
+    "Na": "Sodium",
+    "Mg": "Magnésium",
+    "Al": "Aluminium",
+    "Si": "Silicium",
+    "P": "Phosphore",
+    "S": "Soufre",
+    "Cl": "Chlore",
+    "Ar": "Argon",
+    "K": "Potassium",
+    "Ca": "Calcium",
+    "Sc": "Scandium",
+    "Ti": "Titane",
+    "V": "Vanadium",
+    "Cr": "Chrome",
+    "Mn": "Manganèse",
+    "Fe": "Fer",
+    "Co": "Cobalt",
+    "Ni": "Nickel",
+    "Cu": "Cuivre",
+    "Zn": "Zinc",
+    "Ga": "Gallium",
+    "Ge": "Germanium",
+    "As": "Arsenic",
+    "Se": "Sélénium",
+    "Br": "Brome",
+    "Kr": "Krypton"
+  },
+  "common": {
+    "properties": {
+      "atomicRadius": "Rayon atomique",
+      "ionizationEnergy": "Énergie d'ionisation",
+      "electronAffinity": "Affinité électronique",
+      "electronegativity": "Électronégativité",
+      "zEff": "Charge nucléaire effective"
+    },
+    "propertyShort": {
+      "atomicRadius": "rayon",
+      "ionizationEnergy": "énergie d'ionisation",
+      "electronAffinity": "affinité électronique",
+      "electronegativity": "électronégativité",
+      "zEff": "Z<sub>eff</sub>"
+    },
+    "units": {
+      "pm": "pm",
+      "kjPerMol": "kJ/mol",
+      "eV": "eV"
+    },
+    "valueWithUnit": "{{value}} {{unit}}",
+    "unbound": "< 0",
+    "unboundLong": "< 0 (pas d'anion stable)",
+    "noData": "—",
+    "zEff": "Z<sub>eff</sub>",
+    "zEffValue": "Z<sub>eff</sub> = {{value}}",
+    "elementTitle": "{{name}} ({{symbol}})",
+    "elementDetails": "Z = {{z}} · période {{period}} · groupe {{group}}",
+    "configuration": "Configuration : {{configuration}}"
+  },
+  "trends": {
+    "property": "Propriété",
+    "showZEff": "Afficher Z<sub>eff</sub> sur le graphique",
+    "explainButton": "Expliquer par l'écrantage",
+    "hint": "Cliquez sur un élément, ou glissez le long d'une période ou d'un groupe.",
+    "singleHint": "Glissez le long d'une période ou d'un groupe pour voir une tendance.",
+    "periodTitle": "Période {{period}} : {{first}} → {{last}}",
+    "groupTitle": "Groupe {{group}} : {{first}} → {{last}}",
+    "allElementsTitle": "Tous les éléments, H → Kr",
+    "xAxisAll": "Numéro atomique Z →",
+    "xAxisPeriod": "Le long de la période →",
+    "xAxisGroup": "Vers le bas du groupe →",
+    "unboundLegend": "○ pas d'anion stable (placé à 0)",
+    "legendTitle": "Faible → élevé",
+    "explanationTitle": "Pourquoi ?",
+    "single": "Son électron le plus externe a n = {{n}} et ressent Z<sub>eff</sub> = {{zEff}} : la charge du noyau Z = {{z}} moins l'écrantage S = {{s}}.",
+    "singleValue": "{{property}} : {{value}}.",
+    "period": "Le long de la période {{period}}, n reste {{n}} tandis que Z<sub>eff</sub> passe de {{zEffFirst}} à {{zEffLast}}. Chaque électron ajouté rejoint la même couche et n'écrante qu'une partie du proton ajouté : les électrons externes sont attirés plus fort, à peu près à la même distance.",
+    "group": "En descendant le groupe {{group}}, n passe de {{nFirst}} à {{nLast}} tandis que Z<sub>eff</sub> varie de {{zEffFirst}} à {{zEffLast}}. Chaque nouvelle couche est plus loin du noyau et écrantée par toutes les couches internes : la distance l'emporte.",
+    "consequence": {
+      "period": {
+        "atomicRadius": "Les atomes rapetissent donc : {{first}} → {{last}}.",
+        "ionizationEnergy": "Arracher un électron devient donc plus difficile : l'énergie d'ionisation augmente, {{first}} → {{last}}.",
+        "electronAffinity": "Les atomes libèrent donc en général plus d'énergie en gagnant un électron : {{first}} → {{last}}.",
+        "electronegativity": "Les atomes attirent donc plus fort les électrons partagés : l'électronégativité augmente, {{first}} → {{last}}.",
+        "zEff": "Z<sub>eff</sub> augmente d'environ 0,65 par élément dans les blocs s et p (+1 proton, +0,35 d'écrantage), mais de seulement 0,15 dans la série 3d (+1 proton, +0,85 d'écrantage)."
+      },
+      "group": {
+        "atomicRadius": "Les atomes grossissent donc : {{first}} → {{last}}.",
+        "ionizationEnergy": "L'électron externe est donc plus facile à arracher : l'énergie d'ionisation diminue, {{first}} → {{last}}.",
+        "electronAffinity": "Un électron ajouté est donc moins retenu, et l'affinité électronique diminue en général : {{first}} → {{last}}.",
+        "electronegativity": "Les atomes attirent donc moins les électrons partagés : l'électronégativité diminue, {{first}} → {{last}}.",
+        "zEff": "Z<sub>eff</sub> varie peu dans un groupe ; ce qui change, c'est n, la couche de l'électron externe."
+      }
+    },
+    "anomalies": {
+      "pBelowS": "{{from}} → {{to}} : le nouvel électron occupe une orbitale p, plus haute en énergie et en partie écrantée par la paire s remplie ; il est donc plus facile à arracher.",
+      "pairing": "{{from}} → {{to}} : {{to}} a le premier électron p apparié. La répulsion dans l'orbitale partagée le rend plus facile à arracher.",
+      "nobleGasRadius": "{{from}} → {{to}} : les gaz nobles ne forment presque pas de liaisons ; leurs rayons covalents sont des estimations, pas tout à fait comparables.",
+      "dContraction": "{{from}} → {{to}} : dix électrons 3d s'intercalent et écrantent mal, si bien que les électrons externes de {{to}} ressentent un Z<sub>eff</sub> plus grand que prévu (contraction du bloc d).",
+      "dBlockFlat": "{{from}}–{{to}} : les électrons ajoutés vont dans la couche interne 3d et écrantent bien les électrons 4s (0,85 chacun) ; Z<sub>eff</sub> et les propriétés varient donc peu, et de façon irrégulière.",
+      "unboundAnion": "{{from}} → {{to}} : la sous-couche s de {{to}} est pleine. Un électron ajouté irait dans une orbitale p plus haute ; l'anion n'est donc pas stable.",
+      "halfFilledP": "{{from}} → {{to}} : la sous-couche p de {{to}} est à moitié remplie. Un électron ajouté doit s'apparier ; moins d'énergie est donc libérée.",
+      "fluorineCrowded": "{{from}} → {{to}} : {{from}} est si petit qu'un électron ajouté est gêné par les autres de la couche n = 2 ; {{to}} libère donc plus d'énergie.",
+      "newShell": "{{from}} → {{to}} : la couche externe de {{to}} est pleine. Un électron ajouté commencerait une nouvelle couche, écrantée par tout ce qui est à l'intérieur ; l'anion n'est donc pas stable."
+    }
+  },
+  "shielding": {
+    "target": "Électron étudié",
+    "breakdownTitle": "Règles de Slater",
+    "columnGroup": "Groupe",
+    "columnElectrons": "Électrons",
+    "columnEach": "× chacun",
+    "columnShielding": "Écrantage",
+    "totalS": "Écrantage total S",
+    "zEffEquation": "Z<sub>eff</sub> = Z − S = {{z}} − {{s}} = {{zEff}}",
+    "feelsTitle": "Ce que ressent cet électron",
+    "nuclearCharge": "Noyau : +{{z}}",
+    "effectiveCharge": "Ressenti : +{{zEff}}",
+    "shieldedPercent": "{{percent}} % de la charge du noyau est écrantée.",
+    "shellLabel": "n = {{n}}",
+    "previous": "◀ Précédent",
+    "next": "Suivant ▶",
+    "picker": "Choisir un élément",
+    "legend": {
+      "target": "électron étudié",
+      "sameGroup": "même groupe : 0,35 chacun (0,30 en 1s)",
+      "nMinusOne": "couche n − 1 : 0,85 chacun",
+      "inner": "plus profond : 1,00 chacun",
+      "outer": "plus externe : n'écrante pas"
+    },
+    "dShieldsNote": "Pour un électron 3d, chaque électron d'un groupe interne écrante 1,00."
+  },
+  "keyboardHelp": {
+    "tableSection": "Tableau périodique",
+    "moveFocus": "Passer d'un élément à l'autre",
+    "selectElement": "Sélectionner l'élément",
+    "extendSelection": "Étendre le long d'une période ou d'un groupe",
+    "selectPeriod": "Sélectionner toute la période",
+    "selectGroup": "Sélectionner tout le groupe",
+    "pickerSection": "Sélecteur d'élément",
+    "chooseElement": "Choisir un élément"
   },
   "a11y": {
-    "screenSummary": {
-      "playArea": "La zone de jeu affiche le contenu principal de la simulation.",
-      "controlArea": "La zone de contrôle comporte un bouton Tout réinitialiser qui ramène la simulation à son état initial.",
-      "interactionHint": "Explorez la simulation en interagissant avec ses commandes."
+    "trends": {
+      "screenSummary": {
+        "playArea": "La zone de jeu contient un tableau périodique de l'hydrogène au krypton, coloré selon la propriété choisie, un graphique de cette propriété le long de la sélection et une explication en termes de charge nucléaire effective et d'écrantage.",
+        "controlArea": "La zone de contrôle choisit la propriété, affiche ou masque la charge nucléaire effective sur le graphique, ouvre l'écran Écrantage pour l'élément sélectionné et réinitialise l'écran.",
+        "interactionHint": "Sélectionnez un élément, une période ou un groupe dans le tableau et lisez comment la propriété varie."
+      },
+      "currentDetailsSingle": "{{name}} est sélectionné. {{property}} : {{value}}. Charge nucléaire effective {{zEff}}.",
+      "currentDetailsRun": "{{title}} est sélectionné. {{property}} passe de {{first}} à {{last}} ; la charge nucléaire effective de {{zEffFirst}} à {{zEffLast}}.",
+      "table": "Tableau périodique, de l'hydrogène au krypton",
+      "tableHelp": "Les flèches passent d'un élément à l'autre et Entrée sélectionne. Maj et flèches étendent la sélection le long d'une période ou d'un groupe. P sélectionne toute la période, G tout le groupe.",
+      "focusedElement": "{{name}}, {{symbol}}, numéro atomique {{z}}, période {{period}}, groupe {{group}}. {{property}} : {{value}}.",
+      "propertyRadio": "Propriété affichée",
+      "showZEff": "Afficher la charge nucléaire effective sur le graphique",
+      "explainButton": "Expliquer l'élément sélectionné dans l'écran Écrantage",
+      "zEffSpoken": "charge nucléaire effective"
     },
-    "currentDetails": "La simulation est dans son état initial.",
-    "controls": {
-      "exampleControl": "Contrôle d'exemple"
+    "shielding": {
+      "screenSummary": {
+        "playArea": "La zone de jeu montre les électrons d'un atome par couche, l'écrantage d'un électron choisi selon les règles de Slater et la charge nucléaire effective qu'il ressent.",
+        "controlArea": "La zone de contrôle choisit l'élément et l'électron étudié, et réinitialise l'écran.",
+        "interactionHint": "Choisissez un élément et comparez la part de la charge du noyau que ressent son électron externe."
+      },
+      "currentDetails": "{{name}}, électron {{group}}. {{breakdown}} Écrantage total {{s}} ; la charge nucléaire effective vaut donc {{z}} moins {{s}}, soit {{zEff}}.",
+      "breakdownItem": "{{count}} électrons {{group}} écrantent {{weight}} chacun.",
+      "picker": "Sélecteur d'élément, de l'hydrogène au krypton",
+      "pickerHelp": "Les flèches choisissent un élément.",
+      "targetRadio": "Électron étudié",
+      "previous": "Élément précédent",
+      "next": "Élément suivant",
+      "elementChanged": "{{name}}. Charge nucléaire effective de l'électron externe {{zEff}}."
     }
   },
   "preferences": {
     "title": "Simulation",
-    "exampleToggle": "Exemple de bascule"
+    "electronVolts": "Afficher les énergies en eV plutôt qu'en kJ/mol"
   }
 }

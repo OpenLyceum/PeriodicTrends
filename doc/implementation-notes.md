@@ -1,135 +1,50 @@
-# Implementation Notes - SceneryStack Template
+# Implementation notes
 
-Developer-facing notes on the **SceneryStackTemplate** scaffold. **Replace and expand this file when
-forking** to describe your sim's real architecture (see Stern Gerlach or Light Propagation for
-target quality). Until then, this documents what the template provides out of the box.
+## Layout
 
-## Architecture Overview
+- **Trends** (1024 × 618 layout bounds): the table across the top left, 36 × 40 px cells with a
+  16 px header row / column of group and period numbers. The empty slots of periods 1–3, groups
+  3–12 hold the anchor element's card and the colour key (`PeriodicTableNode.spanBounds`). The
+  graph sits below (560 × 300 px), the property panel and "Why?" panel in a 290 px right column.
+- **Shielding**: element picker (22 px cells) top left, the atom (scaled 1.2) below it, Slater's
+  rules and the effective-charge bars in a 280 px middle column, the electron choice and colour
+  key in a 200 px right column.
 
-SceneryStackTemplate is the fleet-canonical starting point for new SceneryStack sims (one or N screens).
-It demonstrates Model–View separation, color profiles, localization, reset behavior, accessibility
-reference wiring, and reusable common components — **without** domain physics.
+## Shared state
 
-```
-main.ts
-  └─ SimScreen             (Screen<SimModel, SimScreenView>)
-       ├─ SimModel          state + logic  (src/sim-screen/model/)  ← stub: add physics here
-       └─ SimScreenView     visuals        (src/sim-screen/view/)
-            ├─ SimScreenSummaryContent     (PDOM overview — reference a11y pattern)
-            └─ SimKeyboardHelpContent      (keyboard help dialog)
+`SelectedElementModel` is constructed once in `main.ts` and passed to both screen models.
+`TrendsModel.select()` writes the selection's anchor into it; the Shielding screen derives its
+element from it and resets the chosen electron to the outermost one on every change. The
+"Explain with shielding" button switches screens through a callback that `main.ts` closes over
+`sim.selectedScreenProperty`.
 
-src/common/
-  ├─ SimPanel.ts           pre-themed panel (uses SimColors)
-  ├─ SimButtonOptions.ts   flat button / combo-box option bundles
-  └─ TimeModel.ts          composable play/pause + elapsed time
+## Selections
 
-src/preferences/
-  ├─ SimPreferencesModel   sim-specific pref state
-  ├─ SimPreferencesNode    pref UI in Preferences → Simulation
-  └─ simQueryParameters    QueryStringMachine declarations
-```
+`TrendSelection` is `{ kind, zs, anchorZ }`, compared by value (`selectionsEqual`) so dragging
+over the same run does not re-notify. A drag (or a Shift+arrow extension) snaps to the axis with
+more movement: more columns → period run, otherwise group run. Runs are always ordered by
+increasing Z, so the explanation can say "across" and "down" without tracking direction. A run
+that contains one element becomes a single selection (e.g. group 5 is just V).
 
-Data flows Model → View through AXON `Property` objects (`.link()` / `.lazyLink()`). The view never
-integrates physics; the model never imports scenery.
+A single selection plots all 36 elements against Z (the classic sawtooth) with the element ringed,
+rather than a lone point.
 
-## Forking checklist
+## Rebuild-and-dispose views
 
-### Automated rename + scaffold (recommended)
+The graph, the explanation and the atom rebuild their children on every relevant change and
+dispose the old nodes first, because they hold links to `ProfileColorProperty` fills. They depend
+on `localeProperty` as well as the model so the text follows a language switch.
 
-```sh
-npm run rename -- --id my-sim --name "My Simulation"
-npm run scaffold-screens -- --screens Intro,Lab   # or omit --screens for one screen
-npm run check
-```
+## Colours
 
-Or from the workspace: `Baton/scripts/create-sim.sh --repo MySim --name "My Simulation"`.
+Cell fills blend `heatLow` and `heatHigh` (`Color.interpolateRGBA`) at runtime; the cell text
+switches between `cellTextDark` and `cellTextLight` by the fill's WCAG luminance. The table
+re-colours on profile change because the heat colours are in its Multilink. No colour literal
+lives outside `PeriodicTrendsColors.ts`.
 
-`scripts/rename-sim.ts` updates sim-level identifiers (package id, Colors, Preferences).
-`scripts/scaffold-screens.ts` emits fleet-named screen folders and wires main/strings/icons.
+## Text
 
-### Manual steps (after rename/scaffold or if skipping the scripts)
-
-1. **`doc/model.md`** — educator physics (equations, ranges, simplifications).
-2. **`doc/implementation-notes.md`** — this file, rewritten for your architecture.
-3. **Screen model(s)** — real Properties, `step(dt)`, `reset()`; compose `TimeModel` if animated.
-4. **Screen view(s)** — play area + controls; wire `ResetAllButton` to `model.reset()`.
-5. **`*Colors.ts`** — sim palette (default + projector profiles).
-6. **Locale JSON** — title, strings, `a11y` keys; register locales in `init.ts`.
-7. **`public/icons/icon.svg`** → `npm run icons`; align theme color in `index.html` / vite config.
-8. **`tests/setup.ts`** — `init({ name: … })` must match `package.json` name after rename.
-9. **`AGENTS.md`** — sim-specific file map and pitfalls for AI assistants.
-
-## Common components (keep when forking)
-
-### SimPanel
-
-Every control panel should use `SimPanel` so projector-mode switching is automatic:
-
-```typescript
-import { SimPanel } from "../../common/SimPanel.js";
-const panel = new SimPanel(content);
-const panelWide = new SimPanel(content, { xMargin: 20 });
-```
-
-### TimeModel
-
-Compose into your screen model for animation (do not subclass `TimeModel`):
-
-```typescript
-export class MyModel implements TModel {
-  public readonly timer = new TimeModel();  // pass true to auto-play on startup
-
-  public step(dt: number): void {
-    this.timer.step(dt);
-    // physics uses this.timer.timeProperty.value
-  }
-  public reset(): void { this.timer.reset(); /* restore initial state */ }
-}
-```
-
-Wire `TimeControlNode` to `model.timer.isPlayingProperty` in the view.
-
-### SimButtonOptions
-
-Spread flat button options into every push/round button and `TimeControlNode` (see `AGENTS.md`).
-Use `SIM_COMBO_BOX_OPTIONS` + `LIGHT_SURFACE_TEXT_FILL` for light control surfaces on dark panels.
-
-## Accessibility (reference implementation)
-
-The template is the **canonical OpenLyceum a11y reference**:
-
-- PDOM `accessibleName` on interactive nodes (prefer live `StringProperty`s).
-- `SimScreenSummaryContent` with a live `currentDetailsContent` `DerivedProperty` over model state.
-- Explicit `pdomOrder` + `SimKeyboardHelpContent`.
-- Strings under `a11y` in locale JSON → `StringManager.getA11yStrings()`.
-
-Full checklist: [Baton/ACCESSIBILITY.md](https://github.com/OpenLyceum/Baton/blob/main/ACCESSIBILITY.md).
-
-## Testing (fleet layout — keep when forking)
-
-| Path | Purpose |
-|---|---|
-| `vitest.config.ts` | `happy-dom`; `setupFiles: ["./tests/setup.ts"]`; `execArgv: ["--expose-gc"]` |
-| `tests/setup.ts` | Canvas/AudioContext mocks + `init()` before SceneryStack imports |
-| `tests/TimeModel.test.ts` | **Replace** with real model/physics tests mirroring `src/` |
-| `tests/memory-leak.test.ts` | WeakRef + `forceGC` dispose regression |
-| `tests/fuzz/fuzz.spec.ts` | Optional Playwright smoke via `?fuzz` |
-
-Run `npm test`. Expand `memory-leak.test.ts` when adding runtime-created nodes or Property links.
-
-## Multi-screen simulations
-
-Default is single-screen. To add screens, see **`doc/multi-screen.md`**: per-screen folders mirroring
-`src/sim-screen/`, `StringManager` screen-name getters, optional shared root model, a shared
-`src/common/{SimName}ScreenIcons.ts` module (`create{Screen}Icon()` factories wired as
-`homeScreenIcon` / `navigationBarIcon`), and register all screens in `main.ts`.
-
-## PWA
-
-After `npm run build`, the sim is installable offline via Workbox (`dist/manifest.webmanifest`).
-
-## Known template stubs (remove when forking)
-
-- `SimModel.step()` / `reset()` — empty placeholders until you add physics.
-- Placeholder play-area content in `SimScreenView` — replace with real UI.
-- `tests/TimeModel.test.ts` — sample only; add tests for your model under `tests/`.
+Visible explanations are RichText markup (`Z<sub>eff</sub>`); spoken text goes through
+`toPlainText` or uses separate a11y strings that say "effective nuclear charge". All templates
+use `StringUtils.fillIn` with `{{placeholders}}`. Element names are in the strings files keyed by
+symbol, so they translate.

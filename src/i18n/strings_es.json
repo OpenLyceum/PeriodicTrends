@@ -1,21 +1,195 @@
 {
-  "title": "Plantilla de Simulación",
+  "title": "Tendencias periódicas",
   "screens": {
-    "sim": "Simulación"
+    "trends": "Tendencias",
+    "shielding": "Apantallamiento"
+  },
+  "elements": {
+    "H": "Hidrógeno",
+    "He": "Helio",
+    "Li": "Litio",
+    "Be": "Berilio",
+    "B": "Boro",
+    "C": "Carbono",
+    "N": "Nitrógeno",
+    "O": "Oxígeno",
+    "F": "Flúor",
+    "Ne": "Neón",
+    "Na": "Sodio",
+    "Mg": "Magnesio",
+    "Al": "Aluminio",
+    "Si": "Silicio",
+    "P": "Fósforo",
+    "S": "Azufre",
+    "Cl": "Cloro",
+    "Ar": "Argón",
+    "K": "Potasio",
+    "Ca": "Calcio",
+    "Sc": "Escandio",
+    "Ti": "Titanio",
+    "V": "Vanadio",
+    "Cr": "Cromo",
+    "Mn": "Manganeso",
+    "Fe": "Hierro",
+    "Co": "Cobalto",
+    "Ni": "Níquel",
+    "Cu": "Cobre",
+    "Zn": "Zinc",
+    "Ga": "Galio",
+    "Ge": "Germanio",
+    "As": "Arsénico",
+    "Se": "Selenio",
+    "Br": "Bromo",
+    "Kr": "Kriptón"
+  },
+  "common": {
+    "properties": {
+      "atomicRadius": "Radio atómico",
+      "ionizationEnergy": "Energía de ionización",
+      "electronAffinity": "Afinidad electrónica",
+      "electronegativity": "Electronegatividad",
+      "zEff": "Carga nuclear efectiva"
+    },
+    "propertyShort": {
+      "atomicRadius": "radio",
+      "ionizationEnergy": "energía de ionización",
+      "electronAffinity": "afinidad electrónica",
+      "electronegativity": "electronegatividad",
+      "zEff": "Z<sub>eff</sub>"
+    },
+    "units": {
+      "pm": "pm",
+      "kjPerMol": "kJ/mol",
+      "eV": "eV"
+    },
+    "valueWithUnit": "{{value}} {{unit}}",
+    "unbound": "< 0",
+    "unboundLong": "< 0 (sin anión estable)",
+    "noData": "—",
+    "zEff": "Z<sub>eff</sub>",
+    "zEffValue": "Z<sub>eff</sub> = {{value}}",
+    "elementTitle": "{{name}} ({{symbol}})",
+    "elementDetails": "Z = {{z}} · periodo {{period}} · grupo {{group}}",
+    "configuration": "Configuración: {{configuration}}"
+  },
+  "trends": {
+    "property": "Propiedad",
+    "showZEff": "Mostrar Z<sub>eff</sub> en la gráfica",
+    "explainButton": "Explicar con apantallamiento",
+    "hint": "Haz clic en un elemento, o arrastra a lo largo de un periodo o de un grupo.",
+    "singleHint": "Arrastra a lo largo de un periodo o de un grupo para ver una tendencia.",
+    "periodTitle": "Periodo {{period}}: {{first}} → {{last}}",
+    "groupTitle": "Grupo {{group}}: {{first}} → {{last}}",
+    "allElementsTitle": "Todos los elementos, H → Kr",
+    "xAxisAll": "Número atómico Z →",
+    "xAxisPeriod": "A lo largo del periodo →",
+    "xAxisGroup": "Bajando por el grupo →",
+    "unboundLegend": "○ sin anión estable (en 0)",
+    "legendTitle": "Bajo → alto",
+    "explanationTitle": "¿Por qué?",
+    "single": "Su electrón más externo tiene n = {{n}} y siente Z<sub>eff</sub> = {{zEff}}: la carga del núcleo Z = {{z}} menos el apantallamiento S = {{s}}.",
+    "singleValue": "{{property}}: {{value}}.",
+    "period": "A lo largo del periodo {{period}}, n sigue siendo {{n}} mientras Z<sub>eff</sub> sube de {{zEffFirst}} a {{zEffLast}}. Cada electrón añadido entra en la misma capa y apantalla solo una parte del protón añadido, así que los electrones externos son atraídos con más fuerza a casi la misma distancia.",
+    "group": "Bajando por el grupo {{group}}, n crece de {{nFirst}} a {{nLast}} mientras Z<sub>eff</sub> cambia de {{zEffFirst}} a {{zEffLast}}. Cada capa nueva está más lejos del núcleo y queda apantallada por todas las capas internas, así que gana la distancia.",
+    "consequence": {
+      "period": {
+        "atomicRadius": "Por eso los átomos se hacen más pequeños: {{first}} → {{last}}.",
+        "ionizationEnergy": "Por eso cuesta más arrancar un electrón: la energía de ionización sube, {{first}} → {{last}}.",
+        "electronAffinity": "Por eso los átomos suelen liberar más energía al ganar un electrón: {{first}} → {{last}}.",
+        "electronegativity": "Por eso los átomos atraen con más fuerza los electrones compartidos: la electronegatividad sube, {{first}} → {{last}}.",
+        "zEff": "Z<sub>eff</sub> sube unos 0,65 por elemento en los bloques s y p (+1 protón, +0,35 de apantallamiento), pero solo 0,15 en la serie 3d (+1 protón, +0,85 de apantallamiento)."
+      },
+      "group": {
+        "atomicRadius": "Por eso los átomos se hacen más grandes: {{first}} → {{last}}.",
+        "ionizationEnergy": "Por eso el electrón externo es más fácil de arrancar: la energía de ionización baja, {{first}} → {{last}}.",
+        "electronAffinity": "Por eso un electrón añadido queda menos sujeto, y la afinidad electrónica suele bajar: {{first}} → {{last}}.",
+        "electronegativity": "Por eso los átomos atraen menos los electrones compartidos: la electronegatividad baja, {{first}} → {{last}}.",
+        "zEff": "Z<sub>eff</sub> cambia poco dentro de un grupo; lo que cambia es n, la capa del electrón externo."
+      }
+    },
+    "anomalies": {
+      "pBelowS": "{{from}} → {{to}}: el nuevo electrón entra en un orbital p, de mayor energía y en parte apantallado por el par s lleno, así que es más fácil de arrancar.",
+      "pairing": "{{from}} → {{to}}: {{to}} tiene el primer electrón p apareado. La repulsión dentro del orbital compartido lo hace más fácil de arrancar.",
+      "nobleGasRadius": "{{from}} → {{to}}: los gases nobles casi no forman enlaces, así que sus radios covalentes son estimaciones y no del todo comparables.",
+      "dContraction": "{{from}} → {{to}}: entre ellos hay diez electrones 3d que apantallan mal, así que los electrones externos de {{to}} sienten una Z<sub>eff</sub> mayor de lo esperado (la contracción del bloque d).",
+      "dBlockFlat": "{{from}}–{{to}}: los electrones añadidos entran en la capa interna 3d y apantallan bien a los electrones 4s (0,85 cada uno), así que Z<sub>eff</sub> y las propiedades cambian poco y de forma irregular.",
+      "unboundAnion": "{{from}} → {{to}}: la subcapa s de {{to}} está llena. Un electrón añadido iría a un orbital p más alto, así que el anión no es estable.",
+      "halfFilledP": "{{from}} → {{to}}: la subcapa p de {{to}} está semillena. Un electrón añadido debe aparearse, así que se libera menos energía.",
+      "fluorineCrowded": "{{from}} → {{to}}: {{from}} es tan pequeño que un electrón añadido queda apretado entre los demás de la capa n = 2, así que {{to}} libera más energía.",
+      "newShell": "{{from}} → {{to}}: la capa externa de {{to}} está llena. Un electrón añadido empezaría una capa nueva, apantallada por todo lo que hay dentro, así que el anión no es estable."
+    }
+  },
+  "shielding": {
+    "target": "Electrón estudiado",
+    "breakdownTitle": "Reglas de Slater",
+    "columnGroup": "Grupo",
+    "columnElectrons": "Electrones",
+    "columnEach": "× cada uno",
+    "columnShielding": "Apantallamiento",
+    "totalS": "Apantallamiento total S",
+    "zEffEquation": "Z<sub>eff</sub> = Z − S = {{z}} − {{s}} = {{zEff}}",
+    "feelsTitle": "Lo que siente este electrón",
+    "nuclearCharge": "Núcleo: +{{z}}",
+    "effectiveCharge": "Sentida: +{{zEff}}",
+    "shieldedPercent": "El {{percent}} % de la carga del núcleo está apantallada.",
+    "shellLabel": "n = {{n}}",
+    "previous": "◀ Anterior",
+    "next": "Siguiente ▶",
+    "picker": "Elige un elemento",
+    "legend": {
+      "target": "electrón estudiado",
+      "sameGroup": "mismo grupo: 0,35 cada uno (0,30 en 1s)",
+      "nMinusOne": "capa n − 1: 0,85 cada uno",
+      "inner": "más internos: 1,00 cada uno",
+      "outer": "más externos: no apantallan"
+    },
+    "dShieldsNote": "Para un electrón 3d, cada electrón de un grupo interno apantalla 1,00."
+  },
+  "keyboardHelp": {
+    "tableSection": "Tabla periódica",
+    "moveFocus": "Moverse entre elementos",
+    "selectElement": "Seleccionar el elemento",
+    "extendSelection": "Extender a lo largo de un periodo o de un grupo",
+    "selectPeriod": "Seleccionar todo el periodo",
+    "selectGroup": "Seleccionar todo el grupo",
+    "pickerSection": "Selector de elemento",
+    "chooseElement": "Elegir un elemento"
   },
   "a11y": {
-    "screenSummary": {
-      "playArea": "El área de juego muestra el contenido principal de la simulación.",
-      "controlArea": "El área de control tiene un botón Restablecer todo que devuelve la simulación a su estado inicial.",
-      "interactionHint": "Explora la simulación interactuando con sus controles."
+    "trends": {
+      "screenSummary": {
+        "playArea": "El área de juego tiene una tabla periódica del hidrógeno al kriptón, coloreada según la propiedad elegida, una gráfica de esa propiedad a lo largo de la selección y una explicación en términos de carga nuclear efectiva y apantallamiento.",
+        "controlArea": "El área de control elige la propiedad, muestra u oculta la carga nuclear efectiva en la gráfica, abre la pantalla Apantallamiento para el elemento seleccionado y reinicia la pantalla.",
+        "interactionHint": "Selecciona un elemento, un periodo o un grupo en la tabla y lee cómo cambia la propiedad."
+      },
+      "currentDetailsSingle": "{{name}} está seleccionado. {{property}}: {{value}}. Carga nuclear efectiva {{zEff}}.",
+      "currentDetailsRun": "{{title}} está seleccionado. {{property}} va de {{first}} a {{last}}; la carga nuclear efectiva de {{zEffFirst}} a {{zEffLast}}.",
+      "table": "Tabla periódica, del hidrógeno al kriptón",
+      "tableHelp": "Las flechas se mueven entre elementos y Intro selecciona. Mayús y flechas extienden la selección a lo largo de un periodo o de un grupo. P selecciona todo el periodo, G todo el grupo.",
+      "focusedElement": "{{name}}, {{symbol}}, número atómico {{z}}, periodo {{period}}, grupo {{group}}. {{property}}: {{value}}.",
+      "propertyRadio": "Propiedad mostrada",
+      "showZEff": "Mostrar la carga nuclear efectiva en la gráfica",
+      "explainButton": "Explicar el elemento seleccionado en la pantalla Apantallamiento",
+      "zEffSpoken": "carga nuclear efectiva"
     },
-    "currentDetails": "La simulación está en su estado inicial.",
-    "controls": {
-      "exampleControl": "Control de ejemplo"
+    "shielding": {
+      "screenSummary": {
+        "playArea": "El área de juego muestra los electrones de un átomo por capas, el apantallamiento de un electrón elegido según las reglas de Slater y la carga nuclear efectiva que siente.",
+        "controlArea": "El área de control elige el elemento y el electrón estudiado, y reinicia la pantalla.",
+        "interactionHint": "Elige un elemento y compara qué parte de la carga del núcleo siente su electrón externo."
+      },
+      "currentDetails": "{{name}}, electrón {{group}}. {{breakdown}} Apantallamiento total {{s}}, así que la carga nuclear efectiva es {{z}} menos {{s}}, igual a {{zEff}}.",
+      "breakdownItem": "{{count}} electrones {{group}} apantallan {{weight}} cada uno.",
+      "picker": "Selector de elemento, del hidrógeno al kriptón",
+      "pickerHelp": "Las flechas eligen un elemento.",
+      "targetRadio": "Electrón estudiado",
+      "previous": "Elemento anterior",
+      "next": "Elemento siguiente",
+      "elementChanged": "{{name}}. Carga nuclear efectiva del electrón externo {{zEff}}."
     }
   },
   "preferences": {
     "title": "Simulación",
-    "exampleToggle": "Ejemplo de alternancia"
+    "electronVolts": "Mostrar las energías en eV en lugar de kJ/mol"
   }
 }

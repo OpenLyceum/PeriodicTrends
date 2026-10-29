@@ -7,9 +7,13 @@
  * collected after dispose() and leaves no survivors across repeated cycles
  * (idempotentDispose: true also checks a second dispose()). Add sim-specific leak
  * tests below using forceGC().
+ *
+ * The graph, the explanation and the atom rebuild their children on every change and
+ * dispose the old ones; AnomalyBadge is the one node created per rebuild that is not
+ * plain Text or Circle, so it is listed here.
  */
 
-import { TimeModel } from "../src/common/TimeModel.js";
+import { AnomalyBadge } from "../src/trends/view/AnomalyBadge.js";
 import { describeDisposalLeaks } from "./helpers/memoryLeak.js";
 
-describeDisposalLeaks([{ name: "TimeModel", create: () => new TimeModel(), idempotentDispose: true }]);
+describeDisposalLeaks([{ name: "AnomalyBadge", create: () => new AnomalyBadge(1), idempotentDispose: true }]);
