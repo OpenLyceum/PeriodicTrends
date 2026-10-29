@@ -6,8 +6,9 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { ELEMENTS, elementsInGroup, getElement } from "../../src/common/model/ElementData.js";
+import { ELEMENTS, getElement } from "../../src/common/model/ElementData.js";
 import { PeriodicProperty } from "../../src/common/model/PeriodicProperty.js";
+import { TableExtent } from "../../src/common/model/TableExtent.js";
 import { anomaliesFor, anomalyPosition, TREND_ANOMALIES } from "../../src/common/model/TrendAnomalies.js";
 import { groupSelection, periodSelection, singleSelection } from "../../src/common/model/TrendSelection.js";
 
@@ -25,15 +26,16 @@ const isListed = (property: PeriodicProperty, from: number, to: number) =>
   );
 
 describe("periodic trends hold except for listed anomalies", () => {
-  const mainGroupRuns = [2, 3, 4].map((period) =>
-    ELEMENTS.filter((e) => e.period === period && e.block !== "d").map((e) => e.z),
+  const mainGroupRuns = [2, 3, 4, 5, 6].map((period) =>
+    ELEMENTS.filter((e) => e.period === period && (e.block === "s" || e.block === "p")).map((e) => e.z),
   );
 
   it("ionization energy rises across each period", () => {
     for (const run of mainGroupRuns) {
       for (let i = 0; i + 1 < run.length; i++) {
         const [a, b] = [run[i] ?? 0, run[i + 1] ?? 0];
-        const exception = isListed(PeriodicProperty.IONIZATION_ENERGY, a, b) || (a === 20 && b === 31);
+        // Group 2 → 13 jumps over the d-block, which the IE test does not judge.
+        const exception = isListed(PeriodicProperty.IONIZATION_ENERGY, a, b) || getElement(a).group === 2;
         if (!exception) {
           expect(value(PeriodicProperty.IONIZATION_ENERGY, b), `${a}→${b}`).toBeGreaterThan(
             value(PeriodicProperty.IONIZATION_ENERGY, a) ?? 0,
@@ -58,7 +60,7 @@ describe("periodic trends hold except for listed anomalies", () => {
 
   it("radius grows and ionization energy falls down the main groups", () => {
     for (const group of [1, 2, 13, 14, 15, 16, 17, 18]) {
-      const zs = elementsInGroup(group).map((e) => e.z);
+      const zs = TableExtent.RADON.elementsInGroup(group).map((e) => e.z);
       for (let i = 0; i + 1 < zs.length; i++) {
         const [a, b] = [zs[i] ?? 0, zs[i + 1] ?? 0];
         if (!isListed(PeriodicProperty.ATOMIC_RADIUS, a, b)) {
@@ -101,12 +103,14 @@ describe("every listed pair is a real exception", () => {
 
 describe("anomaliesFor", () => {
   it("finds Be→B and N→O on period 2 ionization energy", () => {
-    const keys = anomaliesFor(periodSelection(2), PeriodicProperty.IONIZATION_ENERGY).map((a) => a.key);
+    const keys = anomaliesFor(periodSelection(TableExtent.KRYPTON, 2), PeriodicProperty.IONIZATION_ENERGY).map(
+      (a) => a.key,
+    );
     expect(keys).toEqual(["pBelowS", "pairing"]);
   });
 
   it("finds the d-contraction down group 13 and places it between Al and Ga", () => {
-    const selection = groupSelection(13);
+    const selection = groupSelection(TableExtent.KRYPTON, 13);
     const [anomaly] = anomaliesFor(selection, PeriodicProperty.ELECTRONEGATIVITY);
     expect(anomaly?.key).toBe("dContraction");
     expect(anomaly && anomalyPosition(anomaly, selection.zs)).toBe(1.5);

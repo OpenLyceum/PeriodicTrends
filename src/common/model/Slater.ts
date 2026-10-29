@@ -4,13 +4,13 @@
  * Slater's rules (J. C. Slater, Phys. Rev. 36, 57 (1930)) for the shielding constant S and the
  * effective nuclear charge Z_eff = Z − S felt by one electron.
  *
- * Electrons are sorted into the groups (1s)(2s,2p)(3s,3p)(3d)(4s,4p). For an electron in an
- * (ns,np) group:
+ * Electrons are sorted into the groups (1s)(2s,2p)(3s,3p)(3d)(4s,4p)(4d)(4f)(5s,5p)(5d)(6s,6p).
+ * For an electron in an (ns,np) group:
  *   - each other electron in the same group shields 0.35 (0.30 in 1s);
  *   - each electron with principal quantum number n − 1 shields 0.85;
  *   - each electron with n − 2 or lower shields 1.00.
- * For an electron in an (nd) group, each other electron in the group shields 0.35 and every
- * electron in a group to its left shields 1.00. Electrons in groups to the right never shield.
+ * For an electron in an (nd) or (nf) group, each other electron in the group shields 0.35 and
+ * every electron in a group to its left shields 1.00. Electrons in groups to the right never shield.
  *
  * Pure functions, no Scenery imports.
  */
@@ -18,7 +18,7 @@
 import type { Subshell } from "./ElementData.js";
 
 /** Slater groups, in Slater's order (inner to outer). */
-export const SLATER_GROUPS = ["1s", "2sp", "3sp", "3d", "4sp"] as const;
+export const SLATER_GROUPS = ["1s", "2sp", "3sp", "3d", "4sp", "4d", "4f", "5sp", "5d", "6sp"] as const;
 export type SlaterGroupId = (typeof SLATER_GROUPS)[number];
 
 /** Shielding by one electron of each kind. */
@@ -29,9 +29,14 @@ export const SLATER_WEIGHTS = {
   inner: 1,
 } as const;
 
-/** Effective principal quantum number n* (Slater): 1, 2, 3, 3.7 for n = 1–4. */
+/** Effective principal quantum number n* (Slater): 1, 2, 3, 3.7, 4.0, 4.2 for n = 1–6. */
 export function nStar(n: number): number {
-  return [0, 1, 2, 3, 3.7][n] ?? n;
+  return [0, 1, 2, 3, 3.7, 4.0, 4.2][n] ?? n;
+}
+
+/** True for a (d) or (f) group, which has its own shielding rule. */
+export function isInnerSubshellGroup(group: SlaterGroupId): boolean {
+  return group.endsWith("d") || group.endsWith("f");
 }
 
 /** Principal quantum number of a Slater group. */
@@ -41,27 +46,20 @@ export function groupN(group: SlaterGroupId): number {
 
 /** Display label of a Slater group, e.g. "(3s, 3p)". */
 export function groupLabel(group: SlaterGroupId): string {
-  switch (group) {
-    case "1s":
-      return "(1s)";
-    case "3d":
-      return "(3d)";
-    default:
-      return `(${group[0]}s, ${group[0]}p)`;
-  }
+  return group.endsWith("sp") ? `(${group[0]}s, ${group[0]}p)` : `(${group})`;
 }
 
 /** The Slater group a subshell belongs to. */
 export function groupOfSubshell(subshell: Subshell): SlaterGroupId {
-  if (subshell.l === 2) {
-    return "3d";
+  if (subshell.l >= 2) {
+    return `${subshell.n}${"spdf"[subshell.l]}` as SlaterGroupId;
   }
   return subshell.n === 1 ? "1s" : (`${subshell.n}sp` as SlaterGroupId);
 }
 
 /** Electron count in each Slater group of a configuration (0 for unoccupied groups). */
 export function groupCounts(configuration: readonly Subshell[]): Record<SlaterGroupId, number> {
-  const counts: Record<SlaterGroupId, number> = { "1s": 0, "2sp": 0, "3sp": 0, "3d": 0, "4sp": 0 };
+  const counts = Object.fromEntries(SLATER_GROUPS.map((group) => [group, 0])) as Record<SlaterGroupId, number>;
   for (const subshell of configuration) {
     counts[groupOfSubshell(subshell)] += subshell.count;
   }
@@ -75,11 +73,11 @@ export function occupiedGroups(configuration: readonly Subshell[]): SlaterGroupI
 }
 
 /**
- * The group of the valence electron: the outermost occupied (ns,np) group. For the d-block this
- * is 4s, the electron removed first on ionisation, which is the textbook convention.
+ * The group of the valence electron: the outermost occupied (ns,np) group. For the d- and f-blocks
+ * this is the ns electron, removed first on ionisation, which is the textbook convention.
  */
 export function outermostGroup(configuration: readonly Subshell[]): SlaterGroupId {
-  const occupied = occupiedGroups(configuration).filter((group) => group !== "3d");
+  const occupied = occupiedGroups(configuration).filter((group) => !isInnerSubshellGroup(group));
   return occupied[occupied.length - 1] ?? "1s";
 }
 
@@ -118,7 +116,7 @@ function shieldingKind(group: SlaterGroupId, target: SlaterGroupId): ShieldingKi
   if (groupIndex > targetIndex) {
     return "outer";
   }
-  if (target === "3d") {
+  if (isInnerSubshellGroup(target)) {
     return "inner";
   }
   return groupN(group) === groupN(target) - 1 ? "nMinusOne" : "inner";

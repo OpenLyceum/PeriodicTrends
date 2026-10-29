@@ -1,7 +1,7 @@
 /**
  * Slater.test.ts
  *
- * Textbook Slater's-rules values for the outermost (and one 3d) electron.
+ * Textbook Slater's-rules values for the outermost electron, and for d and f electrons, H–Rn.
  */
 
 import { describe, expect, it } from "vitest";
@@ -24,11 +24,20 @@ describe("Slater's rules", () => {
     [26, 3.75],
     [29, 3.7],
     [30, 4.35],
+    [37, 2.2],
+    [47, 3.7],
+    [53, 7.6],
+    [79, 3.7],
   ])("Z = %i has outer Z_eff %f", (z, expected) => {
     expect(zEff(z)).toBeCloseTo(expected, 6);
   });
 
   it("gives Zn 3d Z_eff = 8.85", () => {
     expect(zEff(30, "3d")).toBeCloseTo(8.85, 6);
+  });
+
+  it("treats 4d and 4f electrons like 3d: 0.35 within the group, 1.00 for everything inside", () => {
+    expect(zEff(47, "4d")).toBeCloseTo(7.85, 6);
+    expect(zEff(64, "4f")).toBeCloseTo(15.9, 6);
   });
 });

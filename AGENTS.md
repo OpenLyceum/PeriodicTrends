@@ -4,7 +4,8 @@ Sim-specific context for AI assistants. General SceneryStack guidance: [OpenLyce
 
 ## Project
 
-Periodic trends for **introductory (General) chemistry**, hydrogen to krypton: atomic radius,
+Periodic trends for **introductory (General) chemistry**, hydrogen to krypton by default (a
+preference extends the table to xenon or radon): atomic radius,
 first ionization energy, electron affinity and electronegativity, explained through effective
 nuclear charge (Z_eff, Slater's rules) and the shell number n. It follows LightAndAtoms (light
 and electronic structure) in the Gen Chem sequence. Two screens:
@@ -19,9 +20,14 @@ design decisions: [`doc/implementation-notes.md`](doc/implementation-notes.md).
 
 ### Things to know first
 
-- **Z = 1–36 only, Slater's rules only.** Both are deliberate (the user's choice): periods 1–4
-  cover Gen Chem, and Slater's rules are the method students can reproduce by hand. Don't add
-  Clementi–Raimondi values or the f-block.
+- **Z = 1–36 by default; 1–54 or 1–86 by preference.** The default table stops at krypton
+  (periods 1–4 cover Gen Chem). A Preferences choice (or `?maxZ=54|86`) extends it through xenon
+  or through radon; through radon, La–Lu sit in a detached row and the period-6 group-3 slot is a
+  "57–71" placeholder that selects them (OpenStax layout; the lanthanides have `group: null`).
+  `common/model/TableExtent.ts` owns every lookup that depends on what is shown (cells, periods,
+  groups, colour scales); `ElementData` always holds all 86. Both are the user's choices.
+- **Slater's rules only.** They are the method students can reproduce by hand, extended to the
+  (4d)(4f)(5s,5p)(5d)(6s,6p) groups. Don't add Clementi–Raimondi values.
 - **No "Slater estimate" curve.** Slater's Z_eff gives the wrong shape for ionization energy
   even after rescaling (Li→Ne would rise ×20, not ×4), so the graph overlays Z_eff itself on a
   second axis instead of a predicted property.
@@ -29,8 +35,8 @@ design decisions: [`doc/implementation-notes.md`](doc/implementation-notes.md).
   predict the wrong direction (Be→B, N→O, Al→Ga, …). `tests/common/TrendAnomalies.test.ts` checks
   the main trends hold everywhere else and that each listed pair is a real reversal, so a typo in
   either file fails the tests.
-- **Unbound anions are not zero.** Electron affinity of He, Be, N, Ne, Mg, Ar, Mn, Zn, Kr is
-  `UNBOUND`: shown as "< 0 (no stable anion)", coloured and plotted at 0 with a hollow marker.
+- **Unbound anions are not zero.** Electron affinity of He, Be, N, Ne, Mg, Ar, Mn, Zn, Kr (and
+  Cd, Xe, Yb, Hg, Rn) is `UNBOUND`: shown as "< 0 (no stable anion)", coloured and plotted at 0 with a hollow marker.
 - **Energies are stored in eV** (NIST / CRC) and shown in kJ/mol unless the eV preference
   (`?electronVolts`) is on.
 - **One element is shared** between screens (`SelectedElementModel`, created in `main.ts`): the
@@ -42,7 +48,8 @@ design decisions: [`doc/implementation-notes.md`](doc/implementation-notes.md).
 |---|---|
 | `src/PeriodicTrendsConstants.ts` | kJ/mol per eV, defaults, layout sizes, fonts |
 | `src/PeriodicTrendsColors.ts` | All `ProfileColorProperty` instances, including the heat map and Slater-weight tints |
-| `src/common/model/ElementData.ts` | H–Kr: period, group, block, configuration (Cr/Cu exceptions), radius, IE, EA, EN |
+| `src/common/model/ElementData.ts` | H–Rn: period, group, grid row/column, block, configuration (NIST exceptions), radius, IE, EA, EN |
+| `src/common/model/TableExtent.ts` | Enumeration of the table shown (Kr / Xe / Rn) and the lookups on it |
 | `src/common/model/Slater.ts` | Slater groups, itemised shielding, Z_eff, n* |
 | `src/common/model/PeriodicProperty.ts` | Enumeration of the mapped quantities (four properties + Z_eff) |
 | `src/common/model/TrendSelection.ts` | Single / period / group selections; drag snapping; keyboard stepping |

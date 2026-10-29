@@ -68,6 +68,12 @@ export function anomalyText(anomaly: TrendAnomaly): string {
     halfFilledP: texts.halfFilledPStringProperty,
     fluorineCrowded: texts.fluorineCrowdedStringProperty,
     newShell: texts.newShellStringProperty,
+    filledS: texts.filledSStringProperty,
+    relativistic: texts.relativisticStringProperty,
+    estimatedRadius: texts.estimatedRadiusStringProperty,
+    irregularEN: texts.irregularENStringProperty,
+    lanthanideContraction: texts.lanthanideContractionStringProperty,
+    lanthanideSeries: texts.lanthanideSeriesStringProperty,
   }[anomaly.key].value;
   return StringUtils.fillIn(template, { from: getElement(anomaly.fromZ).symbol, to: getElement(anomaly.toZ).symbol });
 }

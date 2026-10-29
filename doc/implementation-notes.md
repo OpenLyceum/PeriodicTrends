@@ -6,7 +6,12 @@
   16 px header row / column of group and period numbers. The empty slots of periods 1–3, groups
   3–12 hold the anchor element's card and the colour key (`PeriodicTableNode.spanBounds`). The
   graph sits below (560 × 300 px), the property panel and "Why?" panel in a 290 px right column.
-- **Shielding**: element picker (22 px cells) top left, the atom (scaled 1.2) below it, Slater's
+  Every element's cell (all 86) is built once and hidden beyond the table extent, so changing the
+  preference rebuilds nothing. A larger table (and the card and colour key with it) is scaled to
+  at most 250 px tall, and the graph takes the height left under it (`TrendChartNode.setChartHeight`).
+- **Shielding**: element picker (22 px cells; hidden cells excluded from its bounds) top left, the
+  atom below it, scaled (up to 1.2) to fill the space the picker leaves; beyond krypton its up to
+  ten rings are spread evenly and crowded rings draw smaller electrons, Slater's
   rules and the effective-charge bars in a 280 px middle column, the electron choice and colour
   key in a 200 px right column.
 
@@ -26,8 +31,13 @@ more movement: more columns → period run, otherwise group run. Runs are always
 increasing Z, so the explanation can say "across" and "down" without tracking direction. A run
 that contains one element becomes a single selection (e.g. group 5 is just V).
 
-A single selection plots all 36 elements against Z (the classic sawtooth) with the element ringed,
-rather than a lone point.
+A single selection plots every element on the table against Z (the classic sawtooth) with the
+element ringed, rather than a lone point. With more than 40 points only the noble gases and the
+chosen element are labelled.
+
+Selections are made against the current `TableExtent` (grid cells are `{ row, column }`). When
+the table shrinks, a selection that no longer fits is replaced by period 2, and the shared element
+by the default if it is off the table.
 
 ## Rebuild-and-dispose views
 

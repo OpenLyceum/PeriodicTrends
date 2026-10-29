@@ -40,7 +40,57 @@
     "As": "Arsénico",
     "Se": "Selenio",
     "Br": "Bromo",
-    "Kr": "Kriptón"
+    "Kr": "Kriptón",
+    "Rb": "Rubidio",
+    "Sr": "Estroncio",
+    "Y": "Itrio",
+    "Zr": "Circonio",
+    "Nb": "Niobio",
+    "Mo": "Molibdeno",
+    "Tc": "Tecnecio",
+    "Ru": "Rutenio",
+    "Rh": "Rodio",
+    "Pd": "Paladio",
+    "Ag": "Plata",
+    "Cd": "Cadmio",
+    "In": "Indio",
+    "Sn": "Estaño",
+    "Sb": "Antimonio",
+    "Te": "Telurio",
+    "I": "Yodo",
+    "Xe": "Xenón",
+    "Cs": "Cesio",
+    "Ba": "Bario",
+    "La": "Lantano",
+    "Ce": "Cerio",
+    "Pr": "Praseodimio",
+    "Nd": "Neodimio",
+    "Pm": "Prometio",
+    "Sm": "Samario",
+    "Eu": "Europio",
+    "Gd": "Gadolinio",
+    "Tb": "Terbio",
+    "Dy": "Disprosio",
+    "Ho": "Holmio",
+    "Er": "Erbio",
+    "Tm": "Tulio",
+    "Yb": "Iterbio",
+    "Lu": "Lutecio",
+    "Hf": "Hafnio",
+    "Ta": "Tantalio",
+    "W": "Wolframio",
+    "Re": "Renio",
+    "Os": "Osmio",
+    "Ir": "Iridio",
+    "Pt": "Platino",
+    "Au": "Oro",
+    "Hg": "Mercurio",
+    "Tl": "Talio",
+    "Pb": "Plomo",
+    "Bi": "Bismuto",
+    "Po": "Polonio",
+    "At": "Astato",
+    "Rn": "Radón"
   },
   "common": {
     "properties": {
@@ -70,7 +120,8 @@
     "zEffValue": "Z<sub>eff</sub> = {{value}}",
     "elementTitle": "{{name}} ({{symbol}})",
     "elementDetails": "Z = {{z}} · periodo {{period}} · grupo {{group}}",
-    "configuration": "Configuración: {{configuration}}"
+    "configuration": "Configuración: {{configuration}}",
+    "elementDetailsLanthanide": "Z = {{z}} · periodo {{period}} · lantánido"
   },
   "trends": {
     "property": "Propiedad",
@@ -112,11 +163,17 @@
       "pairing": "{{from}} → {{to}}: {{to}} tiene el primer electrón p apareado. La repulsión dentro del orbital compartido lo hace más fácil de arrancar.",
       "nobleGasRadius": "{{from}} → {{to}}: los gases nobles casi no forman enlaces, así que sus radios covalentes son estimaciones y no del todo comparables.",
       "dContraction": "{{from}} → {{to}}: entre ellos hay diez electrones 3d que apantallan mal, así que los electrones externos de {{to}} sienten una Z<sub>eff</sub> mayor de lo esperado (la contracción del bloque d).",
-      "dBlockFlat": "{{from}}–{{to}}: los electrones añadidos entran en la capa interna 3d y apantallan bien a los electrones 4s (0,85 cada uno), así que Z<sub>eff</sub> y las propiedades cambian poco y de forma irregular.",
+      "dBlockFlat": "{{from}}–{{to}}: los electrones añadidos van a la subcapa d interna y apantallan bien a los electrones s externos (0,85 cada uno), así que Z<sub>eff</sub> y las propiedades cambian poco, y de forma irregular.",
       "unboundAnion": "{{from}} → {{to}}: la subcapa s de {{to}} está llena. Un electrón añadido iría a un orbital p más alto, así que el anión no es estable.",
       "halfFilledP": "{{from}} → {{to}}: la subcapa p de {{to}} está semillena. Un electrón añadido debe aparearse, así que se libera menos energía.",
       "fluorineCrowded": "{{from}} → {{to}}: {{from}} es tan pequeño que un electrón añadido queda apretado entre los demás de la capa n = 2, así que {{to}} libera más energía.",
-      "newShell": "{{from}} → {{to}}: la capa externa de {{to}} está llena. Un electrón añadido empezaría una capa nueva, apantallada por todo lo que hay dentro, así que el anión no es estable."
+      "newShell": "{{from}} → {{to}}: la capa externa de {{to}} está llena. Un electrón añadido empezaría una capa nueva, apantallada por todo lo que hay dentro, así que el anión no es estable.",
+      "filledS": "{{from}} → {{to}}: la subcapa s de {{to}} está llena. Un electrón añadido debe ir a una subcapa más alta, así que el anión apenas es estable y se libera poca energía.",
+      "relativistic": "{{from}} → {{to}}: en el periodo 6 los electrones internos se mueven tan rápido que la relatividad acerca al núcleo los electrones 6s y los dos primeros 6p. Los dos electrones 6p de {{from}} llenan ese par más bajo, así que el tercer electrón 6p de {{to}} queda más alto y es más fácil de arrancar.",
+      "estimatedRadius": "{{from}} → {{to}}: {{to}} es tan radiactivo que se han medido muy pocos de sus compuestos, así que su radio covalente es solo una estimación.",
+      "irregularEN": "{{from}} → {{to}}: las electronegatividades de Pauling de los elementos pesados del bloque p son inciertas y dependen del estado de oxidación usado (el 2,33 del plomo es el del plomo(IV)), así que esta pequeña inversión no es significativa.",
+      "lanthanideContraction": "{{from}} → {{to}}: catorce electrones 4f se interponen y apantallan mal, así que los electrones externos de {{to}} sienten una Z<sub>eff</sub> mayor de lo esperado, y el cambio habitual al bajar por el grupo se detiene o se invierte (la contracción lantánida).",
+      "lanthanideSeries": "{{from}}–{{to}}: los electrones añadidos van a la subcapa 4f profunda, que apenas afecta a los electrones 6s externos, así que las propiedades cambian poco; el radio disminuye lentamente a lo largo de la serie (la contracción lantánida)."
     }
   },
   "shielding": {
@@ -170,7 +227,8 @@
       "propertyRadio": "Propiedad mostrada",
       "showZEff": "Mostrar la carga nuclear efectiva en la gráfica",
       "explainButton": "Explicar el elemento seleccionado en la pantalla Apantallamiento",
-      "zEffSpoken": "carga nuclear efectiva"
+      "zEffSpoken": "carga nuclear efectiva",
+      "focusedLanthanide": "{{name}}, {{symbol}}, número atómico {{z}}, periodo {{period}}, lantánido. {{property}}: {{value}}."
     },
     "shielding": {
       "screenSummary": {
@@ -190,6 +248,10 @@
   },
   "preferences": {
     "title": "Simulación",
-    "electronVolts": "Mostrar las energías en eV en lugar de kJ/mol"
+    "electronVolts": "Mostrar las energías en eV en lugar de kJ/mol",
+    "tableExtent": "Tabla periódica mostrada",
+    "throughKrypton": "Hasta el kriptón (Z = 1–36)",
+    "throughXenon": "Hasta el xenón (Z = 1–54)",
+    "throughRadon": "Hasta el radón (Z = 1–86, con los lantánidos)"
   }
 }

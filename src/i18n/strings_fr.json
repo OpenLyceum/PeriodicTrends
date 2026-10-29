@@ -40,7 +40,57 @@
     "As": "Arsenic",
     "Se": "Sélénium",
     "Br": "Brome",
-    "Kr": "Krypton"
+    "Kr": "Krypton",
+    "Rb": "Rubidium",
+    "Sr": "Strontium",
+    "Y": "Yttrium",
+    "Zr": "Zirconium",
+    "Nb": "Niobium",
+    "Mo": "Molybdène",
+    "Tc": "Technétium",
+    "Ru": "Ruthénium",
+    "Rh": "Rhodium",
+    "Pd": "Palladium",
+    "Ag": "Argent",
+    "Cd": "Cadmium",
+    "In": "Indium",
+    "Sn": "Étain",
+    "Sb": "Antimoine",
+    "Te": "Tellure",
+    "I": "Iode",
+    "Xe": "Xénon",
+    "Cs": "Césium",
+    "Ba": "Baryum",
+    "La": "Lanthane",
+    "Ce": "Cérium",
+    "Pr": "Praséodyme",
+    "Nd": "Néodyme",
+    "Pm": "Prométhium",
+    "Sm": "Samarium",
+    "Eu": "Europium",
+    "Gd": "Gadolinium",
+    "Tb": "Terbium",
+    "Dy": "Dysprosium",
+    "Ho": "Holmium",
+    "Er": "Erbium",
+    "Tm": "Thulium",
+    "Yb": "Ytterbium",
+    "Lu": "Lutécium",
+    "Hf": "Hafnium",
+    "Ta": "Tantale",
+    "W": "Tungstène",
+    "Re": "Rhénium",
+    "Os": "Osmium",
+    "Ir": "Iridium",
+    "Pt": "Platine",
+    "Au": "Or",
+    "Hg": "Mercure",
+    "Tl": "Thallium",
+    "Pb": "Plomb",
+    "Bi": "Bismuth",
+    "Po": "Polonium",
+    "At": "Astate",
+    "Rn": "Radon"
   },
   "common": {
     "properties": {
@@ -70,7 +120,8 @@
     "zEffValue": "Z<sub>eff</sub> = {{value}}",
     "elementTitle": "{{name}} ({{symbol}})",
     "elementDetails": "Z = {{z}} · période {{period}} · groupe {{group}}",
-    "configuration": "Configuration : {{configuration}}"
+    "configuration": "Configuration : {{configuration}}",
+    "elementDetailsLanthanide": "Z = {{z}} · période {{period}} · lanthanide"
   },
   "trends": {
     "property": "Propriété",
@@ -112,11 +163,17 @@
       "pairing": "{{from}} → {{to}} : {{to}} a le premier électron p apparié. La répulsion dans l'orbitale partagée le rend plus facile à arracher.",
       "nobleGasRadius": "{{from}} → {{to}} : les gaz nobles ne forment presque pas de liaisons ; leurs rayons covalents sont des estimations, pas tout à fait comparables.",
       "dContraction": "{{from}} → {{to}} : dix électrons 3d s'intercalent et écrantent mal, si bien que les électrons externes de {{to}} ressentent un Z<sub>eff</sub> plus grand que prévu (contraction du bloc d).",
-      "dBlockFlat": "{{from}}–{{to}} : les électrons ajoutés vont dans la couche interne 3d et écrantent bien les électrons 4s (0,85 chacun) ; Z<sub>eff</sub> et les propriétés varient donc peu, et de façon irrégulière.",
+      "dBlockFlat": "{{from}}–{{to}} : les électrons ajoutés vont dans la sous-couche d interne et écrantent bien les électrons s externes (0,85 chacun) ; Z<sub>eff</sub> et les propriétés varient donc peu, et de façon irrégulière.",
       "unboundAnion": "{{from}} → {{to}} : la sous-couche s de {{to}} est pleine. Un électron ajouté irait dans une orbitale p plus haute ; l'anion n'est donc pas stable.",
       "halfFilledP": "{{from}} → {{to}} : la sous-couche p de {{to}} est à moitié remplie. Un électron ajouté doit s'apparier ; moins d'énergie est donc libérée.",
       "fluorineCrowded": "{{from}} → {{to}} : {{from}} est si petit qu'un électron ajouté est gêné par les autres de la couche n = 2 ; {{to}} libère donc plus d'énergie.",
-      "newShell": "{{from}} → {{to}} : la couche externe de {{to}} est pleine. Un électron ajouté commencerait une nouvelle couche, écrantée par tout ce qui est à l'intérieur ; l'anion n'est donc pas stable."
+      "newShell": "{{from}} → {{to}} : la couche externe de {{to}} est pleine. Un électron ajouté commencerait une nouvelle couche, écrantée par tout ce qui est à l'intérieur ; l'anion n'est donc pas stable.",
+      "filledS": "{{from}} → {{to}} : la sous-couche s de {{to}} est pleine. Un électron ajouté doit aller dans une sous-couche plus haute ; l'anion est donc à peine stable et peu d'énergie est libérée.",
+      "relativistic": "{{from}} → {{to}} : à la période 6, les électrons internes vont si vite que la relativité rapproche du noyau les électrons 6s et les deux premiers 6p. Les deux électrons 6p de {{from}} remplissent cette paire plus basse ; le troisième électron 6p de {{to}} est donc plus haut et plus facile à arracher.",
+      "estimatedRadius": "{{from}} → {{to}} : {{to}} est si radioactif que très peu de ses composés ont été mesurés ; son rayon covalent n'est qu'une estimation.",
+      "irregularEN": "{{from}} → {{to}} : les électronégativités de Pauling des éléments lourds du bloc p sont incertaines et dépendent du degré d'oxydation utilisé (le 2,33 du plomb est celui du plomb(IV)) ; cette petite inversion n'est pas significative.",
+      "lanthanideContraction": "{{from}} → {{to}} : quatorze électrons 4f s'intercalent et écrantent mal, si bien que les électrons externes de {{to}} ressentent un Z<sub>eff</sub> plus grand que prévu ; la variation habituelle le long du groupe s'arrête ou s'inverse (contraction des lanthanides).",
+      "lanthanideSeries": "{{from}}–{{to}} : les électrons ajoutés vont dans la sous-couche 4f profonde, qui touche à peine les électrons 6s externes ; les propriétés varient donc peu, et le rayon diminue lentement le long de la série (contraction des lanthanides)."
     }
   },
   "shielding": {
@@ -170,7 +227,8 @@
       "propertyRadio": "Propriété affichée",
       "showZEff": "Afficher la charge nucléaire effective sur le graphique",
       "explainButton": "Expliquer l'élément sélectionné dans l'écran Écrantage",
-      "zEffSpoken": "charge nucléaire effective"
+      "zEffSpoken": "charge nucléaire effective",
+      "focusedLanthanide": "{{name}}, {{symbol}}, numéro atomique {{z}}, période {{period}}, lanthanide. {{property}} : {{value}}."
     },
     "shielding": {
       "screenSummary": {
@@ -190,6 +248,10 @@
   },
   "preferences": {
     "title": "Simulation",
-    "electronVolts": "Afficher les énergies en eV plutôt qu'en kJ/mol"
+    "electronVolts": "Afficher les énergies en eV plutôt qu'en kJ/mol",
+    "tableExtent": "Tableau périodique affiché",
+    "throughKrypton": "Jusqu'au krypton (Z = 1–36)",
+    "throughXenon": "Jusqu'au xénon (Z = 1–54)",
+    "throughRadon": "Jusqu'au radon (Z = 1–86, avec les lanthanides)"
   }
 }

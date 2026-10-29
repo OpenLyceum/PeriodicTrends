@@ -6,11 +6,17 @@
  * time evolution; step() does nothing.
  */
 
-import { BooleanProperty, EnumerationProperty, Property } from "scenerystack/axon";
+import { BooleanProperty, EnumerationProperty, Property, type TReadOnlyProperty } from "scenerystack/axon";
 import type { TModel } from "scenerystack/joist";
 import { PeriodicProperty } from "../../common/model/PeriodicProperty.js";
 import type { SelectedElementModel } from "../../common/model/SelectedElementModel.js";
-import { periodSelection, selectionsEqual, type TrendSelection } from "../../common/model/TrendSelection.js";
+import type { TableExtent } from "../../common/model/TableExtent.js";
+import {
+  periodSelection,
+  selectionFits,
+  selectionsEqual,
+  type TrendSelection,
+} from "../../common/model/TrendSelection.js";
 import { DEFAULT_PERIOD } from "../../PeriodicTrendsConstants.js";
 
 export class TrendsModel implements TModel {
@@ -18,9 +24,10 @@ export class TrendsModel implements TModel {
   public readonly periodicPropertyProperty = new EnumerationProperty(PeriodicProperty.IONIZATION_ENERGY);
 
   /** The current selection; opens on period 2 so a trend is visible straight away. */
-  public readonly selectionProperty = new Property<TrendSelection>(periodSelection(DEFAULT_PERIOD), {
-    valueComparisonStrategy: selectionsEqual,
-  });
+  public readonly selectionProperty: Property<TrendSelection>;
+
+  /** How much of the table is shown (Preferences). */
+  public readonly tableExtentProperty: TReadOnlyProperty<TableExtent>;
 
   /** Overlay the outer electron's Z_eff on the graph. */
   public readonly showZEffProperty = new BooleanProperty(true);
@@ -29,6 +36,22 @@ export class TrendsModel implements TModel {
 
   public constructor(selectedElement: SelectedElementModel) {
     this.selectedElement = selectedElement;
+    this.tableExtentProperty = selectedElement.tableExtentProperty;
+    this.selectionProperty = new Property<TrendSelection>(this.defaultSelection(), {
+      valueComparisonStrategy: selectionsEqual,
+    });
+
+    // A selection that runs off a smaller table starts over; one that fits stays. The model lives
+    // as long as the sim, so this link is never removed.
+    this.tableExtentProperty.lazyLink((table) => {
+      if (!selectionFits(table, this.selectionProperty.value)) {
+        this.select(this.defaultSelection());
+      }
+    });
+  }
+
+  private defaultSelection(): TrendSelection {
+    return periodSelection(this.tableExtentProperty.value, DEFAULT_PERIOD);
   }
 
   /** Selects a run or element; its anchor becomes the element the Shielding screen shows. */
@@ -39,7 +62,7 @@ export class TrendsModel implements TModel {
 
   public reset(): void {
     this.periodicPropertyProperty.reset();
-    this.selectionProperty.reset();
+    this.selectionProperty.value = this.defaultSelection();
     this.showZEffProperty.reset();
     this.selectedElement.reset();
   }

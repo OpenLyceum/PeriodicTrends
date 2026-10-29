@@ -13,7 +13,7 @@ import { HBox, Node, Text, VBox } from "scenerystack/scenery";
 import { PhetFont, ResetAllButton } from "scenerystack/scenery-phet";
 import { ScreenView, type ScreenViewOptions } from "scenerystack/sim";
 import { AquaRadioButtonGroup } from "scenerystack/sun";
-import { configurationText, MAX_Z, MIN_Z } from "../../common/model/ElementData.js";
+import { MIN_Z, shortConfigurationText } from "../../common/model/ElementData.js";
 import { valenceZEff } from "../../common/model/PeriodicProperty.js";
 import { groupCounts, groupLabel, SLATER_GROUPS } from "../../common/model/Slater.js";
 import { FLAT_RESET_ALL_BUTTON_OPTIONS } from "../../common/PeriodicTrendsButtonOptions.js";
@@ -33,10 +33,9 @@ import { SlaterBreakdownNode } from "./SlaterBreakdownNode.js";
 
 export type ShieldingScreenViewOptions = ScreenViewOptions;
 
-/** Centre of the atom, and content widths of the middle and right columns. */
+/** Centre line and largest scale of the atom, and content widths of the middle and right columns. */
 const ATOM_CENTER_X = 258;
-const ATOM_CENTER_Y = 402;
-const ATOM_SCALE = 1.2;
+const ATOM_MAX_SCALE = 1.2;
 const MIDDLE_CONTENT_WIDTH = 280;
 const RIGHT_CONTENT_WIDTH = 200;
 
@@ -47,6 +46,7 @@ export class ShieldingScreenView extends ScreenView {
     const a11y = StringManager.getInstance().getShieldingA11yStrings();
     const common = StringManager.getInstance().getCommonStrings();
     const zProperty = model.selectedElement.zProperty;
+    const tableExtentProperty = model.selectedElement.tableExtentProperty;
 
     // ── Element picker ──────────────────────────────────────────────────────────
     const title = new Text("", {
@@ -64,18 +64,18 @@ export class ShieldingScreenView extends ScreenView {
         name: elementName(element),
         symbol: element.symbol,
       });
-      configuration.string = configurationText(element.configuration);
+      configuration.string = shortConfigurationText(element);
     });
-    const picker = new ElementPickerNode(zProperty);
+    const picker = new ElementPickerNode(zProperty, tableExtentProperty);
     const previousButton = pushButton(
       strings.previousStringProperty,
       () => model.stepElement(-1),
       a11y.previousStringProperty,
     );
     const nextButton = pushButton(strings.nextStringProperty, () => model.stepElement(1), a11y.nextStringProperty);
-    zProperty.link((z) => {
+    Multilink.multilink([zProperty, tableExtentProperty], (z, table) => {
       previousButton.enabled = z > MIN_Z;
-      nextButton.enabled = z < MAX_Z;
+      nextButton.enabled = z < table.maxZ;
     });
     const pickerPanel = new PeriodicTrendsPanel(
       new VBox({
@@ -90,17 +90,24 @@ export class ShieldingScreenView extends ScreenView {
 
     // ── Atom ────────────────────────────────────────────────────────────────────
     const atom = new ShellAtomNode(model.elementProperty, model.shieldingProperty, model.targetGroupProperty);
-    atom.setScaleMagnitude(ATOM_SCALE);
-    atom.x = ATOM_CENTER_X;
-    atom.y = ATOM_CENTER_Y;
     this.addChild(atom);
+
+    // The atom fills the space under the picker, which grows with the table extent.
+    pickerPanel.boundsProperty.link((bounds) => {
+      const top = bounds.maxY + PANEL_SPACING;
+      const available = this.layoutBounds.maxY - SCREEN_VIEW_MARGIN / 2 - top;
+      const scale = Math.min(ATOM_MAX_SCALE, available / (2 * ShellAtomNode.MAX_RADIUS));
+      atom.setScaleMagnitude(scale);
+      atom.x = ATOM_CENTER_X;
+      atom.y = top + available / 2;
+    });
 
     // ── Slater's rules and effective charge ─────────────────────────────────────
     const breakdown = new SlaterBreakdownNode(model.shieldingProperty, MIDDLE_CONTENT_WIDTH);
     breakdown.left = pickerPanel.right + PANEL_SPACING;
     breakdown.top = pickerPanel.top;
     this.addChild(breakdown);
-    const effectiveCharge = new EffectiveChargeNode(model.shieldingProperty, MIDDLE_CONTENT_WIDTH);
+    const effectiveCharge = new EffectiveChargeNode(model.shieldingProperty, tableExtentProperty, MIDDLE_CONTENT_WIDTH);
     effectiveCharge.left = breakdown.left;
     breakdown.boundsProperty.link(() => {
       effectiveCharge.top = breakdown.bottom + PANEL_SPACING;
@@ -115,6 +122,10 @@ export class ShieldingScreenView extends ScreenView {
         createNode: () => label(groupLabel(group), RIGHT_CONTENT_WIDTH - 30),
         options: {
           accessibleName: groupLabel(group),
+          // Groups no element on the table occupies are hidden. Lives as long as the screen.
+          visibleProperty: new DerivedProperty([tableExtentProperty], (table) =>
+            table.elements.some((element) => groupCounts(element.configuration)[group] > 0),
+          ),
           // Only occupied groups can be chosen. Lives as long as the screen.
           enabledProperty: new DerivedProperty(
             [model.elementProperty],

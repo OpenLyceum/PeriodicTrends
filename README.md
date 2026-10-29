@@ -2,7 +2,8 @@
 
 [![CI](../../actions/workflows/ci.yml/badge.svg)](../../actions/workflows/ci.yml)
 
-Periodic trends for introductory (General) chemistry, hydrogen to krypton. Click an element, or
+Periodic trends for introductory (General) chemistry, hydrogen to krypton (or, by preference,
+through xenon or radon). Click an element, or
 drag across a period or down a group, and watch atomic radius, ionization energy, electron
 affinity and electronegativity change. The trend is explained through effective nuclear charge
 (Z<sub>eff</sub>, Slater's rules) and shielding, not just shown. Built with
@@ -11,7 +12,7 @@ affinity and electronegativity change. The trend is explained through effective 
 ## Features
 
 - **Trends.** A periodic table (Z = 1–36) coloured as a heat map of the chosen property. Click
-  an element to see it against all 36 elements, or drag across a period or down a group (or click
+  an element to see it against every element on the table, or drag across a period or down a group (or click
   a period or group number) to plot the property along that run, with the outer electron's
   Z<sub>eff</sub> overlaid on a second axis. A "Why?" panel explains the trend: across a period n
   stays the same while Z<sub>eff</sub> rises; down a group Z<sub>eff</sub> barely changes while
@@ -26,6 +27,10 @@ affinity and electronegativity change. The trend is explained through effective 
 - **Accessible:** the table is a keyboard grid (arrows, Enter, Shift+arrows to extend, P / G for
   a whole period or group), every selection is announced, live screen summaries, keyboard-help
   dialogs.
+- **Larger table on request.** A preference (or `?maxZ=54` / `?maxZ=86`) extends the table
+  through xenon (the second transition series) or through radon (the third transition series and
+  the lanthanides, in their own row), with notes on the lanthanide contraction and the other
+  irregularities of periods 5 and 6.
 - English, French and Spanish; default and projector colour profiles; installable PWA. A
   preference (or `?electronVolts`) shows energies in eV instead of kJ/mol.
 

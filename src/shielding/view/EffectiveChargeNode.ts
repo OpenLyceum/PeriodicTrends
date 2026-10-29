@@ -11,8 +11,8 @@ import { localeProperty } from "scenerystack/joist";
 import { StringUtils } from "scenerystack/phetcommon";
 import { Rectangle, RichText, Text, VBox } from "scenerystack/scenery";
 import { PhetFont } from "scenerystack/scenery-phet";
-import { MAX_Z } from "../../common/model/ElementData.js";
 import type { ShieldingResult } from "../../common/model/Slater.js";
+import type { TableExtent } from "../../common/model/TableExtent.js";
 import { PeriodicTrendsPanel } from "../../common/PeriodicTrendsPanel.js";
 import { formatCharge } from "../../common/view/formatValues.js";
 import { StringManager } from "../../i18n/StringManager.js";
@@ -22,7 +22,14 @@ import { FONT_SIZE } from "../../PeriodicTrendsConstants.js";
 const BAR_HEIGHT = 12;
 
 export class EffectiveChargeNode extends PeriodicTrendsPanel {
-  public constructor(shieldingProperty: TReadOnlyProperty<ShieldingResult>, contentWidth: number) {
+  /**
+   * @param tableExtentProperty - the bars are scaled to the last element on the table
+   */
+  public constructor(
+    shieldingProperty: TReadOnlyProperty<ShieldingResult>,
+    tableExtentProperty: TReadOnlyProperty<TableExtent>,
+    contentWidth: number,
+  ) {
     const strings = StringManager.getInstance().getShieldingStrings();
     const font = new PhetFont(FONT_SIZE.small + 1);
     const title = new Text(strings.feelsTitleStringProperty, {
@@ -49,8 +56,8 @@ export class EffectiveChargeNode extends PeriodicTrendsPanel {
       { minWidth: contentWidth + 24 },
     );
 
-    Multilink.multilink([shieldingProperty, localeProperty], (result) => {
-      const scale = contentWidth / MAX_Z;
+    Multilink.multilink([shieldingProperty, tableExtentProperty, localeProperty], (result, table) => {
+      const scale = contentWidth / table.maxZ;
       nucleusBar.setRectWidth(Math.max(1, result.z * scale));
       feltBar.setRectWidth(Math.max(1, result.zEff * scale));
       nucleusLabel.string = StringUtils.fillIn(strings.nuclearChargeStringProperty.value, { z: result.z });
