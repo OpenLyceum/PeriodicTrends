@@ -40,6 +40,7 @@ export class TrendsModel implements TModel {
     this.selectionProperty = new Property<TrendSelection>(this.defaultSelection(), {
       valueComparisonStrategy: selectionsEqual,
     });
+    this.select(this.selectionProperty.value);
 
     // A selection that runs off a smaller table starts over; one that fits stays. The model lives
     // as long as the sim, so this link is never removed.
@@ -62,9 +63,8 @@ export class TrendsModel implements TModel {
 
   public reset(): void {
     this.periodicPropertyProperty.reset();
-    this.selectionProperty.value = this.defaultSelection();
+    this.select(this.defaultSelection());
     this.showZEffProperty.reset();
-    this.selectedElement.reset();
   }
 
   public step(_dt: number): void {

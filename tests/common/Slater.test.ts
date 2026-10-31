@@ -6,7 +6,7 @@
 
 import { describe, expect, it } from "vitest";
 import { getElement } from "../../src/common/model/ElementData.js";
-import { shielding } from "../../src/common/model/Slater.js";
+import { outermostGroup, shielding } from "../../src/common/model/Slater.js";
 
 function zEff(z: number, target?: Parameters<typeof shielding>[2]): number {
   const element = getElement(z);
@@ -25,6 +25,7 @@ describe("Slater's rules", () => {
     [29, 3.7],
     [30, 4.35],
     [37, 2.2],
+    [46, 6.85],
     [47, 3.7],
     [53, 7.6],
     [79, 3.7],
@@ -34,6 +35,15 @@ describe("Slater's rules", () => {
 
   it("gives Zn 3d Z_eff = 8.85", () => {
     expect(zEff(30, "3d")).toBeCloseTo(8.85, 6);
+  });
+
+  it("defaults to Pd's occupied 4d valence group when 5s is empty", () => {
+    const element = getElement(46);
+    expect(outermostGroup(element.configuration)).toBe("4d");
+    const result = shielding(element.z, element.configuration);
+    // [Kr] 4d10: 36 core electrons and nine other d electrons.
+    expect(result.s).toBeCloseTo(36 + 9 * 0.35, 6);
+    expect(result.zEff).toBeCloseTo(46 - (36 + 9 * 0.35), 6);
   });
 
   it("treats 4d and 4f electrons like 3d: 0.35 within the group, 1.00 for everything inside", () => {

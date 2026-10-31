@@ -151,8 +151,10 @@ export class ShieldingScreenView extends ScreenView {
     targetPanel.top = pickerPanel.top;
     this.addChild(targetPanel);
     const legend = new ShieldingLegendNode(RIGHT_CONTENT_WIDTH);
-    legend.right = targetPanel.right;
-    legend.top = targetPanel.bottom + PANEL_SPACING;
+    targetPanel.boundsProperty.link(() => {
+      legend.right = targetPanel.right;
+      legend.top = targetPanel.bottom + PANEL_SPACING;
+    });
     this.addChild(legend);
 
     const resetAllButton = new ResetAllButton({

@@ -87,6 +87,9 @@ export class PeriodicTableNode extends Node {
   /** Start of a Shift+arrow extension, or null when the next Shift+arrow starts one. */
   private extensionAnchor: GridCell | null = null;
 
+  /** Keyboard commits keep the cursor at the moving endpoint, rather than the selection anchor. */
+  private committingKeyboardSelection = false;
+
   /**
    * @param model - Trends model
    * @param electronVoltsProperty - energies in eV instead of kJ/mol
@@ -214,7 +217,7 @@ export class PeriodicTableNode extends Node {
         header.visible = i < table.periodCount;
       });
       placeholder.visible = table.hasLanthanides;
-      this.moveCursorTo(model.selectionProperty.value.anchorZ);
+      this.reset();
     });
 
     // Fill, text and value of every cell follow the property, units, locale and colour profile.
@@ -254,6 +257,11 @@ export class PeriodicTableNode extends Node {
 
     // Selected cells get a thick outline.
     model.selectionProperty.link((selection) => {
+      // Headers and other external selections start a fresh keyboard run. A Shift+arrow commit
+      // must leave its cursor at the endpoint so the next key extends from there.
+      if (!this.committingKeyboardSelection) {
+        this.reset();
+      }
       ELEMENTS.forEach((element, i) => {
         const cell = cells[i];
         if (cell) {
@@ -358,25 +366,30 @@ export class PeriodicTableNode extends Node {
     if (step && keys.startsWith("shift+")) {
       this.extensionAnchor ??= cursor;
       this.cursorProperty.value = stepCell(table, cursor, step[0], step[1]);
-      this.commit(selectionFromDrag(table, this.extensionAnchor, this.cursorProperty.value));
+      this.commit(selectionFromDrag(table, this.extensionAnchor, this.cursorProperty.value), true);
     } else if (step) {
       this.extensionAnchor = null;
       this.cursorProperty.value = stepCell(table, cursor, step[0], step[1]);
       this.addAccessibleResponse(this.describeCursor(electronVolts));
     } else if (keys === "enter" || keys === "space") {
       this.extensionAnchor = null;
-      this.commit(singleSelection(z));
+      this.commit(singleSelection(z), true);
     } else if (keys === "p") {
       this.extensionAnchor = null;
-      this.commit(periodSelection(table, element.period, z));
+      this.commit(periodSelection(table, element.period, z), true);
     } else if (keys === "g" && element.group !== null) {
       this.extensionAnchor = null;
-      this.commit(groupSelection(table, element.group, z));
+      this.commit(groupSelection(table, element.group, z), true);
     }
   }
 
-  private commit(selection: TrendSelection): void {
-    this.model.select(selection);
+  private commit(selection: TrendSelection, fromKeyboard = false): void {
+    this.committingKeyboardSelection = fromKeyboard;
+    try {
+      this.model.select(selection);
+    } finally {
+      this.committingKeyboardSelection = false;
+    }
     this.addAccessibleResponse(this.describeSelection(selection));
   }
 

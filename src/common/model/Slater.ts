@@ -73,11 +73,11 @@ export function occupiedGroups(configuration: readonly Subshell[]): SlaterGroupI
 }
 
 /**
- * The group of the valence electron: the outermost occupied (ns,np) group. For the d- and f-blocks
- * this is the ns electron, removed first on ionisation, which is the textbook convention.
+ * The outermost occupied Slater group. This is normally the (ns,np) group, including ns for
+ * transition metals, but Pd has no 5s electron: its valence electron is in 4d, not the 4s/4p core.
  */
 export function outermostGroup(configuration: readonly Subshell[]): SlaterGroupId {
-  const occupied = occupiedGroups(configuration).filter((group) => !isInnerSubshellGroup(group));
+  const occupied = occupiedGroups(configuration);
   return occupied[occupied.length - 1] ?? "1s";
 }
 

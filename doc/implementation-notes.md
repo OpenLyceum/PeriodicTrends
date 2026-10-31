@@ -21,7 +21,11 @@
 `TrendsModel.select()` writes the selection's anchor into it; the Shielding screen derives its
 element from it and resets the chosen electron to the outermost one on every change. The
 "Explain with shielding" button switches screens through a callback that `main.ts` closes over
-`sim.selectedScreenProperty`.
+`sim.selectedScreenProperty`. Trends initialization and reset both synchronize the shared
+element to the default period selection's Li anchor. Shielding opened first independently
+starts on its chlorine worked example.
+Activating Explain resynchronizes the shared element to the visible Trends selection, including
+after a visit to Shielding changes that shared element independently.
 
 ## Selections
 
@@ -33,11 +37,21 @@ that contains one element becomes a single selection (e.g. group 5 is just V).
 
 A single selection plots every element on the table against Z (the classic sawtooth) with the
 element ringed, rather than a lone point. With more than 40 points only the noble gases and the
-chosen element are labelled.
+chosen element are labelled. Its localized overview title interpolates the actual last element
+of the current table (Kr, Xe or Rn).
+
+The table owns cursor synchronization. Its own keyboard commits preserve the moving cursor
+endpoint; external selections move it to the new anchor and clear any previous Shift+arrow
+extension. Reset and extent changes also clear the extension anchor.
 
 Selections are made against the current `TableExtent` (grid cells are `{ row, column }`). When
 the table shrinks, a selection that no longer fits is replaced by period 2, and the shared element
 by the default if it is off the table.
+
+Atom ring hit areas are annular shapes, with reversed inner winding, rather than filled
+bounding rectangles. Bands are clipped at adjacent ring midpoints so even the crowded extended
+atom has separate mouse and touch targets. The shielding colour legend follows the electron
+panel's bounds as extent-dependent radio choices appear and disappear.
 
 ## Rebuild-and-dispose views
 

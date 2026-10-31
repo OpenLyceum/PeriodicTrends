@@ -11,6 +11,7 @@
 
 import type { Property, TReadOnlyProperty } from "scenerystack/axon";
 import { Multilink } from "scenerystack/axon";
+import { Shape } from "scenerystack/kite";
 import { Circle, FireListener, Node, Rectangle, Text } from "scenerystack/scenery";
 import { PhetFont } from "scenerystack/scenery-phet";
 import type { ElementData } from "../../common/model/ElementData.js";
@@ -83,6 +84,7 @@ export class ShellAtomNode extends Node {
     const counts = groupCounts(element.configuration);
     const nodes: Node[] = [];
     const radii = ringRadii(result.contributions.map((contribution) => contribution.group));
+    const orderedRadii = [...radii.values()];
 
     result.contributions.forEach((contribution, ringIndex) => {
       const group = contribution.group;
@@ -94,8 +96,17 @@ export class ShellAtomNode extends Node {
         lineDash: isInnerSubshellGroup(group) ? [6, 4] : [],
         cursor: "pointer",
       });
-      // A ring is a thin target; widen its hit area to a band around it.
-      ring.mouseArea = ring.localBounds.dilated(ELECTRON_RADIUS * 2);
+      // Annular bands leave inner rings reachable. Clip at adjacent midpoints when the extended
+      // table packs rings closer together than the usual pointer dilation.
+      const innerRadius = Math.max(radius - ELECTRON_RADIUS * 2, ((orderedRadii[ringIndex - 1] ?? 0) + radius) / 2);
+      const outerRadius = Math.min(
+        radius + ELECTRON_RADIUS * 2,
+        (radius + (orderedRadii[ringIndex + 1] ?? Number.POSITIVE_INFINITY)) / 2,
+      );
+      ring.mouseArea = Shape.circle(outerRadius)
+        .moveTo(innerRadius, 0)
+        .arc(0, 0, innerRadius, 0, -Math.PI * 2, true)
+        .close();
       ring.touchArea = ring.mouseArea;
       ring.addInputListener(
         new FireListener({

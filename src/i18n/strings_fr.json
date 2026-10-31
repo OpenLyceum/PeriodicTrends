@@ -131,7 +131,7 @@
     "singleHint": "Glissez le long d'une période ou d'un groupe pour voir une tendance.",
     "periodTitle": "Période {{period}} : {{first}} → {{last}}",
     "groupTitle": "Groupe {{group}} : {{first}} → {{last}}",
-    "allElementsTitle": "Tous les éléments, H → Kr",
+    "allElementsTitle": "Tous les éléments, H → {{last}}",
     "xAxisAll": "Numéro atomique Z →",
     "xAxisPeriod": "Le long de la période →",
     "xAxisGroup": "Vers le bas du groupe →",

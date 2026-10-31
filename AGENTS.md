@@ -28,6 +28,8 @@ design decisions: [`doc/implementation-notes.md`](doc/implementation-notes.md).
   groups, colour scales); `ElementData` always holds all 86. Both are the user's choices.
 - **Slater's rules only.** They are the method students can reproduce by hand, extended to the
   (4d)(4f)(5s,5p)(5d)(6s,6p) groups. Don't add Clementi–Raimondi values.
+  The default electron is the last occupied Slater group: usually outer ns/np, but Pd's empty
+  5s means its target is 4d (Z_eff = 6.85), not the 4s/4p core.
 - **No "Slater estimate" curve.** Slater's Z_eff gives the wrong shape for ionization energy
   even after rescaling (Li→Ne would rise ×20, not ×4), so the graph overlays Z_eff itself on a
   second axis instead of a predicted property.
@@ -40,7 +42,8 @@ design decisions: [`doc/implementation-notes.md`](doc/implementation-notes.md).
 - **Energies are stored in eV** (NIST / CRC) and shown in kJ/mol unless the eV preference
   (`?electronVolts`) is on.
 - **One element is shared** between screens (`SelectedElementModel`, created in `main.ts`): the
-  anchor of a Trends selection is the element the Shielding screen opens on.
+  anchor of a Trends selection is the element the Shielding screen opens on. Trends construction
+  and reset synchronize the default period-2 anchor (Li); Shielding opened first starts on Cl.
 
 ## Key files
 
@@ -81,6 +84,10 @@ design decisions: [`doc/implementation-notes.md`](doc/implementation-notes.md).
   paragraph; the Shielding one reads Slater's rules group by group.
 - The Shielding element picker selects on each arrow key; changing element announces the outer
   electron's Z_eff. Shell rings are pointer shortcuts for the "Electron to look at" radio buttons.
+  Their mouse/touch hit areas must be annular and separated at neighboring ring midpoints.
+- The table preserves the moving cursor during keyboard commits; external selections, reset and
+  extent changes clear old Shift+arrow anchors. The shielding legend follows the electron
+  panel's changing bounds as the extent preference reveals more choices.
 
 ## Compliance carve-outs
 
@@ -121,10 +128,13 @@ open PRs that fight the overrides. Revisit when SceneryStack drops or re-pins th
 | `tests/common/ElementData.test.ts` | 36 contiguous elements, placement, configurations sum to Z, Cr/Cu, intentional gaps |
 | `tests/common/TrendSelection.test.ts` | Drag snapping, ordering, clamping, empty slots, keyboard stepping |
 | `tests/common/TrendAnomalies.test.ts` | Trends hold except listed anomalies; every listed pair is a real reversal; matching and placement |
+| `tests/trends/model/TrendsModel.test.ts` | Shared selection consistency at initialization, reset and extent shrink (Vitest, happy-dom) |
+| `tests/browser/review-regressions.spec.ts` | Keyboard extension, pointer/touch rings, Pd shielding, live Preferences layout, Explain/reset, localized extent titles |
 | `tests/TimeModel.test.ts`, `tests/memory-leak.test.ts`, `tests/helpers/`, `tests/fuzz/` | Template-owned (TimeModel is unused here but kept for drift) |
 
 - Unit tests live only under root `tests/`, mirroring `src/`.
 - Optional: `npm run test:fuzz` / `test:fuzz:quick` / `test:fuzz:long` (not part of default CI).
+- Run the functional browser regressions with `FUZZ_PORT=5182 npx playwright test tests/browser`.
 
 ## Commands
 

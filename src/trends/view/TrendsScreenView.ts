@@ -120,7 +120,11 @@ export class TrendsScreenView extends ScreenView {
     );
     const explainButton = pushButton(
       strings.explainButtonStringProperty,
-      options.showShielding,
+      () => {
+        // Shielding can change the shared element while Trends retains its visible selection.
+        model.select(model.selectionProperty.value);
+        options.showShielding();
+      },
       a11y.explainButtonStringProperty,
     );
     const controlPanel = new PeriodicTrendsPanel(
@@ -173,9 +177,6 @@ export class TrendsScreenView extends ScreenView {
       hint.bottom = this.layoutBounds.maxY - SCREEN_VIEW_MARGIN / 2;
     });
     this.addChild(hint);
-
-    // Selections made outside the table (period / group headers) move the keyboard cursor too.
-    model.selectionProperty.lazyLink((selection) => this.table.moveCursorTo(selection.anchorZ));
 
     this.addChild(
       new Node({

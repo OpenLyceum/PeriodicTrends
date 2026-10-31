@@ -20,7 +20,7 @@ import PeriodicTrendsNamespace from "./PeriodicTrendsNamespace.js";
 /** 1 eV per particle in kJ/mol (CODATA 2018: e × N_A / 1000). */
 export const KJ_PER_MOL_PER_EV = 96.485_332_12;
 
-/** Element shared by both screens at startup: chlorine, the textbook Slater example (Z_eff = 6.10). */
+/** Shielding's default when opened first: chlorine (Z_eff = 6.10). Trends initializes its own anchor. */
 export const DEFAULT_ELEMENT_Z = 17;
 
 /** Period selected on the Trends screen at startup. */

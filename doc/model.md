@@ -45,11 +45,14 @@ electron in an (ns, np) group:
 For a d or f electron, each other electron in its group shields 0.35 and every electron in a
 group to its left shields 1.00. Electrons in groups to the right of the target never shield.
 
-Z<sub>eff</sub> = Z − S. The "outer electron" of an element is its outermost (ns, np) electron;
-for the d- and f-blocks that is the ns electron, removed first on ionisation.
+Z<sub>eff</sub> = Z − S. The "outer electron" is in the last occupied Slater group, normally
+(ns, np); for the d- and f-blocks that is usually the ns electron, removed first on ionisation.
+Pd is the exception: [Kr] 4d¹⁰ has no 5s electron, so its target is 4d. The 36 core electrons
+shield 1.00 each and its nine other 4d electrons shield 0.35 each: S = 39.15, Z<sub>eff</sub> = 6.85.
 
 Worked examples (tested): N 2p 3.90, O 4.55, Cl 3p 6.10, K 4s 2.20, Fe 4s 3.75, Cu 4s 3.70,
-Zn 4s 4.35, Zn 3d 8.85, Rb 5s 2.20, Ag 5s 3.70, Ag 4d 7.85, I 5p 7.60, Gd 4f 15.90, Au 6s 3.70.
+Zn 4s 4.35, Zn 3d 8.85, Rb 5s 2.20, Pd 4d 6.85, Ag 5s 3.70, Ag 4d 7.85, I 5p 7.60,
+Gd 4f 15.90, Au 6s 3.70.
 
 The effective principal quantum number n* (1, 2, 3, 3.7, 4.0, 4.2) is available but not
 displayed.

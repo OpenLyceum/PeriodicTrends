@@ -16,6 +16,7 @@ import { ChartRectangle, ChartTransform, GridLineSet, LinePlot, TickMarkSet } fr
 import { Range, toFixed, Vector2 } from "scenerystack/dot";
 import { localeProperty } from "scenerystack/joist";
 import { Orientation } from "scenerystack/phet-core";
+import { StringUtils } from "scenerystack/phetcommon";
 import { Circle, Node, RichText, Text } from "scenerystack/scenery";
 import { PhetFont } from "scenerystack/scenery-phet";
 import { GROUP_COUNT, getElement, UNBOUND } from "../../common/model/ElementData.js";
@@ -202,11 +203,18 @@ export class TrendChartNode extends Node {
     );
     xTitle.centerX = width / 2;
     xTitle.top = height + 20;
-    const title = new RichText(single ? strings.allElementsTitleStringProperty.value : selectionTitle(selection), {
-      font: new PhetFont({ size: FONT_SIZE.label, weight: "bold" }),
-      fill: PeriodicTrendsColors.textColorProperty,
-      maxWidth: width,
-    });
+    const title = new RichText(
+      single
+        ? StringUtils.fillIn(strings.allElementsTitleStringProperty.value, {
+            last: getElement(table.maxZ).symbol,
+          })
+        : selectionTitle(selection),
+      {
+        font: new PhetFont({ size: FONT_SIZE.label, weight: "bold" }),
+        fill: PeriodicTrendsColors.textColorProperty,
+        maxWidth: width,
+      },
+    );
     title.left = 0;
     title.bottom = -8;
     nodes.push(yTitle, xTitle, title);
