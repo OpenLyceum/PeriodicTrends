@@ -140,15 +140,15 @@
     "explanationTitle": "Why?",
     "single": "Its outermost electron has n = {{n}} and feels Z<sub>eff</sub> = {{zEff}}: the nuclear charge Z = {{z}} minus shielding S = {{s}}.",
     "singleValue": "{{property}}: {{value}}.",
-    "period": "Across period {{period}}, n stays {{n}} while Z<sub>eff</sub> rises from {{zEffFirst}} to {{zEffLast}}. Each added electron joins the same shell and shields only part of the added proton, so the outer electrons are pulled harder at about the same distance.",
+    "period": "Across period {{period}}, n stays {{n}} while Slater's estimate of Z<sub>eff</sub> rises from {{zEffFirst}} to {{zEffLast}}. Added electrons join the same outer s/p group and shield only part of each added proton, so the outer electrons are pulled harder.",
     "group": "Down group {{group}}, n grows from {{nFirst}} to {{nLast}} while Z<sub>eff</sub> changes from {{zEffFirst}} to {{zEffLast}}. Each new shell is farther from the nucleus and is screened by all the shells inside it, so distance wins.",
     "consequence": {
       "period": {
-        "atomicRadius": "So atoms get smaller: {{first}} → {{last}}.",
-        "ionizationEnergy": "So removing an electron gets harder: ionization energy rises, {{first}} → {{last}}.",
-        "electronAffinity": "So atoms generally release more energy when they gain an electron: {{first}} → {{last}}.",
-        "electronegativity": "So atoms pull shared electrons harder: electronegativity rises, {{first}} → {{last}}.",
-        "zEff": "Z<sub>eff</sub> rises by about 0.65 per element in the s and p blocks (+1 proton, +0.35 shielding), but by only 0.15 across the 3d series (+1 proton, +0.85 shielding)."
+        "atomicRadius": "Across a period, atoms generally get smaller. Selected values: {{first}} → {{last}}.",
+        "ionizationEnergy": "Across a period, ionization energy generally rises. Selected values: {{first}} → {{last}}.",
+        "electronAffinity": "Across a period, atoms generally release more energy when they gain an electron. Selected values: {{first}} → {{last}}.",
+        "electronegativity": "Across a period, electronegativity generally rises. Selected values: {{first}} → {{last}}.",
+        "zEff": "Without electron rearrangement, each added proton and same-group electron raises the Slater estimate by 0.65 (0.70 in 1s); an electron added to shell n − 1 instead gives a rise of 0.15."
       },
       "group": {
         "atomicRadius": "So atoms get larger: {{first}} → {{last}}.",
@@ -174,7 +174,9 @@
       "irregularEN": "{{from}} → {{to}}: Pauling electronegativities of the heavy p-block are uncertain and depend on the oxidation state used (lead's 2.33 is for lead(IV)), so this small reversal is not meaningful.",
       "lanthanideContraction": "{{from}} → {{to}}: fourteen 4f electrons sit between them and shield poorly, so {{to}}'s outer electrons feel a higher Z<sub>eff</sub> than expected, and the usual change down the group stalls or reverses (the lanthanide contraction).",
       "lanthanideSeries": "{{from}}–{{to}}: the added electrons go into the deep 4f subshell, which barely affects the outer 6s electrons, so the properties change little; the radius shrinks slowly across the series (the lanthanide contraction)."
-    }
+    },
+    "periodConfigurations": "Across period {{period}}, Slater's estimate of Z<sub>eff</sub> changes from {{zEffFirst}} to {{zEffLast}}. The outer electron is in {{firstGroup}} (n = {{nFirst}}) at the start and {{lastGroup}} (n = {{nLast}}) at the end.",
+    "configurationComparison": "These estimates depend on the orbital. Changes in d/f occupation or the target electron can interrupt the simple same-shell trend."
   },
   "shielding": {
     "target": "Electron to look at",
@@ -215,13 +217,13 @@
   "a11y": {
     "trends": {
       "screenSummary": {
-        "playArea": "The play area has a periodic table from hydrogen to krypton, coloured by the chosen property, a graph of that property along the selection, and an explanation in terms of effective nuclear charge and shielding.",
+        "playArea": "The play area has a periodic table from hydrogen to {{last}}, coloured by the chosen property, a graph of that property along the selection, and an explanation in terms of effective nuclear charge and shielding.",
         "controlArea": "The control area chooses the property, shows or hides effective nuclear charge on the graph, opens the Shielding screen for the selected element, and resets the screen.",
         "interactionHint": "Select an element, or a period or group, in the periodic table and read how the property changes."
       },
       "currentDetailsSingle": "{{name}} is selected. {{property}}: {{value}}. Effective nuclear charge {{zEff}}.",
       "currentDetailsRun": "{{title}} is selected. {{property}} goes from {{first}} to {{last}}; effective nuclear charge from {{zEffFirst}} to {{zEffLast}}.",
-      "table": "Periodic table, hydrogen to krypton",
+      "table": "Periodic table, hydrogen to {{last}}",
       "tableHelp": "Arrow keys move between elements and Enter selects. Shift plus arrows extends the selection across a period or down a group. P selects the whole period, G the whole group.",
       "focusedElement": "{{name}}, {{symbol}}, atomic number {{z}}, period {{period}}, group {{group}}. {{property}}: {{value}}.",
       "propertyRadio": "Property shown",
@@ -238,7 +240,7 @@
       },
       "currentDetails": "{{name}}, {{group}} electron. {{breakdown}} Total shielding {{s}}, so effective nuclear charge {{z}} minus {{s}} equals {{zEff}}.",
       "breakdownItem": "{{count}} {{group}} electrons shield {{weight}} each.",
-      "picker": "Element picker, hydrogen to krypton",
+      "picker": "Element picker, hydrogen to {{last}}",
       "pickerHelp": "Arrow keys choose an element.",
       "targetRadio": "Electron to look at",
       "previous": "Previous element",

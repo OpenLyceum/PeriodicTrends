@@ -56,6 +56,7 @@ import {
   toDisplayUnits,
 } from "../../common/view/formatValues.js";
 import { HEAT_COLOR_PROPERTIES, heatFill, textColorFor } from "../../common/view/heatColor.js";
+import { tableDescriptionProperty } from "../../common/view/tableDescriptionProperty.js";
 import { StringManager } from "../../i18n/StringManager.js";
 import PeriodicTrendsColors from "../../PeriodicTrendsColors.js";
 import { CELL_HEIGHT, CELL_WIDTH, FONT_SIZE } from "../../PeriodicTrendsConstants.js";
@@ -107,7 +108,7 @@ export class PeriodicTableNode extends Node {
     super({
       tagName: "div",
       focusable: true,
-      accessibleName: a11y.tableStringProperty,
+      accessibleName: tableDescriptionProperty(model.tableExtentProperty, a11y.tableStringProperty),
       accessibleHelpText: a11y.tableHelpStringProperty,
     });
     this.model = model;

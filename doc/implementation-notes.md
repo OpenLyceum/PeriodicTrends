@@ -14,6 +14,8 @@
   ten rings are spread evenly and crowded rings draw smaller electrons, Slater's
   rules and the effective-charge bars in a 280 px middle column, the electron choice and colour
   key in a 200 px right column.
+  The four-column Slater grid is uniformly scaled to a maximum width of 280 px, keeping its
+  headings, swatches and values aligned within that middle column in every locale.
 
 ## Shared state
 
@@ -26,6 +28,9 @@ element to the default period selection's Li anchor. Shielding opened first inde
 starts on its chlorine worked example.
 Activating Explain resynchronizes the shared element to the visible Trends selection, including
 after a visit to Shielding changes that shared element independently.
+Shielding reset preserves the current table preference and resets the selected atom and numeric
+range together. Calling `NumberProperty.reset()` would restore its startup range too, leaving
+the picker and Previous/Next controls inconsistent with a changed extent.
 
 ## Selections
 
@@ -53,6 +58,13 @@ bounding rectangles. Bands are clipped at adjacent ring midpoints so even the cr
 atom has separate mouse and touch targets. The shielding colour legend follows the electron
 panel's bounds as extent-dependent radio choices appear and disappear.
 
+The same-shell explanation is reserved for s/p runs with a constant outer-electron n and
+nondecreasing Slater Z_eff. Runs containing d/f configurations instead state the endpoint target
+groups and n values, describe the estimate as changing rather than necessarily rising, and
+explain why configuration/target changes can interrupt the simple trend. Every element in the
+run is checked, so an interior Pd exception is handled even when both endpoints use n = 5.
+Experimental-property consequences state the broad trend separately from the selected values.
+
 ## Rebuild-and-dispose views
 
 The graph, the explanation and the atom rebuild their children on every relevant change and
@@ -72,3 +84,6 @@ Visible explanations are RichText markup (`Z<sub>eff</sub>`); spoken text goes t
 `toPlainText` or uses separate a11y strings that say "effective nuclear charge". All templates
 use `StringUtils.fillIn` with `{{placeholders}}`. Element names are in the strings files keyed by
 symbol, so they translate.
+`tableDescriptionProperty` derives both tables' accessible labels and the Trends play-area
+summary from their localized pattern and current endpoint element name. It observes extent,
+pattern and locale changes; these descriptions live for the whole screen.

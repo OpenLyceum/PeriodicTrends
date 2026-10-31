@@ -8,6 +8,7 @@
 import { DerivedProperty, type TReadOnlyProperty } from "scenerystack/axon";
 import { localeProperty } from "scenerystack/joist";
 import { ScreenSummaryContent } from "scenerystack/sim";
+import { tableDescriptionProperty } from "../../common/view/tableDescriptionProperty.js";
 import { StringManager } from "../../i18n/StringManager.js";
 import type { TrendsModel } from "../model/TrendsModel.js";
 import { speakSelection } from "./describeSelection.js";
@@ -23,7 +24,7 @@ export class TrendsScreenSummaryContent extends ScreenSummaryContent {
     );
 
     super({
-      playAreaContent: a11y.screenSummary.playAreaStringProperty,
+      playAreaContent: tableDescriptionProperty(model.tableExtentProperty, a11y.screenSummary.playAreaStringProperty),
       controlAreaContent: a11y.screenSummary.controlAreaStringProperty,
       currentDetailsContent: currentDetailsProperty,
       interactionHintContent: a11y.screenSummary.interactionHintStringProperty,

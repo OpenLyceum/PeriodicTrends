@@ -35,6 +35,8 @@ export class SelectedElementModel {
   }
 
   public reset(): void {
-    this.zProperty.reset();
+    // NumberProperty.reset also restores its initial range. The table preference can have
+    // changed since startup, so reset the element within the current table instead.
+    this.zProperty.setValueAndRange(DEFAULT_ELEMENT_Z, new Range(MIN_Z, this.tableExtentProperty.value.maxZ));
   }
 }

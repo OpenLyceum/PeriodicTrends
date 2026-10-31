@@ -9,7 +9,7 @@
 import { StringUtils } from "scenerystack/phetcommon";
 import { getElement } from "../../common/model/ElementData.js";
 import { type PeriodicProperty, valenceZEff } from "../../common/model/PeriodicProperty.js";
-import { groupN, outermostGroup, shielding } from "../../common/model/Slater.js";
+import { groupLabel, groupN, outermostGroup, shielding } from "../../common/model/Slater.js";
 import { anomaliesFor, type TrendAnomaly } from "../../common/model/TrendAnomalies.js";
 import type { TrendSelection } from "../../common/model/TrendSelection.js";
 import { elementName, formatCharge, propertyName, readout } from "../../common/view/formatValues.js";
@@ -127,14 +127,30 @@ export function describeSelection(
 
   const first = getElement(selection.zs[0] ?? selection.anchorZ);
   const last = getElement(selection.zs[selection.zs.length - 1] ?? selection.anchorZ);
+  const elements = selection.zs.map(getElement);
+  // The same-shell story is only applicable to a regular s/p run. In particular, Pd uses 4d
+  // rather than 5s, and exceptional d-block occupations can reverse the Slater estimate.
+  const simplePeriod = elements.every(
+    (element, i) =>
+      (element.block === "s" || element.block === "p") &&
+      valenceN(element.z) === valenceN(first.z) &&
+      valenceZEff(element) >= valenceZEff(elements[i - 1] ?? element),
+  );
   const story =
     selection.kind === "period"
-      ? StringUtils.fillIn(trends.periodStringProperty.value, {
-          period: first.period,
-          n: valenceN(first.z),
-          zEffFirst: formatCharge(valenceZEff(first)),
-          zEffLast: formatCharge(valenceZEff(last)),
-        })
+      ? StringUtils.fillIn(
+          (simplePeriod ? trends.periodStringProperty : trends.periodConfigurationsStringProperty).value,
+          {
+            period: first.period,
+            n: valenceN(first.z),
+            firstGroup: groupLabel(outermostGroup(first.configuration)),
+            lastGroup: groupLabel(outermostGroup(last.configuration)),
+            nFirst: valenceN(first.z),
+            nLast: valenceN(last.z),
+            zEffFirst: formatCharge(valenceZEff(first)),
+            zEffLast: formatCharge(valenceZEff(last)),
+          },
+        )
       : StringUtils.fillIn(trends.groupStringProperty.value, {
           group: first.group,
           nFirst: valenceN(first.z),
@@ -144,7 +160,12 @@ export function describeSelection(
         });
   return {
     title,
-    paragraphs: [story, consequence(selection, property, electronVolts)],
+    paragraphs: [
+      story,
+      selection.kind === "period" && !simplePeriod && property.key === "zEff"
+        ? trends.configurationComparisonStringProperty.value
+        : consequence(selection, property, electronVolts),
+    ],
     anomalies,
     anomalyTexts,
   };

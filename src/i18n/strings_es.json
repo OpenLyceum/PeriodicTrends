@@ -140,15 +140,15 @@
     "explanationTitle": "¿Por qué?",
     "single": "Su electrón más externo tiene n = {{n}} y siente Z<sub>eff</sub> = {{zEff}}: la carga del núcleo Z = {{z}} menos el apantallamiento S = {{s}}.",
     "singleValue": "{{property}}: {{value}}.",
-    "period": "A lo largo del periodo {{period}}, n sigue siendo {{n}} mientras Z<sub>eff</sub> sube de {{zEffFirst}} a {{zEffLast}}. Cada electrón añadido entra en la misma capa y apantalla solo una parte del protón añadido, así que los electrones externos son atraídos con más fuerza a casi la misma distancia.",
+    "period": "A lo largo del periodo {{period}}, n sigue siendo {{n}} mientras la estimación de Slater de Z<sub>eff</sub> sube de {{zEffFirst}} a {{zEffLast}}. Los electrones añadidos entran en el mismo grupo s/p externo y apantallan solo una parte de cada protón añadido, por lo que los electrones externos son atraídos con más fuerza.",
     "group": "Bajando por el grupo {{group}}, n crece de {{nFirst}} a {{nLast}} mientras Z<sub>eff</sub> cambia de {{zEffFirst}} a {{zEffLast}}. Cada capa nueva está más lejos del núcleo y queda apantallada por todas las capas internas, así que gana la distancia.",
     "consequence": {
       "period": {
-        "atomicRadius": "Por eso los átomos se hacen más pequeños: {{first}} → {{last}}.",
-        "ionizationEnergy": "Por eso cuesta más arrancar un electrón: la energía de ionización sube, {{first}} → {{last}}.",
-        "electronAffinity": "Por eso los átomos suelen liberar más energía al ganar un electrón: {{first}} → {{last}}.",
-        "electronegativity": "Por eso los átomos atraen con más fuerza los electrones compartidos: la electronegatividad sube, {{first}} → {{last}}.",
-        "zEff": "Z<sub>eff</sub> sube unos 0,65 por elemento en los bloques s y p (+1 protón, +0,35 de apantallamiento), pero solo 0,15 en la serie 3d (+1 protón, +0,85 de apantallamiento)."
+        "atomicRadius": "A lo largo de un periodo, los átomos generalmente se hacen más pequeños. Valores seleccionados: {{first}} → {{last}}.",
+        "ionizationEnergy": "A lo largo de un periodo, la energía de ionización generalmente sube. Valores seleccionados: {{first}} → {{last}}.",
+        "electronAffinity": "A lo largo de un periodo, los átomos generalmente liberan más energía al ganar un electrón. Valores seleccionados: {{first}} → {{last}}.",
+        "electronegativity": "A lo largo de un periodo, la electronegatividad generalmente sube. Valores seleccionados: {{first}} → {{last}}.",
+        "zEff": "Sin reorganización electrónica, cada protón añadido con un electrón del mismo grupo aumenta la estimación de Slater en 0,65 (0,70 en 1s); un electrón añadido a la capa n − 1 da un aumento de 0,15."
       },
       "group": {
         "atomicRadius": "Por eso los átomos se hacen más grandes: {{first}} → {{last}}.",
@@ -174,7 +174,9 @@
       "irregularEN": "{{from}} → {{to}}: las electronegatividades de Pauling de los elementos pesados del bloque p son inciertas y dependen del estado de oxidación usado (el 2,33 del plomo es el del plomo(IV)), así que esta pequeña inversión no es significativa.",
       "lanthanideContraction": "{{from}} → {{to}}: catorce electrones 4f se interponen y apantallan mal, así que los electrones externos de {{to}} sienten una Z<sub>eff</sub> mayor de lo esperado, y el cambio habitual al bajar por el grupo se detiene o se invierte (la contracción lantánida).",
       "lanthanideSeries": "{{from}}–{{to}}: los electrones añadidos van a la subcapa 4f profunda, que apenas afecta a los electrones 6s externos, así que las propiedades cambian poco; el radio disminuye lentamente a lo largo de la serie (la contracción lantánida)."
-    }
+    },
+    "periodConfigurations": "A lo largo del periodo {{period}}, la estimación de Slater de Z<sub>eff</sub> cambia de {{zEffFirst}} a {{zEffLast}}. El electrón externo está en {{firstGroup}} (n = {{nFirst}}) al principio y en {{lastGroup}} (n = {{nLast}}) al final.",
+    "configurationComparison": "Estas estimaciones dependen del orbital. Los cambios de ocupación d/f o del electrón estudiado pueden interrumpir la tendencia simple dentro de una misma capa."
   },
   "shielding": {
     "target": "Electrón estudiado",
@@ -215,13 +217,13 @@
   "a11y": {
     "trends": {
       "screenSummary": {
-        "playArea": "El área de juego tiene una tabla periódica del hidrógeno al kriptón, coloreada según la propiedad elegida, una gráfica de esa propiedad a lo largo de la selección y una explicación en términos de carga nuclear efectiva y apantallamiento.",
+        "playArea": "El área de juego tiene una tabla periódica del hidrógeno al {{last}}, coloreada según la propiedad elegida, una gráfica de esa propiedad a lo largo de la selección y una explicación en términos de carga nuclear efectiva y apantallamiento.",
         "controlArea": "El área de control elige la propiedad, muestra u oculta la carga nuclear efectiva en la gráfica, abre la pantalla Apantallamiento para el elemento seleccionado y reinicia la pantalla.",
         "interactionHint": "Selecciona un elemento, un periodo o un grupo en la tabla y lee cómo cambia la propiedad."
       },
       "currentDetailsSingle": "{{name}} está seleccionado. {{property}}: {{value}}. Carga nuclear efectiva {{zEff}}.",
       "currentDetailsRun": "{{title}} está seleccionado. {{property}} va de {{first}} a {{last}}; la carga nuclear efectiva de {{zEffFirst}} a {{zEffLast}}.",
-      "table": "Tabla periódica, del hidrógeno al kriptón",
+      "table": "Tabla periódica, del hidrógeno al {{last}}",
       "tableHelp": "Las flechas se mueven entre elementos y Intro selecciona. Mayús y flechas extienden la selección a lo largo de un periodo o de un grupo. P selecciona todo el periodo, G todo el grupo.",
       "focusedElement": "{{name}}, {{symbol}}, número atómico {{z}}, periodo {{period}}, grupo {{group}}. {{property}}: {{value}}.",
       "propertyRadio": "Propiedad mostrada",
@@ -238,7 +240,7 @@
       },
       "currentDetails": "{{name}}, electrón {{group}}. {{breakdown}} Apantallamiento total {{s}}, así que la carga nuclear efectiva es {{z}} menos {{s}}, igual a {{zEff}}.",
       "breakdownItem": "{{count}} electrones {{group}} apantallan {{weight}} cada uno.",
-      "picker": "Selector de elemento, del hidrógeno al kriptón",
+      "picker": "Selector de elemento, del hidrógeno al {{last}}",
       "pickerHelp": "Las flechas eligen un elemento.",
       "targetRadio": "Electrón estudiado",
       "previous": "Elemento anterior",

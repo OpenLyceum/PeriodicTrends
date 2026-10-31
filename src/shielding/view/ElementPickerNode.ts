@@ -13,6 +13,7 @@ import { ELEMENTS, getElement, LANTHANIDE_ROW } from "../../common/model/Element
 import { LANTHANIDE_PLACEHOLDER, type TableExtent } from "../../common/model/TableExtent.js";
 import { stepCell } from "../../common/model/TrendSelection.js";
 import PeriodicTrendsHotkeyData from "../../common/PeriodicTrendsHotkeyData.js";
+import { tableDescriptionProperty } from "../../common/view/tableDescriptionProperty.js";
 import { StringManager } from "../../i18n/StringManager.js";
 import PeriodicTrendsColors from "../../PeriodicTrendsColors.js";
 import { MINI_CELL_HEIGHT, MINI_CELL_WIDTH } from "../../PeriodicTrendsConstants.js";
@@ -41,7 +42,7 @@ export class ElementPickerNode extends Node {
     super({
       tagName: "div",
       focusable: true,
-      accessibleName: a11y.pickerStringProperty,
+      accessibleName: tableDescriptionProperty(tableExtentProperty, a11y.pickerStringProperty),
       accessibleHelpText: a11y.pickerHelpStringProperty,
       // Hidden cells beyond the table on show must not keep the picker (and its panel) large.
       excludeInvisibleChildrenFromBounds: true,

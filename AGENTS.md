@@ -33,6 +33,10 @@ design decisions: [`doc/implementation-notes.md`](doc/implementation-notes.md).
 - **No "Slater estimate" curve.** Slater's Z_eff gives the wrong shape for ionization energy
   even after rescaling (Li→Ne would rise ×20, not ×4), so the graph overlays Z_eff itself on a
   second axis instead of a predicted property.
+- **Explanations follow the selected configurations.** The same-shell explanation is used for
+  increasing, constant-n s/p runs. Runs containing d/f elements describe endpoint target groups
+  and n values, and qualify the orbital-specific Slater estimates rather than assuming a rise.
+  In particular, Pd → Ag compares 4d (n = 4) with the 5s/5p group (n = 5).
 - **Anomalies are data.** `common/model/TrendAnomalies.ts` lists every place where Z_eff and n
   predict the wrong direction (Be→B, N→O, Al→Ga, …). `tests/common/TrendAnomalies.test.ts` checks
   the main trends hold everywhere else and that each listed pair is a real reversal, so a typo in
@@ -44,6 +48,8 @@ design decisions: [`doc/implementation-notes.md`](doc/implementation-notes.md).
 - **One element is shared** between screens (`SelectedElementModel`, created in `main.ts`): the
   anchor of a Trends selection is the element the Shielding screen opens on. Trends construction
   and reset synchronize the default period-2 anchor (Li); Shielding opened first starts on Cl.
+  Shielding reset restores Cl within the current extent; `NumberProperty.reset()` would also
+  restore the startup range, so use `setValueAndRange` with the current table instead.
 
 ## Key files
 
@@ -88,6 +94,9 @@ design decisions: [`doc/implementation-notes.md`](doc/implementation-notes.md).
 - The table preserves the moving cursor during keyboard commits; external selections, reset and
   extent changes clear old Shift+arrow anchors. The shielding legend follows the electron
   panel's changing bounds as the extent preference reveals more choices.
+- Both table labels and the Trends play-area summary interpolate the localized endpoint name
+  through `common/view/tableDescriptionProperty.ts`, following live extent and locale changes.
+  The Slater grid has a maximum width so translated columns stay inside the middle panel.
 
 ## Compliance carve-outs
 
@@ -127,9 +136,12 @@ open PRs that fight the overrides. Revisit when SceneryStack drops or re-pins th
 | `tests/common/Slater.test.ts` | Textbook Slater values (N 3.90, Cl 6.10, K 2.20, Fe 3.75, Zn 4.35, Zn 3d 8.85, …) |
 | `tests/common/ElementData.test.ts` | 36 contiguous elements, placement, configurations sum to Z, Cr/Cu, intentional gaps |
 | `tests/common/TrendSelection.test.ts` | Drag snapping, ordering, clamping, empty slots, keyboard stepping |
+| `tests/common/SelectedElementModel.test.ts` | Reset preserves the current extent's numeric range after expansion or shrinking |
 | `tests/common/TrendAnomalies.test.ts` | Trends hold except listed anomalies; every listed pair is a real reversal; matching and placement |
 | `tests/trends/model/TrendsModel.test.ts` | Shared selection consistency at initialization, reset and extent shrink (Vitest, happy-dom) |
+| `tests/trends/view/describeSelection.test.ts` | Regular s/p explanation, V → Cr reversal, Pd → Ag target change, an interior configuration exception and qualified experimental trends |
 | `tests/browser/review-regressions.spec.ts` | Keyboard extension, pointer/touch rings, Pd shielding, live Preferences layout, Explain/reset, localized extent titles |
+| `tests/browser/follow-up-regressions.spec.ts` | Localized configuration-aware explanations, translated Slater-grid bounds, live accessible extent labels and summary, native Preferences, runtime locale changes, Reset All followed by extended-table keyboard selection |
 | `tests/TimeModel.test.ts`, `tests/memory-leak.test.ts`, `tests/helpers/`, `tests/fuzz/` | Template-owned (TimeModel is unused here but kept for drift) |
 
 - Unit tests live only under root `tests/`, mirroring `src/`.

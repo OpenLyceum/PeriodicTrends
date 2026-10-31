@@ -59,7 +59,7 @@ displayed.
 
 ## How the trends are explained
 
-- **Across a period** n is constant and Z<sub>eff</sub> rises: each added proton is only partly
+- **Across a regular s/p run** n is constant and Z<sub>eff</sub> rises: each added proton is only partly
   cancelled by the added same-shell electron (+1 − 0.35 = +0.65 per element in the s and p
   blocks; +1 − 0.85 = +0.15 across the 3d series, where the electrons go into an inner shell).
   Outer electrons are pulled harder at about the same distance: radius falls, ionization
@@ -67,6 +67,12 @@ displayed.
 - **Down a group** n grows by one shell each period while Z<sub>eff</sub> changes much less;
   the outer electron is farther out and screened by every inner shell, so radius grows and the
   other three properties fall.
+
+These are broad trends rather than guarantees for every selected pair. Exceptional occupations
+can reverse the Slater estimate, and the target itself can change: Pd uses 4d (n = 4), while Ag
+uses the 5s/5p Slater group (n = 5). Runs containing d/f elements therefore show the endpoint
+target groups and n values instead of asserting that n stays fixed or Z_eff always rises.
+Slater Z_eff is an orbital-specific estimate, not a measured universal charge for an atom.
 
 The sim deliberately does **not** plot a property predicted from Slater's Z<sub>eff</sub>
 (r ∝ n*²/Z<sub>eff</sub>, IE ∝ (Z<sub>eff</sub>/n*)²): even scaled to fit, the IE estimate

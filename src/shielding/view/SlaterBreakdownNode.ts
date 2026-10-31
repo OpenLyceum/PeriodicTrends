@@ -76,7 +76,9 @@ export class SlaterBreakdownNode extends PeriodicTrendsPanel {
         null,
         cellText(formatCharge(result.s), true),
       ]);
-      const table = new GridBox({ xSpacing: 14, ySpacing: 4, xAlign: "left", rows });
+      // Four independently sized columns can exceed the allocated middle column in translation.
+      // Scale the complete grid uniformly so headings and values stay aligned within the panel.
+      const table = new GridBox({ xSpacing: 14, ySpacing: 4, xAlign: "left", rows, maxWidth: contentWidth });
       const equation = new RichText(
         StringUtils.fillIn(strings.zEffEquationStringProperty.value, {
           z: result.z,

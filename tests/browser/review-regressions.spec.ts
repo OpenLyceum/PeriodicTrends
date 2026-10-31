@@ -40,7 +40,7 @@ async function setExtent(page: Page, maxZ: number) {
 
 test("Shift+arrows extend and contract from the moving endpoint", async ({ page }) => {
   await page.goto("/?screens=1&ea");
-  const grid = page.getByText("Periodic table, hydrogen to krypton", { exact: true });
+  const grid = page.getByText(/^Periodic table, hydrogen to /);
   await grid.focus();
   for (let lastZ = 4; lastZ <= 10; lastZ++) {
     await page.keyboard.press("Shift+ArrowRight");
@@ -65,7 +65,7 @@ test("Shift+arrows extend and contract from the moving endpoint", async ({ page 
 
 test("pointer selections and extent changes start a fresh keyboard extension", async ({ page }) => {
   await page.goto("/?screens=1&ea");
-  const grid = page.getByText("Periodic table, hydrogen to krypton", { exact: true });
+  const grid = page.getByText(/^Periodic table, hydrogen to /);
   await grid.focus();
   await page.keyboard.press("Shift+ArrowRight");
   const point = await page.evaluate(() => {

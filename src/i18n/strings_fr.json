@@ -140,15 +140,15 @@
     "explanationTitle": "Pourquoi ?",
     "single": "Son électron le plus externe a n = {{n}} et ressent Z<sub>eff</sub> = {{zEff}} : la charge du noyau Z = {{z}} moins l'écrantage S = {{s}}.",
     "singleValue": "{{property}} : {{value}}.",
-    "period": "Le long de la période {{period}}, n reste {{n}} tandis que Z<sub>eff</sub> passe de {{zEffFirst}} à {{zEffLast}}. Chaque électron ajouté rejoint la même couche et n'écrante qu'une partie du proton ajouté : les électrons externes sont attirés plus fort, à peu près à la même distance.",
+    "period": "Le long de la période {{period}}, n reste {{n}} tandis que l'estimation de Slater de Z<sub>eff</sub> passe de {{zEffFirst}} à {{zEffLast}}. Les électrons ajoutés rejoignent le même groupe s/p externe et n'écrantent qu'une partie de chaque proton ajouté : les électrons externes sont attirés plus fort.",
     "group": "En descendant le groupe {{group}}, n passe de {{nFirst}} à {{nLast}} tandis que Z<sub>eff</sub> varie de {{zEffFirst}} à {{zEffLast}}. Chaque nouvelle couche est plus loin du noyau et écrantée par toutes les couches internes : la distance l'emporte.",
     "consequence": {
       "period": {
-        "atomicRadius": "Les atomes rapetissent donc : {{first}} → {{last}}.",
-        "ionizationEnergy": "Arracher un électron devient donc plus difficile : l'énergie d'ionisation augmente, {{first}} → {{last}}.",
-        "electronAffinity": "Les atomes libèrent donc en général plus d'énergie en gagnant un électron : {{first}} → {{last}}.",
-        "electronegativity": "Les atomes attirent donc plus fort les électrons partagés : l'électronégativité augmente, {{first}} → {{last}}.",
-        "zEff": "Z<sub>eff</sub> augmente d'environ 0,65 par élément dans les blocs s et p (+1 proton, +0,35 d'écrantage), mais de seulement 0,15 dans la série 3d (+1 proton, +0,85 d'écrantage)."
+        "atomicRadius": "Le long d'une période, les atomes deviennent généralement plus petits. Valeurs sélectionnées : {{first}} → {{last}}.",
+        "ionizationEnergy": "Le long d'une période, l'énergie d'ionisation augmente généralement. Valeurs sélectionnées : {{first}} → {{last}}.",
+        "electronAffinity": "Le long d'une période, les atomes libèrent généralement plus d'énergie en gagnant un électron. Valeurs sélectionnées : {{first}} → {{last}}.",
+        "electronegativity": "Le long d'une période, l'électronégativité augmente généralement. Valeurs sélectionnées : {{first}} → {{last}}.",
+        "zEff": "Sans réarrangement électronique, chaque proton ajouté avec un électron du même groupe augmente l'estimation de Slater de 0,65 (0,70 en 1s) ; un électron ajouté dans la couche n − 1 donne plutôt une hausse de 0,15."
       },
       "group": {
         "atomicRadius": "Les atomes grossissent donc : {{first}} → {{last}}.",
@@ -174,7 +174,9 @@
       "irregularEN": "{{from}} → {{to}} : les électronégativités de Pauling des éléments lourds du bloc p sont incertaines et dépendent du degré d'oxydation utilisé (le 2,33 du plomb est celui du plomb(IV)) ; cette petite inversion n'est pas significative.",
       "lanthanideContraction": "{{from}} → {{to}} : quatorze électrons 4f s'intercalent et écrantent mal, si bien que les électrons externes de {{to}} ressentent un Z<sub>eff</sub> plus grand que prévu ; la variation habituelle le long du groupe s'arrête ou s'inverse (contraction des lanthanides).",
       "lanthanideSeries": "{{from}}–{{to}} : les électrons ajoutés vont dans la sous-couche 4f profonde, qui touche à peine les électrons 6s externes ; les propriétés varient donc peu, et le rayon diminue lentement le long de la série (contraction des lanthanides)."
-    }
+    },
+    "periodConfigurations": "Le long de la période {{period}}, l'estimation de Slater de Z<sub>eff</sub> passe de {{zEffFirst}} à {{zEffLast}}. L'électron externe est dans {{firstGroup}} (n = {{nFirst}}) au début et dans {{lastGroup}} (n = {{nLast}}) à la fin.",
+    "configurationComparison": "Ces estimations dépendent de l'orbitale. Un changement d'occupation d/f ou d'électron étudié peut interrompre la tendance simple au sein d'une même couche."
   },
   "shielding": {
     "target": "Électron étudié",
@@ -215,13 +217,13 @@
   "a11y": {
     "trends": {
       "screenSummary": {
-        "playArea": "La zone de jeu contient un tableau périodique de l'hydrogène au krypton, coloré selon la propriété choisie, un graphique de cette propriété le long de la sélection et une explication en termes de charge nucléaire effective et d'écrantage.",
+        "playArea": "La zone de jeu contient un tableau périodique de l'hydrogène au {{last}}, coloré selon la propriété choisie, un graphique de cette propriété le long de la sélection et une explication en termes de charge nucléaire effective et d'écrantage.",
         "controlArea": "La zone de contrôle choisit la propriété, affiche ou masque la charge nucléaire effective sur le graphique, ouvre l'écran Écrantage pour l'élément sélectionné et réinitialise l'écran.",
         "interactionHint": "Sélectionnez un élément, une période ou un groupe dans le tableau et lisez comment la propriété varie."
       },
       "currentDetailsSingle": "{{name}} est sélectionné. {{property}} : {{value}}. Charge nucléaire effective {{zEff}}.",
       "currentDetailsRun": "{{title}} est sélectionné. {{property}} passe de {{first}} à {{last}} ; la charge nucléaire effective de {{zEffFirst}} à {{zEffLast}}.",
-      "table": "Tableau périodique, de l'hydrogène au krypton",
+      "table": "Tableau périodique, de l'hydrogène au {{last}}",
       "tableHelp": "Les flèches passent d'un élément à l'autre et Entrée sélectionne. Maj et flèches étendent la sélection le long d'une période ou d'un groupe. P sélectionne toute la période, G tout le groupe.",
       "focusedElement": "{{name}}, {{symbol}}, numéro atomique {{z}}, période {{period}}, groupe {{group}}. {{property}} : {{value}}.",
       "propertyRadio": "Propriété affichée",
@@ -238,7 +240,7 @@
       },
       "currentDetails": "{{name}}, électron {{group}}. {{breakdown}} Écrantage total {{s}} ; la charge nucléaire effective vaut donc {{z}} moins {{s}}, soit {{zEff}}.",
       "breakdownItem": "{{count}} électrons {{group}} écrantent {{weight}} chacun.",
-      "picker": "Sélecteur d'élément, de l'hydrogène au krypton",
+      "picker": "Sélecteur d'élément, de l'hydrogène au {{last}}",
       "pickerHelp": "Les flèches choisissent un élément.",
       "targetRadio": "Électron étudié",
       "previous": "Élément précédent",
