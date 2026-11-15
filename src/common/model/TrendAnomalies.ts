@@ -52,6 +52,7 @@ function range(property: PeriodicProperty, key: AnomalyKey, fromZ: number, toZ: 
   return { property, key, kind: "range", fromZ, toZ };
 }
 
+/** @internal Exported for unit tests; not part of the application API. */
 export const TREND_ANOMALIES: readonly TrendAnomaly[] = [
   // Ionization energy dips across a period.
   pair(IE, "pBelowS", 4, 5), // Be → B
