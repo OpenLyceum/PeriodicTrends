@@ -26,11 +26,11 @@ export type Subshell = {
   readonly count: number;
 };
 
-export type Block = "s" | "p" | "d" | "f";
+type Block = "s" | "p" | "d" | "f";
 
 /** Electron affinity of an atom whose anion is not stable (energy is absorbed, not released). */
 export const UNBOUND = "unbound";
-export type ElectronAffinity = number | typeof UNBOUND;
+type ElectronAffinity = number | typeof UNBOUND;
 
 export type ElementData = {
   readonly z: number;
@@ -56,8 +56,6 @@ export type ElementData = {
 };
 
 export const MIN_Z = 1;
-/** Last element with data. Which elements are shown is chosen by TableExtent. */
-export const MAX_Z = 86;
 export const GROUP_COUNT = 18;
 
 /** La–Lu are drawn in a detached row under period 6, starting under group 3. */
@@ -145,7 +143,7 @@ function parseConfiguration(text: string): Subshell[] {
 }
 
 /** Ground-state configuration of element z, by aufbau with the listed exceptions. */
-export function groundStateConfiguration(z: number): readonly Subshell[] {
+function groundStateConfiguration(z: number): readonly Subshell[] {
   const exception = CONFIGURATION_EXCEPTIONS[z];
   return exception ? parseConfiguration(exception) : aufbau(z);
 }
@@ -248,7 +246,7 @@ function periodOf(z: number): number {
   return PERIOD_ENDS.findIndex((end) => z <= end) + 1;
 }
 
-export function isLanthanide(z: number): boolean {
+function isLanthanide(z: number): boolean {
   return z >= FIRST_LANTHANIDE && z <= LAST_LANTHANIDE;
 }
 
@@ -314,12 +312,12 @@ export function getElement(z: number): ElementData {
 }
 
 /** Orbital letter for angular momentum l. */
-export function orbitalLetter(l: number): string {
+function orbitalLetter(l: number): string {
   return ["s", "p", "d", "f"][l] ?? "?";
 }
 
 /** Configuration as plain text with superscript digits, e.g. "1s² 2s² 2p⁶ 3s¹". */
-export function configurationText(configuration: readonly Subshell[]): string {
+function configurationText(configuration: readonly Subshell[]): string {
   const superscripts = "⁰¹²³⁴⁵⁶⁷⁸⁹";
   const sup = (count: number) =>
     String(count)

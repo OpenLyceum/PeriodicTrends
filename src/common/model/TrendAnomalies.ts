@@ -13,7 +13,7 @@
 import { PeriodicProperty } from "./PeriodicProperty.js";
 import type { TrendSelection } from "./TrendSelection.js";
 
-export type AnomalyKey =
+type AnomalyKey =
   | "pBelowS"
   | "pairing"
   | "nobleGasRadius"

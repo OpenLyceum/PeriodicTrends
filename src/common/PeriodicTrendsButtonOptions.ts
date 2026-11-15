@@ -10,7 +10,7 @@
  */
 
 import type { PlayPauseStepButtonGroupOptions, TimeControlNodeOptions } from "scenerystack/scenery-phet";
-import { ButtonNode, type ComboBoxOptions } from "scenerystack/sun";
+import { ButtonNode } from "scenerystack/sun";
 import PeriodicTrendsColors from "../PeriodicTrendsColors.js";
 
 /** @public */
@@ -20,19 +20,6 @@ export const FLAT_BUTTON_APPEARANCE_OPTIONS = {
 
 /** Text on flat push buttons and combo-box items (always on a light control surface). @public */
 export const LIGHT_SURFACE_TEXT_FILL = PeriodicTrendsColors.controlSurfaceTextColorProperty;
-
-/**
- * Combo-box chrome for panels. Item labels must use {@link LIGHT_SURFACE_TEXT_FILL}, not
- * {@link PeriodicTrendsColors.textColorProperty} — that color is for labels on the dark panel fill.
- *
- * @public
- */
-export const PERIODIC_TRENDS_COMBO_BOX_OPTIONS = {
-  buttonFill: PeriodicTrendsColors.controlSurfaceColorProperty,
-  listFill: PeriodicTrendsColors.controlSurfaceColorProperty,
-  buttonStroke: PeriodicTrendsColors.panelBorderColorProperty,
-  listStroke: PeriodicTrendsColors.panelBorderColorProperty,
-} satisfies Pick<ComboBoxOptions, "buttonFill" | "listFill" | "buttonStroke" | "listStroke">;
 
 /** Options for RectangularPushButton and NumberControl arrow buttons. @public */
 export const FLAT_RECTANGULAR_BUTTON_OPTIONS = { ...FLAT_BUTTON_APPEARANCE_OPTIONS } as const;

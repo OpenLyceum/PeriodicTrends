@@ -22,17 +22,12 @@ export const SLATER_GROUPS = ["1s", "2sp", "3sp", "3d", "4sp", "4d", "4f", "5sp"
 export type SlaterGroupId = (typeof SLATER_GROUPS)[number];
 
 /** Shielding by one electron of each kind. */
-export const SLATER_WEIGHTS = {
+const SLATER_WEIGHTS = {
   sameGroup: 0.35,
   sameGroup1s: 0.3,
   nMinusOne: 0.85,
   inner: 1,
 } as const;
-
-/** Effective principal quantum number n* (Slater): 1, 2, 3, 3.7, 4.0, 4.2 for n = 1–6. */
-export function nStar(n: number): number {
-  return [0, 1, 2, 3, 3.7, 4.0, 4.2][n] ?? n;
-}
 
 /** True for a (d) or (f) group, which has its own shielding rule. */
 export function isInnerSubshellGroup(group: SlaterGroupId): boolean {
@@ -50,7 +45,7 @@ export function groupLabel(group: SlaterGroupId): string {
 }
 
 /** The Slater group a subshell belongs to. */
-export function groupOfSubshell(subshell: Subshell): SlaterGroupId {
+function groupOfSubshell(subshell: Subshell): SlaterGroupId {
   if (subshell.l >= 2) {
     return `${subshell.n}${"spdf"[subshell.l]}` as SlaterGroupId;
   }
@@ -67,7 +62,7 @@ export function groupCounts(configuration: readonly Subshell[]): Record<SlaterGr
 }
 
 /** Occupied Slater groups, inner to outer. */
-export function occupiedGroups(configuration: readonly Subshell[]): SlaterGroupId[] {
+function occupiedGroups(configuration: readonly Subshell[]): SlaterGroupId[] {
   const counts = groupCounts(configuration);
   return SLATER_GROUPS.filter((group) => counts[group] > 0);
 }
@@ -84,7 +79,7 @@ export function outermostGroup(configuration: readonly Subshell[]): SlaterGroupI
 /** Where a shielding electron sits relative to the target, which fixes its Slater weight. */
 export type ShieldingKind = "sameGroup" | "nMinusOne" | "inner" | "outer";
 
-export type ShieldingContribution = {
+type ShieldingContribution = {
   readonly group: SlaterGroupId;
   /** Electrons in the group that shield the target (the target itself excluded). */
   readonly count: number;

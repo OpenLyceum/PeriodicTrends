@@ -25,7 +25,7 @@ export type SelectionDescription = {
 };
 
 /** Principal quantum number of an element's outermost electron. */
-export function valenceN(z: number): number {
+function valenceN(z: number): number {
   return groupN(outermostGroup(getElement(z).configuration));
 }
 
@@ -56,7 +56,7 @@ export function selectionTitle(selection: TrendSelection): string {
 }
 
 /** Explanation text of an anomaly, with element symbols filled in. */
-export function anomalyText(anomaly: TrendAnomaly): string {
+function anomalyText(anomaly: TrendAnomaly): string {
   const texts = StringManager.getInstance().getTrendsStrings().anomalies;
   const template = {
     pBelowS: texts.pBelowSStringProperty,
@@ -169,15 +169,6 @@ export function describeSelection(
     anomalies,
     anomalyTexts,
   };
-}
-
-/** Removes RichText markup for speech ("Z<sub>eff</sub>" → "Z eff"). */
-export function toPlainText(markup: string): string {
-  return markup
-    .replace(/<sub>/g, " ")
-    .replace(/<\/?[^>]+>/g, "")
-    .replace(/\s+/g, " ")
-    .trim();
 }
 
 /** One spoken response (or live summary) for a selection. */

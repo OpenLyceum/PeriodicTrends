@@ -13,7 +13,7 @@
 import { GROUP_COUNT, LANTHANIDE_ROW } from "./ElementData.js";
 import { LANTHANIDE_PLACEHOLDER, type TableExtent } from "./TableExtent.js";
 
-export type SelectionKind = "single" | "period" | "group";
+type SelectionKind = "single" | "period" | "group";
 
 export type TrendSelection = {
   readonly kind: SelectionKind;
@@ -47,7 +47,7 @@ function normalised(selection: TrendSelection): TrendSelection {
   return selection.zs.length === 1 ? singleSelection(selection.zs[0] ?? selection.anchorZ) : selection;
 }
 
-export function clampCell(table: TableExtent, cell: GridCell): GridCell {
+function clampCell(table: TableExtent, cell: GridCell): GridCell {
   return {
     row: Math.min(table.rowCount, Math.max(1, cell.row)),
     column: Math.min(GROUP_COUNT, Math.max(1, cell.column)),
