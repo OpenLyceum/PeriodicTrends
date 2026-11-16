@@ -1,3 +1,4 @@
+import { TRENDS_SCREEN_VIEW_SETTINGS } from "../../PeriodicTrendsConstants.js";
 /**
  * TrendsScreenView.ts
  *
@@ -37,15 +38,15 @@ type SelfOptions = {
 export type TrendsScreenViewOptions = SelfOptions & ScreenViewOptions;
 
 /** Graph geometry; the left margin leaves room for the tick labels and the y-axis title. */
-const CHART_LEFT = 70;
-const CHART_WIDTH = 560;
-const CHART_BOTTOM = 536;
+const CHART_LEFT: number = TRENDS_SCREEN_VIEW_SETTINGS.CHART_LEFT;
+const CHART_WIDTH: number = TRENDS_SCREEN_VIEW_SETTINGS.CHART_WIDTH;
+const CHART_BOTTOM: number = TRENDS_SCREEN_VIEW_SETTINGS.CHART_BOTTOM;
 
 /** Space between the bottom of the table and the top of the plotting area (graph title, legend). */
-const CHART_GAP = 50;
+const CHART_GAP: number = TRENDS_SCREEN_VIEW_SETTINGS.CHART_GAP;
 
 /** The table is scaled down to this height when a larger extent would make it taller. */
-const MAX_TABLE_HEIGHT = 250;
+const MAX_TABLE_HEIGHT: number = TRENDS_SCREEN_VIEW_SETTINGS.MAX_TABLE_HEIGHT;
 
 /** Panel content width in the right column (panel margins are 12 px each side). */
 const SIDE_CONTENT_WIDTH = SIDE_COLUMN_WIDTH - 24;
@@ -75,12 +76,12 @@ export class TrendsScreenView extends ScreenView {
     const gap = PeriodicTableNode.spanBounds(1, 3, 3, 12);
     const card = new ElementCardNode(model, electronVoltsProperty, gap.width - 16);
     card.boundsProperty.link(() => {
-      card.left = gap.minX + 10;
-      card.centerY = gap.minY + gap.height * 0.42;
+      card.left = gap.minX + TRENDS_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_LEFT_OFFSET;
+      card.centerY = gap.minY + gap.height * TRENDS_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_CENTER_Y_FACTOR;
     });
     const legend = new HeatLegendNode(model, electronVoltsProperty, gap.width - 20);
-    legend.left = gap.minX + 10;
-    legend.bottom = gap.maxY - 4;
+    legend.left = gap.minX + TRENDS_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_LEFT_OFFSET;
+    legend.bottom = gap.maxY - TRENDS_SCREEN_VIEW_SETTINGS.CONSTRUCTOR_BOTTOM_OFFSET;
     const tableArea = new Node({ children: [this.table, card, legend] });
     this.addChild(tableArea);
 
@@ -130,7 +131,7 @@ export class TrendsScreenView extends ScreenView {
     const controlPanel = new PeriodicTrendsPanel(
       new VBox({
         align: "left",
-        spacing: 8,
+        spacing: TRENDS_SCREEN_VIEW_SETTINGS.CONTROL_PANEL_SPACING,
         children: [
           heading(strings.propertyStringProperty, SIDE_CONTENT_WIDTH),
           propertyRadio,

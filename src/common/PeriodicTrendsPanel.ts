@@ -1,3 +1,4 @@
+import { PERIODIC_TRENDS_PANEL_SETTINGS } from "../PeriodicTrendsConstants.js";
 /**
  * PeriodicTrendsPanel.ts
  *
@@ -40,8 +41,8 @@ export class PeriodicTrendsPanel extends Panel {
         fill: PeriodicTrendsColors.panelBackgroundColorProperty,
         stroke: PeriodicTrendsColors.panelBorderColorProperty,
         cornerRadius: PANEL_CORNER_RADIUS,
-        xMargin: 12,
-        yMargin: 10,
+        xMargin: PERIODIC_TRENDS_PANEL_SETTINGS.OPTIONS_X_MARGIN,
+        yMargin: PERIODIC_TRENDS_PANEL_SETTINGS.OPTIONS_Y_MARGIN,
       },
       providedOptions,
     );

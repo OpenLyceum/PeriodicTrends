@@ -1,3 +1,4 @@
+import { ANOMALY_BADGE_SETTINGS } from "../../PeriodicTrendsConstants.js";
 /**
  * AnomalyBadge.ts
  *
@@ -8,13 +9,13 @@ import { Circle, Node, Text } from "scenerystack/scenery";
 import { PhetFont } from "scenerystack/scenery-phet";
 import PeriodicTrendsColors from "../../PeriodicTrendsColors.js";
 
-const RADIUS = 8;
+const RADIUS: number = ANOMALY_BADGE_SETTINGS.RADIUS;
 
 export class AnomalyBadge extends Node {
   public constructor(index: number) {
     const disc = new Circle(RADIUS, { fill: PeriodicTrendsColors.anomalyColorProperty });
     const label = new Text(String(index), {
-      font: new PhetFont({ size: 10, weight: "bold" }),
+      font: new PhetFont({ size: ANOMALY_BADGE_SETTINGS.LABEL_FONT_SIZE, weight: "bold" }),
       fill: PeriodicTrendsColors.cellTextLightColorProperty,
       center: disc.center,
     });

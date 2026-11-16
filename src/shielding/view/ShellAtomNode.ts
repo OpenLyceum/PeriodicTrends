@@ -1,3 +1,4 @@
+import { SHELL_ATOM_NODE_SETTINGS } from "../../PeriodicTrendsConstants.js";
 /**
  * ShellAtomNode.ts
  *
@@ -36,11 +37,11 @@ const RING_RADIUS: Partial<Record<SlaterGroupId, number>> = {
 };
 
 /** Innermost and outermost ring radii when the rings are spread evenly (beyond krypton). */
-const FIRST_RING = 30;
-const LAST_RING = 168;
+const FIRST_RING: number = SHELL_ATOM_NODE_SETTINGS.FIRST_RING;
+const LAST_RING: number = SHELL_ATOM_NODE_SETTINGS.LAST_RING;
 
 /** Electrons on a ring keep at least this gap between centres. */
-const MIN_ELECTRON_SPACING = 3;
+const MIN_ELECTRON_SPACING: number = SHELL_ATOM_NODE_SETTINGS.MIN_ELECTRON_SPACING;
 
 /**
  * Ring radius of each occupied group. Up to krypton the rings sit at fixed radii; beyond, with
@@ -52,9 +53,9 @@ function ringRadii(groups: readonly SlaterGroupId[]): Map<SlaterGroupId, number>
   return new Map(groups.map((group, i) => [group, fixed ? (RING_RADIUS[group] ?? 0) : FIRST_RING + i * step]));
 }
 
-const NUCLEUS_RADIUS = 18;
-const ELECTRON_RADIUS = 5;
-const TARGET_RADIUS = 8;
+const NUCLEUS_RADIUS: number = SHELL_ATOM_NODE_SETTINGS.NUCLEUS_RADIUS;
+const ELECTRON_RADIUS: number = SHELL_ATOM_NODE_SETTINGS.ELECTRON_RADIUS;
+const TARGET_RADIUS: number = SHELL_ATOM_NODE_SETTINGS.TARGET_RADIUS;
 
 /** Angles of the ring labels, measured from +x towards +y; alternate rings alternate sides. */
 const LABEL_ANGLES = [(3 * Math.PI) / 4, Math.PI / 4];
@@ -92,8 +93,10 @@ export class ShellAtomNode extends Node {
       const isTarget = group === result.target;
       const ring = new Circle(radius, {
         stroke: isTarget ? PeriodicTrendsColors.targetElectronColorProperty : PeriodicTrendsColors.shellColorProperty,
-        lineWidth: isTarget ? 2 : 1.5,
-        lineDash: isInnerSubshellGroup(group) ? [6, 4] : [],
+        lineWidth: isTarget ? 2 : SHELL_ATOM_NODE_SETTINGS.RING_LINE_WIDTH,
+        lineDash: isInnerSubshellGroup(group)
+          ? [SHELL_ATOM_NODE_SETTINGS.RING_LINE_DASH_DASH, SHELL_ATOM_NODE_SETTINGS.REBUILD_RING_LINE_DASH_DASH]
+          : [],
         cursor: "pointer",
       });
       // Annular bands leave inner rings reachable. Clip at adjacent midpoints when the extended
@@ -129,7 +132,7 @@ export class ShellAtomNode extends Node {
               x: center.x,
               y: center.y,
               stroke: PeriodicTrendsColors.targetElectronColorProperty,
-              lineWidth: 1.5,
+              lineWidth: SHELL_ATOM_NODE_SETTINGS.REBUILD_LINE_WIDTH,
               pickable: false,
             }),
             new Circle(TARGET_RADIUS, {
@@ -158,11 +161,14 @@ export class ShellAtomNode extends Node {
       });
       const labelAngle = LABEL_ANGLES[ringIndex % LABEL_ANGLES.length] ?? 0;
       label.center = label.center.setXY(radius * Math.cos(labelAngle), radius * Math.sin(labelAngle));
-      const labelBackground = Rectangle.bounds(label.bounds.dilated(2), {
-        fill: PeriodicTrendsColors.backgroundColorProperty,
-        cornerRadius: 3,
-        pickable: false,
-      });
+      const labelBackground = Rectangle.bounds(
+        label.bounds.dilated(SHELL_ATOM_NODE_SETTINGS.LABEL_BACKGROUND_DILATION),
+        {
+          fill: PeriodicTrendsColors.backgroundColorProperty,
+          cornerRadius: SHELL_ATOM_NODE_SETTINGS.LABEL_BACKGROUND_CORNER_RADIUS,
+          pickable: false,
+        },
+      );
       nodes.push(labelBackground, label);
     });
 
@@ -171,7 +177,7 @@ export class ShellAtomNode extends Node {
       font: new PhetFont({ size: FONT_SIZE.label, weight: "bold" }),
       fill: PeriodicTrendsColors.cellTextLightColorProperty,
       center: nucleus.center,
-      maxWidth: NUCLEUS_RADIUS * 1.8,
+      maxWidth: NUCLEUS_RADIUS * SHELL_ATOM_NODE_SETTINGS.CHARGE_MAX_WIDTH_FACTOR,
     });
     nodes.push(nucleus, charge);
     this.content.children = nodes;

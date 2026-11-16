@@ -1,3 +1,4 @@
+import { HEAT_LEGEND_NODE_SETTINGS } from "../../PeriodicTrendsConstants.js";
 /**
  * HeatLegendNode.ts
  *
@@ -14,7 +15,7 @@ import PeriodicTrendsColors from "../../PeriodicTrendsColors.js";
 import { FONT_SIZE } from "../../PeriodicTrendsConstants.js";
 import type { TrendsModel } from "../model/TrendsModel.js";
 
-const BAR_HEIGHT = 10;
+const BAR_HEIGHT: number = HEAT_LEGEND_NODE_SETTINGS.BAR_HEIGHT;
 
 export class HeatLegendNode extends Node {
   public constructor(model: TrendsModel, electronVoltsProperty: TReadOnlyProperty<boolean>, width: number) {

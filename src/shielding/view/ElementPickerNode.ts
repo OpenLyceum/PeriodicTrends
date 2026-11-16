@@ -1,3 +1,4 @@
+import { ELEMENT_PICKER_NODE_SETTINGS } from "../../PeriodicTrendsConstants.js";
 /**
  * ElementPickerNode.ts
  *
@@ -26,7 +27,7 @@ const ARROW_STEPS: Record<string, [number, number]> = {
 };
 
 /** Extra space above the detached lanthanide row. */
-const LANTHANIDE_GAP = 6;
+const LANTHANIDE_GAP: number = ELEMENT_PICKER_NODE_SETTINGS.LANTHANIDE_GAP;
 
 /** Top-left of grid slot (row, column). */
 function slotPosition(row: number, column: number): { x: number; y: number } {
@@ -52,16 +53,16 @@ export class ElementPickerNode extends Node {
     const cells = ELEMENTS.map((element) => {
       const { x, y } = slotPosition(element.row, element.column);
       const background = new Rectangle(x + 1, y + 1, MINI_CELL_WIDTH - 2, MINI_CELL_HEIGHT - 2, {
-        cornerRadius: 2,
+        cornerRadius: ELEMENT_PICKER_NODE_SETTINGS.BACKGROUND_CORNER_RADIUS,
         fill: PeriodicTrendsColors.panelBackgroundColorProperty,
         stroke: PeriodicTrendsColors.shellColorProperty,
         cursor: "pointer",
       });
       const label = new Text(element.symbol, {
-        font: new PhetFont(10),
+        font: new PhetFont(ELEMENT_PICKER_NODE_SETTINGS.LABEL_FONT_SIZE),
         fill: PeriodicTrendsColors.textColorProperty,
         center: background.center,
-        maxWidth: MINI_CELL_WIDTH - 4,
+        maxWidth: MINI_CELL_WIDTH - ELEMENT_PICKER_NODE_SETTINGS.LABEL_MAX_WIDTH_OFFSET,
         pickable: false,
       });
       background.addInputListener(
@@ -79,7 +80,7 @@ export class ElementPickerNode extends Node {
     // The period-6 slot of group 3 points to the lanthanide row.
     const placeholderPosition = slotPosition(LANTHANIDE_PLACEHOLDER.row, LANTHANIDE_PLACEHOLDER.column);
     const placeholder = new Text("*", {
-      font: new PhetFont(10),
+      font: new PhetFont(ELEMENT_PICKER_NODE_SETTINGS.PLACEHOLDER_FONT_SIZE),
       fill: PeriodicTrendsColors.mutedTextColorProperty,
       centerX: placeholderPosition.x + MINI_CELL_WIDTH / 2,
       centerY: placeholderPosition.y + MINI_CELL_HEIGHT / 2,

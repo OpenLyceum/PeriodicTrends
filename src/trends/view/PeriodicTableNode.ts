@@ -1,3 +1,4 @@
+import { PERIODIC_TABLE_NODE_SETTINGS } from "../../PeriodicTrendsConstants.js";
 /**
  * PeriodicTableNode.ts
  *
@@ -63,15 +64,15 @@ import { CELL_HEIGHT, CELL_WIDTH, FONT_SIZE } from "../../PeriodicTrendsConstant
 import type { TrendsModel } from "../model/TrendsModel.js";
 
 /** Width of the period-number column and height of the group-number row. */
-const HEADER_SIZE = 16;
+const HEADER_SIZE: number = PERIODIC_TABLE_NODE_SETTINGS.HEADER_SIZE;
 
 /** Extra space above the detached lanthanide row. */
-const LANTHANIDE_GAP = 8;
+const LANTHANIDE_GAP: number = PERIODIC_TABLE_NODE_SETTINGS.LANTHANIDE_GAP;
 
 /** Inset of each cell's rectangle inside its slot. */
 const CELL_GAP = 1;
 
-const SELECTED_LINE_WIDTH = 3;
+const SELECTED_LINE_WIDTH: number = PERIODIC_TABLE_NODE_SETTINGS.SELECTED_LINE_WIDTH;
 
 type CellNodes = {
   readonly node: Node;
@@ -130,7 +131,10 @@ export class PeriodicTableNode extends Node {
         centerY: HEADER_SIZE / 2,
         cursor: "pointer",
       });
-      header.mouseArea = header.localBounds.dilatedXY(CELL_WIDTH / 2 - header.width / 2, 4);
+      header.mouseArea = header.localBounds.dilatedXY(
+        CELL_WIDTH / 2 - header.width / 2,
+        PERIODIC_TABLE_NODE_SETTINGS.HEADER_Y_DILATION,
+      );
       header.addInputListener(
         new FireListener({ fire: () => model.select(groupSelection(model.tableExtentProperty.value, group)) }),
       );
@@ -145,7 +149,10 @@ export class PeriodicTableNode extends Node {
         centerY: HEADER_SIZE + (period - 0.5) * CELL_HEIGHT,
         cursor: "pointer",
       });
-      header.mouseArea = header.localBounds.dilatedXY(4, CELL_HEIGHT / 2 - header.height / 2);
+      header.mouseArea = header.localBounds.dilatedXY(
+        PERIODIC_TABLE_NODE_SETTINGS.HEADER_X_DILATION,
+        CELL_HEIGHT / 2 - header.height / 2,
+      );
       header.addInputListener(
         new FireListener({ fire: () => model.select(periodSelection(model.tableExtentProperty.value, period)) }),
       );
@@ -159,20 +166,23 @@ export class PeriodicTableNode extends Node {
     const cells: CellNodes[] = ELEMENTS.map((element) => {
       const bounds = PeriodicTableNode.cellBounds(element.row, element.column);
       const background = new Rectangle(bounds.eroded(CELL_GAP), {
-        cornerRadius: 3,
+        cornerRadius: PERIODIC_TABLE_NODE_SETTINGS.BACKGROUND_CORNER_RADIUS,
         stroke: PeriodicTrendsColors.cellStrokeColorProperty,
       });
       const number = new Text(String(element.z), {
-        font: new PhetFont(8),
-        left: bounds.minX + 3,
+        font: new PhetFont(PERIODIC_TABLE_NODE_SETTINGS.NUMBER_FONT_SIZE),
+        left: bounds.minX + PERIODIC_TABLE_NODE_SETTINGS.NUMBER_LEFT_OFFSET,
         top: bounds.minY + 2,
       });
       const symbol = new Text(element.symbol, {
-        font: new PhetFont({ size: 14, weight: "bold" }),
+        font: new PhetFont({ size: PERIODIC_TABLE_NODE_SETTINGS.SYMBOL_FONT_SIZE, weight: "bold" }),
         centerX: bounds.centerX,
         centerY: bounds.centerY - 1,
       });
-      const value = new Text("", { font: new PhetFont(8), maxWidth: CELL_WIDTH - 4 });
+      const value = new Text("", {
+        font: new PhetFont(PERIODIC_TABLE_NODE_SETTINGS.VALUE_FONT_SIZE),
+        maxWidth: CELL_WIDTH - PERIODIC_TABLE_NODE_SETTINGS.VALUE_MAX_WIDTH_OFFSET,
+      });
       const node = new Node({ children: [background, number, symbol, value] });
       cellLayer.addChild(node);
       return { node, background, number, symbol, value };
@@ -184,15 +194,15 @@ export class PeriodicTableNode extends Node {
       cursor: "pointer",
       children: [
         new Rectangle(placeholderBounds.eroded(CELL_GAP), {
-          cornerRadius: 3,
+          cornerRadius: PERIODIC_TABLE_NODE_SETTINGS.PLACEHOLDER_CORNER_RADIUS,
           stroke: PeriodicTrendsColors.cellStrokeColorProperty,
-          lineDash: [3, 2],
+          lineDash: [PERIODIC_TABLE_NODE_SETTINGS.PLACEHOLDER_LINE_DASH_DASH, 2],
         }),
         new Text(`${FIRST_LANTHANIDE}–${LAST_LANTHANIDE}`, {
-          font: new PhetFont(9),
+          font: new PhetFont(PERIODIC_TABLE_NODE_SETTINGS.PLACEHOLDER_FONT_SIZE),
           fill: PeriodicTrendsColors.mutedTextColorProperty,
           center: placeholderBounds.center,
-          maxWidth: CELL_WIDTH - 4,
+          maxWidth: CELL_WIDTH - PERIODIC_TABLE_NODE_SETTINGS.PLACEHOLDER_MAX_WIDTH_OFFSET,
         }),
       ],
     });
@@ -278,10 +288,10 @@ export class PeriodicTableNode extends Node {
     // ── Keyboard cursor ─────────────────────────────────────────────────────────
     const keyboardActiveProperty = new BooleanProperty(false);
     const cursorRectangle = new Rectangle(0, 0, CELL_WIDTH + 2, CELL_HEIGHT + 2, {
-      cornerRadius: 4,
+      cornerRadius: PERIODIC_TABLE_NODE_SETTINGS.CURSOR_RECTANGLE_CORNER_RADIUS,
       stroke: PeriodicTrendsColors.focusCellColorProperty,
-      lineWidth: 2,
-      lineDash: [4, 2],
+      lineWidth: PERIODIC_TABLE_NODE_SETTINGS.CURSOR_RECTANGLE_LINE_WIDTH,
+      lineDash: [PERIODIC_TABLE_NODE_SETTINGS.CURSOR_RECTANGLE_LINE_DASH_DASH, 2],
       pickable: false,
       visibleProperty: keyboardActiveProperty,
     });

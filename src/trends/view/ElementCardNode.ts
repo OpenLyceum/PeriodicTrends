@@ -1,3 +1,4 @@
+import { ELEMENT_CARD_NODE_SETTINGS } from "../../PeriodicTrendsConstants.js";
 /**
  * ElementCardNode.ts
  *
@@ -22,7 +23,7 @@ export class ElementCardNode extends HBox {
   public constructor(model: TrendsModel, electronVoltsProperty: TReadOnlyProperty<boolean>, maxWidth: number) {
     const common = StringManager.getInstance().getCommonStrings();
     const symbol = new Text("", {
-      font: new PhetFont({ size: 40, weight: "bold" }),
+      font: new PhetFont({ size: ELEMENT_CARD_NODE_SETTINGS.SYMBOL_FONT_SIZE, weight: "bold" }),
       fill: PeriodicTrendsColors.textColorProperty,
     });
     const textWidth = maxWidth - 70;
@@ -52,11 +53,15 @@ export class ElementCardNode extends HBox {
       maxWidth: textWidth,
     });
     super({
-      spacing: 12,
+      spacing: ELEMENT_CARD_NODE_SETTINGS.CONSTRUCTOR_SPACING,
       align: "center",
       children: [
         symbol,
-        new VBox({ align: "left", spacing: 2, children: [name, details, configuration, value, zEff] }),
+        new VBox({
+          align: "left",
+          spacing: ELEMENT_CARD_NODE_SETTINGS.ITEM_2_SPACING,
+          children: [name, details, configuration, value, zEff],
+        }),
       ],
     });
 

@@ -1,3 +1,4 @@
+import { SHIELDING_SCREEN_VIEW_SETTINGS } from "../../PeriodicTrendsConstants.js";
 /**
  * ShieldingScreenView.ts
  *
@@ -34,10 +35,10 @@ import { SlaterBreakdownNode } from "./SlaterBreakdownNode.js";
 export type ShieldingScreenViewOptions = ScreenViewOptions;
 
 /** Centre line and largest scale of the atom, and content widths of the middle and right columns. */
-const ATOM_CENTER_X = 258;
-const ATOM_MAX_SCALE = 1.2;
-const MIDDLE_CONTENT_WIDTH = 280;
-const RIGHT_CONTENT_WIDTH = 200;
+const ATOM_CENTER_X: number = SHIELDING_SCREEN_VIEW_SETTINGS.ATOM_CENTER_X;
+const ATOM_MAX_SCALE: number = SHIELDING_SCREEN_VIEW_SETTINGS.ATOM_MAX_SCALE;
+const MIDDLE_CONTENT_WIDTH: number = SHIELDING_SCREEN_VIEW_SETTINGS.MIDDLE_CONTENT_WIDTH;
+const RIGHT_CONTENT_WIDTH: number = SHIELDING_SCREEN_VIEW_SETTINGS.RIGHT_CONTENT_WIDTH;
 
 export class ShieldingScreenView extends ScreenView {
   public constructor(model: ShieldingModel, providedOptions?: ShieldingScreenViewOptions) {
@@ -52,12 +53,12 @@ export class ShieldingScreenView extends ScreenView {
     const title = new Text("", {
       font: new PhetFont({ size: FONT_SIZE.title, weight: "bold" }),
       fill: PeriodicTrendsColors.textColorProperty,
-      maxWidth: 260,
+      maxWidth: SHIELDING_SCREEN_VIEW_SETTINGS.TITLE_MAX_WIDTH,
     });
     const configuration = new Text("", {
       font: new PhetFont(FONT_SIZE.small),
       fill: PeriodicTrendsColors.mutedTextColorProperty,
-      maxWidth: 380,
+      maxWidth: SHIELDING_SCREEN_VIEW_SETTINGS.CONFIGURATION_MAX_WIDTH,
     });
     Multilink.multilink([model.elementProperty, localeProperty], (element) => {
       title.string = StringUtils.fillIn(common.elementTitleStringProperty.value, {
@@ -80,8 +81,15 @@ export class ShieldingScreenView extends ScreenView {
     const pickerPanel = new PeriodicTrendsPanel(
       new VBox({
         align: "left",
-        spacing: 6,
-        children: [new HBox({ spacing: 10, children: [title, previousButton, nextButton] }), configuration, picker],
+        spacing: SHIELDING_SCREEN_VIEW_SETTINGS.PICKER_PANEL_SPACING,
+        children: [
+          new HBox({
+            spacing: SHIELDING_SCREEN_VIEW_SETTINGS.PICKER_PANEL_ITEM_1_SPACING,
+            children: [title, previousButton, nextButton],
+          }),
+          configuration,
+          picker,
+        ],
       }),
     );
     pickerPanel.left = SCREEN_VIEW_MARGIN;
@@ -134,18 +142,21 @@ export class ShieldingScreenView extends ScreenView {
         },
       })),
       {
-        spacing: 5,
-        radioButtonOptions: { radius: 6, selectedColor: PeriodicTrendsColors.accentColorProperty },
+        spacing: SHIELDING_SCREEN_VIEW_SETTINGS.TARGET_RADIO_SPACING,
+        radioButtonOptions: {
+          radius: SHIELDING_SCREEN_VIEW_SETTINGS.TARGET_RADIO_RADIUS,
+          selectedColor: PeriodicTrendsColors.accentColorProperty,
+        },
         accessibleName: a11y.targetRadioStringProperty,
       },
     );
     const targetPanel = new PeriodicTrendsPanel(
       new VBox({
         align: "left",
-        spacing: 8,
+        spacing: SHIELDING_SCREEN_VIEW_SETTINGS.TARGET_PANEL_SPACING,
         children: [heading(strings.targetStringProperty, RIGHT_CONTENT_WIDTH), targetRadio],
       }),
-      { minWidth: RIGHT_CONTENT_WIDTH + 24 },
+      { minWidth: RIGHT_CONTENT_WIDTH + SHIELDING_SCREEN_VIEW_SETTINGS.TARGET_PANEL_MIN_WIDTH_OFFSET },
     );
     targetPanel.right = this.layoutBounds.maxX - SCREEN_VIEW_MARGIN;
     targetPanel.top = pickerPanel.top;

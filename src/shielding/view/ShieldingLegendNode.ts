@@ -1,3 +1,4 @@
+import { SHIELDING_LEGEND_NODE_SETTINGS } from "../../PeriodicTrendsConstants.js";
 /**
  * ShieldingLegendNode.ts
  *
@@ -16,20 +17,32 @@ export class ShieldingLegendNode extends PeriodicTrendsPanel {
   public constructor(contentWidth: number) {
     const legend = StringManager.getInstance().getShieldingStrings().legend;
     const font = new PhetFont(FONT_SIZE.small);
-    const row = (fill: Circle["fill"], text: typeof legend.targetStringProperty, radius = 5) =>
+    const row = (
+      fill: Circle["fill"],
+      text: typeof legend.targetStringProperty,
+      radius: number = SHIELDING_LEGEND_NODE_SETTINGS.DEFAULT_RADIUS,
+    ) =>
       new HBox({
-        spacing: 6,
+        spacing: SHIELDING_LEGEND_NODE_SETTINGS.ROW_SPACING,
         children: [
           new Circle(radius, { fill }),
-          new Text(text, { font, fill: PeriodicTrendsColors.textColorProperty, maxWidth: contentWidth - 20 }),
+          new Text(text, {
+            font,
+            fill: PeriodicTrendsColors.textColorProperty,
+            maxWidth: contentWidth - SHIELDING_LEGEND_NODE_SETTINGS.ROW_MAX_WIDTH_OFFSET,
+          }),
         ],
       });
     super(
       new VBox({
         align: "left",
-        spacing: 5,
+        spacing: SHIELDING_LEGEND_NODE_SETTINGS.CONSTRUCTOR_SPACING,
         children: [
-          row(PeriodicTrendsColors.targetElectronColorProperty, legend.targetStringProperty, 7),
+          row(
+            PeriodicTrendsColors.targetElectronColorProperty,
+            legend.targetStringProperty,
+            SHIELDING_LEGEND_NODE_SETTINGS.TARGET_ELECTRON_COLOR_ROW_RADIUS,
+          ),
           row(colorForKind("sameGroup"), legend.sameGroupStringProperty),
           row(colorForKind("nMinusOne"), legend.nMinusOneStringProperty),
           row(colorForKind("inner"), legend.innerStringProperty),
@@ -37,7 +50,7 @@ export class ShieldingLegendNode extends PeriodicTrendsPanel {
         ],
       }),
       // Same width as the "Electron to look at" panel above it.
-      { minWidth: contentWidth + 24 },
+      { minWidth: contentWidth + SHIELDING_LEGEND_NODE_SETTINGS.CONSTRUCTOR_MIN_WIDTH_OFFSET },
     );
   }
 }

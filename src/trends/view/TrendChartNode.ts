@@ -1,3 +1,4 @@
+import { TREND_CHART_NODE_SETTINGS } from "../../PeriodicTrendsConstants.js";
 /**
  * TrendChartNode.ts
  *
@@ -32,12 +33,12 @@ import type { TrendsModel } from "../model/TrendsModel.js";
 import { AnomalyBadge } from "./AnomalyBadge.js";
 import { describeSelection, selectionTitle } from "./describeSelection.js";
 
-const POINT_RADIUS = 4;
-const HIGHLIGHT_RADIUS = 8;
+const POINT_RADIUS: number = TREND_CHART_NODE_SETTINGS.POINT_RADIUS;
+const HIGHLIGHT_RADIUS: number = TREND_CHART_NODE_SETTINGS.HIGHLIGHT_RADIUS;
 
 /** More points than this along the x axis and only some are labelled. */
-const MAX_LABELLED_POINTS = 40;
-const Z_EFF_TICK = 3;
+const MAX_LABELLED_POINTS: number = TREND_CHART_NODE_SETTINGS.MAX_LABELLED_POINTS;
+const Z_EFF_TICK: number = TREND_CHART_NODE_SETTINGS.Z_EFF_TICK;
 
 /** A "nice" tick spacing (1, 2, 2.5 or 5 × 10ⁿ) giving about `count` intervals over `span`. */
 function niceStep(span: number, count: number): number {
@@ -122,7 +123,7 @@ export class TrendChartNode extends Node {
     const yMax = toDisplayUnits(property, range.max, electronVolts);
     const yStep = niceStep(yMax, 5);
     const yTop = Math.ceil((yMax * 1.08) / yStep) * yStep;
-    const xRange = new Range(-0.5, Math.max(count, 2) - 0.5);
+    const xRange = new Range(TREND_CHART_NODE_SETTINGS.X_RANGE_MIN, Math.max(count, 2) - 0.5);
     const chartTransform = new ChartTransform({
       viewWidth: width,
       viewHeight: height,
@@ -158,7 +159,7 @@ export class TrendChartNode extends Node {
         new Text(tickText(y, yStep), {
           font: tickFont,
           fill: PeriodicTrendsColors.textColorProperty,
-          right: -6,
+          right: TREND_CHART_NODE_SETTINGS.REBUILD_RIGHT,
           centerY: chartTransform.modelToViewY(y),
         }),
       );
@@ -178,7 +179,7 @@ export class TrendChartNode extends Node {
           fill: ringed ? PeriodicTrendsColors.selectionColorProperty : PeriodicTrendsColors.textColorProperty,
           fontWeight: ringed ? "bold" : "normal",
           centerX: chartTransform.modelToViewX(i),
-          top: height + 4,
+          top: height + TREND_CHART_NODE_SETTINGS.REBUILD_TOP_OFFSET,
         }),
       );
     });
@@ -191,7 +192,7 @@ export class TrendChartNode extends Node {
       rotation: -Math.PI / 2,
       maxWidth: height,
     });
-    yTitle.right = -38;
+    yTitle.right = TREND_CHART_NODE_SETTINGS.RIGHT_RIGHT;
     yTitle.centerY = height / 2;
     const xTitle = new Text(
       single
@@ -216,7 +217,7 @@ export class TrendChartNode extends Node {
       },
     );
     title.left = 0;
-    title.bottom = -8;
+    title.bottom = TREND_CHART_NODE_SETTINGS.BOTTOM_BOTTOM;
     nodes.push(yTitle, xTitle, title);
 
     // ── Z_eff overlay ───────────────────────────────────────────────────────────
@@ -225,13 +226,13 @@ export class TrendChartNode extends Node {
       nodes.push(
         new LinePlot(zEffTransform, zEffPoints, {
           stroke: PeriodicTrendsColors.zEffColorProperty,
-          lineWidth: 1.5,
-          lineDash: [5, 4],
+          lineWidth: TREND_CHART_NODE_SETTINGS.REBUILD_LINE_WIDTH,
+          lineDash: [TREND_CHART_NODE_SETTINGS.REBUILD_LINE_DASH_DASH, 4],
         }),
       );
       for (const point of zEffPoints) {
         nodes.push(
-          new Circle(2.5, {
+          new Circle(TREND_CHART_NODE_SETTINGS.REBUILD_RADIUS, {
             fill: PeriodicTrendsColors.zEffColorProperty,
             center: zEffTransform.modelToViewPosition(point),
           }),
@@ -242,7 +243,7 @@ export class TrendChartNode extends Node {
           new Text(String(z), {
             font: tickFont,
             fill: PeriodicTrendsColors.zEffColorProperty,
-            left: width + 6,
+            left: width + TREND_CHART_NODE_SETTINGS.REBUILD_LEFT_OFFSET,
             centerY: zEffTransform.modelToViewY(z),
           }),
         );
@@ -263,7 +264,7 @@ export class TrendChartNode extends Node {
       new LinePlot(
         chartTransform,
         values.map((value, i) => (value === null ? null : new Vector2(i, value))),
-        { stroke: PeriodicTrendsColors.propertyCurveColorProperty, lineWidth: 2 },
+        { stroke: PeriodicTrendsColors.propertyCurveColorProperty, lineWidth: TREND_CHART_NODE_SETTINGS.LINE_WIDTH },
       ),
     );
     let hasUnbound = false;
@@ -282,12 +283,16 @@ export class TrendChartNode extends Node {
             ? PeriodicTrendsColors.chartBackgroundColorProperty
             : PeriodicTrendsColors.propertyCurveColorProperty,
           stroke: PeriodicTrendsColors.propertyCurveColorProperty,
-          lineWidth: 1.5,
+          lineWidth: TREND_CHART_NODE_SETTINGS.REBUILD_LINE_WIDTH,
         }),
       );
       if (single && element.z === selection.anchorZ) {
         nodes.push(
-          new Circle(HIGHLIGHT_RADIUS, { center, stroke: PeriodicTrendsColors.selectionColorProperty, lineWidth: 2.5 }),
+          new Circle(HIGHLIGHT_RADIUS, {
+            center,
+            stroke: PeriodicTrendsColors.selectionColorProperty,
+            lineWidth: TREND_CHART_NODE_SETTINGS.LINE_WIDTH_VARIANT_2,
+          }),
         );
       }
     });
@@ -297,7 +302,7 @@ export class TrendChartNode extends Node {
           font: tickFont,
           fill: PeriodicTrendsColors.mutedTextColorProperty,
           right: width,
-          bottom: -8,
+          bottom: TREND_CHART_NODE_SETTINGS.REBUILD_BOTTOM,
           maxWidth: width / 2,
         }),
       );
@@ -315,7 +320,10 @@ export class TrendChartNode extends Node {
         const y = Math.max(...neighbours.map((v) => v ?? 0));
         const badge = new AnomalyBadge(index + 1);
         badge.centerX = chartTransform.modelToViewX(x);
-        badge.bottom = Math.max(badge.height, chartTransform.modelToViewY(y) - 10);
+        badge.bottom = Math.max(
+          badge.height,
+          chartTransform.modelToViewY(y) - TREND_CHART_NODE_SETTINGS.REBUILD_BOTTOM_OFFSET,
+        );
         nodes.push(badge);
       });
     }

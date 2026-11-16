@@ -1,3 +1,4 @@
+import { PERIODIC_TRENDS_PREFERENCES_NODE_SETTINGS } from "../PeriodicTrendsConstants.js";
 /**
  * PeriodicTrendsPreferencesNode.ts
  *
@@ -25,26 +26,29 @@ export class PeriodicTrendsPreferencesNode extends VBox {
     // colors (readable on white in both default and projector profiles), not textColorProperty
     // (which is near-white in default mode and would be invisible on the white dialog).
     const header = new Text(prefStrings.titleStringProperty, {
-      font: new PhetFont({ size: 18, weight: "bold" }),
+      font: new PhetFont({ size: PERIODIC_TRENDS_PREFERENCES_NODE_SETTINGS.HEADER_FONT_SIZE, weight: "bold" }),
       fill: PeriodicTrendsColors.controlSurfaceTextColorProperty,
     });
 
     const electronVoltsCheckbox = new Checkbox(
       preferencesModel.electronVoltsProperty,
       new Text(prefStrings.electronVoltsStringProperty, {
-        font: new PhetFont(14),
+        font: new PhetFont(PERIODIC_TRENDS_PREFERENCES_NODE_SETTINGS.ELECTRON_VOLTS_CHECKBOX_FONT_SIZE),
         fill: PeriodicTrendsColors.controlSurfaceTextColorProperty,
       }),
       {
         checkboxColor: PeriodicTrendsColors.controlSurfaceTextColorProperty,
         checkboxColorBackground: PeriodicTrendsColors.controlSurfaceColorProperty,
-        spacing: 8,
+        spacing: PERIODIC_TRENDS_PREFERENCES_NODE_SETTINGS.ELECTRON_VOLTS_CHECKBOX_SPACING,
         ...(tandem && { tandem: tandem.createTandem("electronVoltsCheckbox") }),
       },
     );
 
     const optionText = (text: TReadOnlyProperty<string>): Text =>
-      new Text(text, { font: new PhetFont(14), fill: PeriodicTrendsColors.controlSurfaceTextColorProperty });
+      new Text(text, {
+        font: new PhetFont(PERIODIC_TRENDS_PREFERENCES_NODE_SETTINGS.OPTION_TEXT_FONT_SIZE),
+        fill: PeriodicTrendsColors.controlSurfaceTextColorProperty,
+      });
     const extentRadio = new AquaRadioButtonGroup(
       preferencesModel.tableExtentProperty,
       [
@@ -57,8 +61,11 @@ export class PeriodicTrendsPreferencesNode extends VBox {
         options: { accessibleName: label },
       })),
       {
-        spacing: 6,
-        radioButtonOptions: { radius: 7, selectedColor: PeriodicTrendsColors.controlSurfaceTextColorProperty },
+        spacing: PERIODIC_TRENDS_PREFERENCES_NODE_SETTINGS.EXTENT_RADIO_SPACING,
+        radioButtonOptions: {
+          radius: PERIODIC_TRENDS_PREFERENCES_NODE_SETTINGS.EXTENT_RADIO_RADIUS,
+          selectedColor: PeriodicTrendsColors.controlSurfaceTextColorProperty,
+        },
         accessibleName: prefStrings.tableExtentStringProperty,
         ...(tandem && { tandem: tandem.createTandem("tableExtentRadioButtonGroup") }),
       },
@@ -66,14 +73,17 @@ export class PeriodicTrendsPreferencesNode extends VBox {
 
     super({
       align: "left",
-      spacing: 12,
+      spacing: PERIODIC_TRENDS_PREFERENCES_NODE_SETTINGS.CONSTRUCTOR_SPACING,
       children: [
         header,
         electronVoltsCheckbox,
         new VBox({
           align: "left",
-          spacing: 6,
-          children: [optionText(prefStrings.tableExtentStringProperty), new Node({ children: [extentRadio], x: 10 })],
+          spacing: PERIODIC_TRENDS_PREFERENCES_NODE_SETTINGS.ITEM_3_SPACING,
+          children: [
+            optionText(prefStrings.tableExtentStringProperty),
+            new Node({ children: [extentRadio], x: PERIODIC_TRENDS_PREFERENCES_NODE_SETTINGS.CONSTRUCTOR_X }),
+          ],
         }),
       ],
     });

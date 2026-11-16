@@ -1,3 +1,4 @@
+import { EFFECTIVE_CHARGE_NODE_SETTINGS } from "../../PeriodicTrendsConstants.js";
 /**
  * EffectiveChargeNode.ts
  *
@@ -19,7 +20,7 @@ import { StringManager } from "../../i18n/StringManager.js";
 import PeriodicTrendsColors from "../../PeriodicTrendsColors.js";
 import { FONT_SIZE } from "../../PeriodicTrendsConstants.js";
 
-const BAR_HEIGHT = 12;
+const BAR_HEIGHT: number = EFFECTIVE_CHARGE_NODE_SETTINGS.BAR_HEIGHT;
 
 export class EffectiveChargeNode extends PeriodicTrendsPanel {
   /**
@@ -49,11 +50,11 @@ export class EffectiveChargeNode extends PeriodicTrendsPanel {
     super(
       new VBox({
         align: "left",
-        spacing: 4,
+        spacing: EFFECTIVE_CHARGE_NODE_SETTINGS.CONSTRUCTOR_SPACING,
         preferredWidth: contentWidth,
         children: [title, nucleusLabel, nucleusBar, feltLabel, feltBar, percent],
       }),
-      { minWidth: contentWidth + 24 },
+      { minWidth: contentWidth + EFFECTIVE_CHARGE_NODE_SETTINGS.CONSTRUCTOR_MIN_WIDTH_OFFSET },
     );
 
     Multilink.multilink([shieldingProperty, tableExtentProperty, localeProperty], (result, table) => {

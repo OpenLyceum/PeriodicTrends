@@ -1,3 +1,4 @@
+import { SLATER_BREAKDOWN_NODE_SETTINGS } from "../../PeriodicTrendsConstants.js";
 /**
  * SlaterBreakdownNode.ts
  *
@@ -28,8 +29,11 @@ export class SlaterBreakdownNode extends PeriodicTrendsPanel {
       fill: PeriodicTrendsColors.textColorProperty,
       maxWidth: contentWidth,
     });
-    const body = new VBox({ align: "left", spacing: 8 });
-    super(new VBox({ align: "left", spacing: 8, children: [title, body] }), { minWidth: contentWidth + 24 });
+    const body = new VBox({ align: "left", spacing: SLATER_BREAKDOWN_NODE_SETTINGS.BODY_SPACING });
+    super(
+      new VBox({ align: "left", spacing: SLATER_BREAKDOWN_NODE_SETTINGS.CONSTRUCTOR_SPACING, children: [title, body] }),
+      { minWidth: contentWidth + SLATER_BREAKDOWN_NODE_SETTINGS.CONSTRUCTOR_MIN_WIDTH_OFFSET },
+    );
 
     const font = new PhetFont(FONT_SIZE.small + 1);
     const boldFont = new PhetFont({ size: FONT_SIZE.small + 1, weight: "bold" });
@@ -37,7 +41,12 @@ export class SlaterBreakdownNode extends PeriodicTrendsPanel {
       text: string | TReadOnlyProperty<string>,
       bold = false,
       fill = PeriodicTrendsColors.textColorProperty,
-    ) => new Text(text, { font: bold ? boldFont : font, fill, maxWidth: contentWidth / 3 });
+    ) =>
+      new Text(text, {
+        font: bold ? boldFont : font,
+        fill,
+        maxWidth: contentWidth / SLATER_BREAKDOWN_NODE_SETTINGS.CELL_TEXT_MAX_WIDTH_FACTOR,
+      });
 
     Multilink.multilink([shieldingProperty, localeProperty], (result) => {
       for (const child of body.children) {
@@ -59,9 +68,9 @@ export class SlaterBreakdownNode extends PeriodicTrendsPanel {
         const fill = muted ? PeriodicTrendsColors.mutedTextColorProperty : PeriodicTrendsColors.textColorProperty;
         rows.push([
           new HBox({
-            spacing: 5,
+            spacing: SLATER_BREAKDOWN_NODE_SETTINGS.ITEM_1_SPACING,
             children: [
-              new Circle(5, { fill: colorForKind(contribution.kind) }),
+              new Circle(SLATER_BREAKDOWN_NODE_SETTINGS.CONSTRUCTOR_RADIUS, { fill: colorForKind(contribution.kind) }),
               cellText(groupLabel(contribution.group), false, fill),
             ],
           }),
@@ -78,7 +87,13 @@ export class SlaterBreakdownNode extends PeriodicTrendsPanel {
       ]);
       // Four independently sized columns can exceed the allocated middle column in translation.
       // Scale the complete grid uniformly so headings and values stay aligned within the panel.
-      const table = new GridBox({ xSpacing: 14, ySpacing: 4, xAlign: "left", rows, maxWidth: contentWidth });
+      const table = new GridBox({
+        xSpacing: SLATER_BREAKDOWN_NODE_SETTINGS.TABLE_X_SPACING,
+        ySpacing: SLATER_BREAKDOWN_NODE_SETTINGS.TABLE_Y_SPACING,
+        xAlign: "left",
+        rows,
+        maxWidth: contentWidth,
+      });
       const equation = new RichText(
         StringUtils.fillIn(strings.zEffEquationStringProperty.value, {
           z: result.z,

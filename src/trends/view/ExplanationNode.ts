@@ -1,3 +1,4 @@
+import { EXPLANATION_NODE_SETTINGS } from "../../PeriodicTrendsConstants.js";
 /**
  * ExplanationNode.ts
  *
@@ -31,10 +32,10 @@ export class ExplanationNode extends PeriodicTrendsPanel {
       fill: PeriodicTrendsColors.textColorProperty,
       maxWidth: contentWidth,
     });
-    const body = new VBox({ align: "left", spacing: 8 });
+    const body = new VBox({ align: "left", spacing: EXPLANATION_NODE_SETTINGS.BODY_SPACING });
     const content = new VBox({
       align: "left",
-      spacing: 8,
+      spacing: EXPLANATION_NODE_SETTINGS.CONTENT_SPACING,
       children: [heading, body],
       // Keeps the panel a fixed width whatever the text.
       preferredWidth: contentWidth,
@@ -67,7 +68,7 @@ export class ExplanationNode extends PeriodicTrendsPanel {
           const badge = new AnomalyBadge(i + 1);
           return new HBox({
             align: "top",
-            spacing: 6,
+            spacing: EXPLANATION_NODE_SETTINGS.NOTES_SPACING,
             children: [badge, paragraph(text, contentWidth - badge.width - 6)],
           });
         });

@@ -1,3 +1,4 @@
+import { PERIODIC_TRENDS_QUERY_PARAMETERS_SETTINGS } from "../PeriodicTrendsConstants.js";
 /**
  * periodicTrendsQueryParameters.ts
  *
@@ -29,7 +30,7 @@ const periodicTrendsQueryParameters = QueryStringMachine.getAll({
   /** Last element on the table: 36 (through Kr), 54 (through Xe) or 86 (through Rn). */
   maxZ: {
     type: "number",
-    defaultValue: 36,
+    defaultValue: PERIODIC_TRENDS_QUERY_PARAMETERS_SETTINGS.PERIODIC_TRENDS_QUERY_PARAMETERS_DEFAULT_VALUE,
     validValues: [36, 54, 86],
     public: true,
   },

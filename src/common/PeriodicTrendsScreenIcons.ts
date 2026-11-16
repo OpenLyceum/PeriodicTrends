@@ -9,6 +9,7 @@ import { Shape } from "scenerystack/kite";
 import { Circle, Color, Node, Path, Rectangle } from "scenerystack/scenery";
 import { ScreenIcon } from "scenerystack/sim";
 import PeriodicTrendsColors from "../PeriodicTrendsColors.js";
+import { PERIODIC_TRENDS_SCREEN_ICONS_SETTINGS } from "../PeriodicTrendsConstants.js";
 import { TableExtent } from "./model/TableExtent.js";
 
 const W = 548;
@@ -34,14 +35,20 @@ export function createTrendsIcon(): ScreenIcon {
   const t = (ie: number) => (ie - minIE) / (maxIE - minIE);
   const cells = period.map(
     (element, i) =>
-      new Rectangle(40 + i * cellWidth + 3, 250, cellWidth - 6, 80, {
-        cornerRadius: 6,
-        fill: Color.interpolateRGBA(
-          PeriodicTrendsColors.heatLowColorProperty.value,
-          PeriodicTrendsColors.heatHighColorProperty.value,
-          t(element.ionizationEnergy),
-        ),
-      }),
+      new Rectangle(
+        40 + i * cellWidth + 3,
+        PERIODIC_TRENDS_SCREEN_ICONS_SETTINGS.CELLS_Y,
+        cellWidth - 6,
+        PERIODIC_TRENDS_SCREEN_ICONS_SETTINGS.CELLS_HEIGHT,
+        {
+          cornerRadius: PERIODIC_TRENDS_SCREEN_ICONS_SETTINGS.CELLS_CORNER_RADIUS,
+          fill: Color.interpolateRGBA(
+            PeriodicTrendsColors.heatLowColorProperty.value,
+            PeriodicTrendsColors.heatHighColorProperty.value,
+            t(element.ionizationEnergy),
+          ),
+        },
+      ),
   );
   const curve = new Shape();
   period.forEach((element, i) => {
@@ -54,7 +61,10 @@ export function createTrendsIcon(): ScreenIcon {
       children: [
         background(),
         ...cells,
-        new Path(curve, { stroke: PeriodicTrendsColors.propertyCurveColorProperty, lineWidth: 8 }),
+        new Path(curve, {
+          stroke: PeriodicTrendsColors.propertyCurveColorProperty,
+          lineWidth: PERIODIC_TRENDS_SCREEN_ICONS_SETTINGS.CREATE_TRENDS_ICON_LINE_WIDTH,
+        }),
       ],
     }),
   );
@@ -64,9 +74,18 @@ export function createShieldingIcon(): ScreenIcon {
   const cx = W / 2;
   const cy = H / 2;
   const shell = (r: number) =>
-    new Circle(r, { x: cx, y: cy, stroke: PeriodicTrendsColors.shellColorProperty, lineWidth: 5 });
-  const electron = (r: number, angle: number, fill: Color | typeof PeriodicTrendsColors.zEffColorProperty, size = 14) =>
-    new Circle(size, { x: cx + r * Math.cos(angle), y: cy + r * Math.sin(angle), fill });
+    new Circle(r, {
+      x: cx,
+      y: cy,
+      stroke: PeriodicTrendsColors.shellColorProperty,
+      lineWidth: PERIODIC_TRENDS_SCREEN_ICONS_SETTINGS.SHELL_LINE_WIDTH,
+    });
+  const electron = (
+    r: number,
+    angle: number,
+    fill: Color | typeof PeriodicTrendsColors.zEffColorProperty,
+    size: number = PERIODIC_TRENDS_SCREEN_ICONS_SETTINGS.DEFAULT_SIZE,
+  ) => new Circle(size, { x: cx + r * Math.cos(angle), y: cy + r * Math.sin(angle), fill });
   const inner = PeriodicTrendsColors.shieldInnerColorProperty;
   return iconFrom(
     new Node({
@@ -74,10 +93,19 @@ export function createShieldingIcon(): ScreenIcon {
         background(),
         shell(80),
         shell(150),
-        new Circle(36, { x: cx, y: cy, fill: PeriodicTrendsColors.nucleusColorProperty }),
+        new Circle(PERIODIC_TRENDS_SCREEN_ICONS_SETTINGS.CREATE_SHIELDING_ICON_RADIUS, {
+          x: cx,
+          y: cy,
+          fill: PeriodicTrendsColors.nucleusColorProperty,
+        }),
         electron(80, 0, inner),
         electron(80, Math.PI, inner),
-        electron(150, -Math.PI / 2, PeriodicTrendsColors.targetElectronColorProperty, 20),
+        electron(
+          150,
+          -Math.PI / 2,
+          PeriodicTrendsColors.targetElectronColorProperty,
+          PERIODIC_TRENDS_SCREEN_ICONS_SETTINGS.CREATE_SHIELDING_ICON_SIZE,
+        ),
       ],
     }),
   );
