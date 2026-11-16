@@ -149,7 +149,7 @@ test("Spanish Slater columns stay inside their panel through locale, extent and 
         const model = screen.model as ShieldingModel;
         const breakdown = screen.view.children.find((node) => node.constructor.name === "SlaterBreakdownNode")!;
         const target = screen.view.children.filter((node) => node.constructor.name === "PeriodicTrendsPanel")[1]!;
-        const values = [];
+        const values: { overlap: number; width: number }[] = [];
         for (const z of [1, 17, model.selectedElement.tableExtentProperty.value.maxZ]) {
           model.selectedElement.zProperty.value = z;
           for (const group of [model.targetGroupProperty.value, "1s"] as const) {
