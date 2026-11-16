@@ -192,7 +192,7 @@ export class TrendChartNode extends Node {
       rotation: -Math.PI / 2,
       maxWidth: height,
     });
-    yTitle.right = TREND_CHART_NODE_SETTINGS.RIGHT_RIGHT;
+    yTitle.right = TREND_CHART_NODE_SETTINGS.Y_TITLE_RIGHT;
     yTitle.centerY = height / 2;
     const xTitle = new Text(
       single
@@ -217,7 +217,7 @@ export class TrendChartNode extends Node {
       },
     );
     title.left = 0;
-    title.bottom = TREND_CHART_NODE_SETTINGS.BOTTOM_BOTTOM;
+    title.bottom = TREND_CHART_NODE_SETTINGS.TITLE_BOTTOM;
     nodes.push(yTitle, xTitle, title);
 
     // ── Z_eff overlay ───────────────────────────────────────────────────────────

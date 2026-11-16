@@ -76,16 +76,16 @@ export const PERIODIC_TRENDS_CONTROL_OPTIONS_SETTINGS = {
   NUMBER_CONTROL_SLIDER_TRACK_SIZE_HEIGHT: 3,
   /** Checkbox box width (px). */
   CHECKBOX_BOX_WIDTH: 16,
-  /** Periodic trends number control options scale (dimensionless). */
-  PERIODIC_TRENDS_NUMBER_CONTROL_OPTIONS_SCALE: 0.75,
-  /** Periodic trends number control options slider padding (px). */
-  PERIODIC_TRENDS_NUMBER_CONTROL_OPTIONS_SLIDER_PADDING: 4,
-  /** Periodic trends number control options arrow button spacing (px). */
-  PERIODIC_TRENDS_NUMBER_CONTROL_OPTIONS_ARROW_BUTTON_SPACING: 3,
-  /** Periodic trends number control options vertical spacing (px). */
-  PERIODIC_TRENDS_NUMBER_CONTROL_OPTIONS_VERTICAL_SPACING: 4,
-  /** Periodic trends checkbox options spacing (px). */
-  PERIODIC_TRENDS_CHECKBOX_OPTIONS_SPACING: 4,
+  /** NumberControl arrow-button scale (dimensionless). */
+  NUMBER_CONTROL_SCALE: 0.75,
+  /** NumberControl layout slider padding (px). */
+  NUMBER_CONTROL_SLIDER_PADDING: 4,
+  /** NumberControl layout arrow-button spacing (px). */
+  NUMBER_CONTROL_ARROW_BUTTON_SPACING: 3,
+  /** NumberControl layout vertical spacing (px). */
+  NUMBER_CONTROL_VERTICAL_SPACING: 4,
+  /** Checkbox label spacing (px). */
+  CHECKBOX_SPACING: 4,
 } as const;
 
 /** Settings for common/PeriodicTrendsPanel.ts. */
@@ -187,9 +187,9 @@ export const SHELL_ATOM_NODE_SETTINGS = {
 
   LABEL_BACKGROUND_DILATION: 2, // px
 
-  /** Innermost and outermost ring radii when the rings are spread evenly (beyond krypton). */
+  /** Innermost ring radius when rings are spread evenly beyond krypton (px). */
   FIRST_RING: 30,
-  /** Last ring (px). */
+  /** Outermost ring radius when rings are spread evenly beyond krypton (px). */
   LAST_RING: 168,
   /** Electrons on a ring keep at least this gap between centres. */
   MIN_ELECTRON_SPACING: 3,
@@ -358,10 +358,10 @@ export const TREND_CHART_NODE_SETTINGS = {
   X_RANGE_MIN: -0.5,
   /** Rebuild right (px). */
   REBUILD_RIGHT: -6,
-  /** Right right (px). */
-  RIGHT_RIGHT: -38,
-  /** Bottom bottom (px). */
-  BOTTOM_BOTTOM: -8,
+  /** Y-axis title right edge relative to the chart origin (px). */
+  Y_TITLE_RIGHT: -38,
+  /** Chart title bottom edge relative to the chart origin (px). */
+  TITLE_BOTTOM: -8,
   /** Rebuild line width (px). */
   REBUILD_LINE_WIDTH: 1.5,
   /** Rebuild radius (px). */
@@ -390,9 +390,10 @@ export const TRENDS_SCREEN_VIEW_SETTINGS = {
   CONTROL_PANEL_SPACING: 8,
 } as const;
 
-/** Component dimensions in px; ratios and control steps are dimensionless; precision counts digits. */
+/** Defaults for public query parameter `maxZ`. */
 export const PERIODIC_TRENDS_QUERY_PARAMETERS_SETTINGS = {
-  PERIODIC_TRENDS_QUERY_PARAMETERS_DEFAULT_VALUE: 36, // dimensionless
+  /** Default last element on the table (through Kr). */
+  MAX_Z_DEFAULT: 36,
 } as const;
 
 PeriodicTrendsNamespace.register("PeriodicTrendsConstants", {
