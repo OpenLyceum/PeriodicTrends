@@ -100,7 +100,6 @@ design decisions: [`doc/implementation-notes.md`](doc/implementation-notes.md).
 
 ## Compliance carve-outs
 
-- `.github/workflows/ci.yml`: `unused-mode: advisory` until both Knip default and production baselines are reviewed and cleared ([Baton/doc/knip.md](https://github.com/OpenLyceum/Baton/blob/main/doc/knip.md)).
 - No color carve-outs: every colour is in `PeriodicTrendsColors.ts` (heat-map cells blend two profile colours at
   runtime).
 
