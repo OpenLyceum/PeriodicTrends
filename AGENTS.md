@@ -98,11 +98,6 @@ design decisions: [`doc/implementation-notes.md`](doc/implementation-notes.md).
   through `common/view/tableDescriptionProperty.ts`, following live extent and locale changes.
   The Slater grid has a maximum width so translated columns stay inside the middle panel.
 
-## Compliance carve-outs
-
-- No color carve-outs: every colour is in `PeriodicTrendsColors.ts` (heat-map cells blend two profile colours at
-  runtime).
-
 ## Testing
 
 | Path | Purpose |
