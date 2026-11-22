@@ -22,6 +22,7 @@
 
 import { EnumerationProperty } from "scenerystack/axon";
 import { localeProperty } from "scenerystack/joist";
+import { FireListener, type Node } from "scenerystack/scenery";
 import { describe, expect, it } from "vitest";
 import { PeriodicProperty } from "../src/common/model/PeriodicProperty.js";
 import { SelectedElementModel } from "../src/common/model/SelectedElementModel.js";
@@ -242,6 +243,34 @@ describe("rebuilding views does not accumulate listeners", () => {
       models.selectedElement.zProperty.value = z;
     }
     expect(listenerCount(property)).toBe(once);
+  });
+
+  // A FireListener that has seen a press stays linked to the display's Mouse.isDownProperty, and
+  // its fire closure shares a scope with the rebuild's node list. Node.dispose() does not dispose
+  // input listeners, so each rebuild while the pointer was on a ring kept the whole old drawing
+  // alive under pointer fuzz. Every rebuild must dispose the previous drawing's ring listeners.
+  it("ShellAtomNode: rebuilding disposes the previous drawing's ring listeners", () => {
+    const models = createModels();
+    const atom = new ShellAtomNode(
+      models.shielding.elementProperty,
+      models.shielding.shieldingProperty,
+      models.shielding.targetGroupProperty,
+    );
+    const ringListeners = (): FireListener[] => {
+      const found: FireListener[] = [];
+      const visit = (node: Node): void => {
+        found.push(...node.inputListeners.filter((listener) => listener instanceof FireListener));
+        node.children.forEach(visit);
+      };
+      visit(atom);
+      return found;
+    };
+    models.selectedElement.zProperty.value = 26;
+    const old = ringListeners();
+    expect(old.length).toBeGreaterThan(0);
+    models.selectedElement.zProperty.value = 36;
+    expect(old.every((listener) => listener.isDisposed)).toBe(true);
+    expect(ringListeners().some((listener) => listener.isDisposed)).toBe(false);
   });
 
   it("SlaterBreakdownNode and EffectiveChargeNode: element changes leave listeners unchanged", () => {

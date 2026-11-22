@@ -66,6 +66,13 @@ export class ShellAtomNode extends Node {
 
   private readonly content = new Node();
 
+  /**
+   * The ring listeners of the current drawing. Node.dispose() leaves input listeners alone, and a
+   * live FireListener stays linked to the display's pointer state, so each one would keep its
+   * whole drawing alive after a rebuild.
+   */
+  private ringListeners: FireListener[] = [];
+
   public constructor(
     elementProperty: TReadOnlyProperty<ElementData>,
     shieldingProperty: TReadOnlyProperty<ShieldingResult>,
@@ -79,6 +86,10 @@ export class ShellAtomNode extends Node {
   }
 
   private rebuild(element: ElementData, result: ShieldingResult, targetGroupProperty: Property<SlaterGroupId>): void {
+    for (const listener of this.ringListeners) {
+      listener.dispose();
+    }
+    this.ringListeners = [];
     for (const child of this.content.children) {
       child.dispose();
     }
@@ -111,13 +122,13 @@ export class ShellAtomNode extends Node {
         .arc(0, 0, innerRadius, 0, -Math.PI * 2, true)
         .close();
       ring.touchArea = ring.mouseArea;
-      ring.addInputListener(
-        new FireListener({
-          fire: () => {
-            targetGroupProperty.value = group;
-          },
-        }),
-      );
+      const ringListener = new FireListener({
+        fire: () => {
+          targetGroupProperty.value = group;
+        },
+      });
+      ring.addInputListener(ringListener);
+      this.ringListeners.push(ringListener);
       nodes.push(ring);
 
       const count = counts[group];
