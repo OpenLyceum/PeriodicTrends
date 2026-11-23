@@ -88,11 +88,10 @@ export class StringManager {
 
   /** Element names keyed by symbol ("H" … "Kr"). */
   public getElementNames(): Readonly<Record<string, ReadOnlyProperty<string>>> {
-    const names = stringProperties.elements as unknown as Record<string, ReadOnlyProperty<string>>;
     const bySymbol: Record<string, ReadOnlyProperty<string>> = {};
-    for (const key of Object.keys(names)) {
+    for (const [key, property] of Object.entries(stringProperties.elements)) {
       // getNestedStringProperties suffixes every leaf with "StringProperty".
-      bySymbol[key.replace(/StringProperty$/, "")] = names[key] as ReadOnlyProperty<string>;
+      bySymbol[key.replace(/StringProperty$/, "")] = property;
     }
     return bySymbol;
   }
