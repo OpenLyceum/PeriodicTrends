@@ -15,6 +15,7 @@
  * Pure functions, no Scenery imports.
  */
 
+import { roundSymmetric } from "scenerystack/dot";
 import type { Subshell } from "./ElementData.js";
 
 /** Slater groups, in Slater's order (inner to outer). */
@@ -145,6 +146,6 @@ export function shielding(
   });
   const s = contributions.reduce((sum, contribution) => sum + contribution.total, 0);
   // Round away floating-point noise (0.35 × 7 = 2.4499999…) so readouts and tests are exact.
-  const rounded = Math.round(s * 1e6) / 1e6;
-  return { z, target, contributions, s: rounded, zEff: Math.round((z - rounded) * 1e6) / 1e6 };
+  const rounded = roundSymmetric(s * 1e6) / 1e6;
+  return { z, target, contributions, s: rounded, zEff: roundSymmetric((z - rounded) * 1e6) / 1e6 };
 }
