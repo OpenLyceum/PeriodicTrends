@@ -1,3 +1,4 @@
+import { roundSymmetric } from "scenerystack/dot";
 import { EFFECTIVE_CHARGE_NODE_SETTINGS } from "../../PeriodicTrendsConstants.js";
 /**
  * EffectiveChargeNode.ts
@@ -66,7 +67,7 @@ export class EffectiveChargeNode extends PeriodicTrendsPanel {
         zEff: formatCharge(result.zEff),
       });
       percent.string = StringUtils.fillIn(strings.shieldedPercentStringProperty.value, {
-        percent: Math.round((100 * result.s) / result.z),
+        percent: roundSymmetric((100 * result.s) / result.z),
       });
     });
   }
